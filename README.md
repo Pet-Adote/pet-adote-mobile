@@ -27,7 +27,7 @@ O aplicativo foi inspirado em plataformas como **AdotaPet** e **OLX Adoção**, 
 |------------------------|-------------------------------|
 | Filipe Gomes           | filipeandradegomes@gmail.com        |
 | Felipe Mendes |  felipe.mendess@ufape.edu.br             |
-| [Luiz Fellipe] | luizfellipedearb@gmail.com            |
+| Luiz Fellipe | luizfellipedearb@gmail.com            |
 
 ## Status
 - Em desenvolvimento
