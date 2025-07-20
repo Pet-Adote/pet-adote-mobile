@@ -36,7 +36,7 @@ O aplicativo foi inspirado em plataformas como **AdotaPet** e **OLX Adoção**, 
 | Luiz Fellipe   | luizfellipedearb@gmail.com        |
 
 ## 🚧 Status
-- Em desenvolvimento
+- Em fase de concepção
 
 ## ▶️ Como executar
 - TBD
