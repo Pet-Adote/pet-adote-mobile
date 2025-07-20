@@ -19,7 +19,7 @@ O aplicativo foi inspirado em plataformas como **AdotaPet** e **OLX Adoção**, 
 ## 📌 Protótipo e Backlog
 
 - 🔗 [Acessar Protótipo no Figma](TBD)
-- 📝 [Acessar Backlog no Trello/Jira/etc](TBD)
+- 📝 [Acessar Backlog](TBD)
 
 ## 👥 Equipe
 
