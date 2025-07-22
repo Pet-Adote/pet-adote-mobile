@@ -24,8 +24,8 @@ O aplicativo foi inspirado em plataformas como **AdotaPet** e **OLX Adoção**, 
 
 ## 📌 Protótipo e Backlog
 
-- 🔗 [Acessar Protótipo no Figma](TBD)
-- 📝 [Acessar Backlog](TBD)
+- 🔗 [Acessar Protótipo no Figma](https://www.figma.com/design/c52xd53drkQAqOK8SjchHO/PetAdote?node-id=0-1&p=f)
+- 📝 [Acessar Backlog](https://trello.com/b/pmKufRar/kanban-quadro-modelo)
 
 ## 👥 Equipe
 
