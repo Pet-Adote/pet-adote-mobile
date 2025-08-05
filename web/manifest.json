@@ -1,6 +1,6 @@
 {
-    "name": "pet_mobile",
-    "short_name": "pet_mobile",
+    "name": "pet_adote",
+    "short_name": "pet_adote",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
