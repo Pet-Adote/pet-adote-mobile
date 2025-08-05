@@ -27,50 +27,22 @@ class CustomTextField extends StatelessWidget {
     this.contentPadding,
   }) : super(key: key);
 
-
   final String? placeholder;
-
-
   final TextEditingController? controller;
-
   final FocusNode? focusNode;
-
-
   final TextInputType? keyboardType;
-
-
   final TextInputAction? textInputAction;
-
-
   final bool? isRequired;
-
-  final bool? isEnabled;1
-
+  final bool? isEnabled;
   final int? maxLength;
-
   final Function(String)? onChanged;
-
   final Function(String)? onSubmitted;
-
   final String? Function(String?)? validator;
-
   final Color? backgroundColor;
-
   final Color? borderColor;
-
   final Color? focusBorderColor;
-
   final Color? textColor;
-
   final Color? placeholderColor;
-
-  final double? fontSize;
-
-  final double? height;
-
-  final double? borderRadius;
-
-  final EdgeInsets? contentPadding;
   final double? fontSize;
   final double? height;
   final double? borderRadius;
@@ -94,8 +66,8 @@ class CustomTextField extends StatelessWidget {
             .copyWith(color: textColor ?? appTheme.blackCustom, height: 1.25),
         decoration: InputDecoration(
           hintText: placeholder ?? '',
-          hintStyle: TextStyleHelper.instance.bodyTextSemiBold.copyWith(
-              color: placeholderColor ?? appTheme.grey500, height: 1.25),
+          hintStyle: TextStyleHelper.instance.bodyTextSemiBold
+              .copyWith(color: placeholderColor ?? appTheme.grey500, height: 1.25),
           filled: true,
           fillColor: backgroundColor ?? appTheme.whiteCustom,
           contentPadding: contentPadding ??

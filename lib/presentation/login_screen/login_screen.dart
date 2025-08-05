@@ -37,13 +37,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin() {
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
-      // Handle login functionality
+      
       print('Login attempt: ${_emailController.text}');
     }
   }
 
   void _handleForgotPassword() {
-    // Handle forgot password functionality
+    
     print('Forgot password clicked');
   }
 
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         backgroundColor: appTheme.colorFF9FE5,
         body: Stack(children: [
-          // Background Image with Paw Prints
+          
           Positioned(
 
               top: 11.h,
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 428.h,
                       fit: BoxFit.cover))),
 
-          // Main Content
+          
           Positioned(
               top: 118.h,
               left: 30.h,
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 669.h,
                   width: 372.h,
                   child: Column(children: [
-                    // PetAdote Logo/Title
+                    
                     Container(
                         height: 84.h,
                         width: 222.h,
@@ -88,9 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     .instance.display55LeckerliOne
                                     .copyWith(height: 1.35)))),
 
-                    // Login Form
+                    
                     Column(children: [
-                      // Email Input
+                      
                       CustomTextField(
                           placeholder: 'E-mail',
                           controller: _emailController,
@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       SizedBox(height: 32.h),
 
-                      // Password Input
+                      
                       Container(
                           height: 45.h,
                           width: 372.h,
@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     bottom: 12.h),
                                 onSubmitted: (_) => _handleLogin()),
 
-                            // Password Toggle Button
+                            
                             Positioned(
                                 right: 12.h,
                                 top: 0,
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       SizedBox(height: 43.h),
 
-                      // Login Button
+                      
                       CustomButton(
                           text: 'Entrar',
                           onPressed: _handleLogin,
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       SizedBox(height: 14.h),
 
-                      // Forgot Password Link
+                      
                       GestureDetector(
                           onTap: _handleForgotPassword,
                           child: Text('Esqueci a senha',
@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       SizedBox(height: 138.h),
 
-                      // Register Button
+                      
                       CustomButton(
                           text: 'CADASTRE-SE',
                           onPressed: _handleRegister,

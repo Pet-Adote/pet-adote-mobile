@@ -41,7 +41,7 @@ class AppNavigationScreen extends StatelessWidget {
     );
   }
 
-  /// Common widget
+  
   Widget _buildScreenTitle(
     BuildContext context, {
     required String screenTitle,
@@ -80,7 +80,7 @@ class AppNavigationScreen extends StatelessWidget {
     );
   }
 
-  /// Common click event
+  
   void onTapScreenTitle(BuildContext context, String routeName) {
     Navigator.pushNamed(context, routeName);
   }
