@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/app_export.dart';
 class CustomButton extends StatelessWidget {
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.backgroundColor,
@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
     this.trailingIcon,
     this.shadowColor,
     this.elevation,
-  }) : super(key: key);
+  });
 
   final String text;
   final VoidCallback? onPressed;
@@ -85,7 +85,10 @@ class CustomButton extends StatelessWidget {
                   Flexible(
                     child: Text(
                       text,
-                      style: TextStyleHelper.instance.bodyTextInter,
+                      style: TextStyleHelper.instance.bodyTextInter.copyWith(
+                        fontSize: effectiveFontSize,
+                        fontWeight: effectiveFontWeight,
+                      ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
