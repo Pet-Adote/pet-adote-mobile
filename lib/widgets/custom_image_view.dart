@@ -42,6 +42,7 @@ class CustomImageView extends StatelessWidget {
   })  : imagePath =
             (imagePath == null || imagePath.isEmpty)
                 ? ImageConstant.imgImageNotFound
+
                 : imagePath;
 
 
