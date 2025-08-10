@@ -4,7 +4,7 @@ import '../core/app_export.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
-    Key? key,
+    super.key,
     this.placeholder,
     this.controller,
     this.focusNode,
@@ -25,7 +25,7 @@ class CustomTextField extends StatelessWidget {
     this.height,
     this.borderRadius,
     this.contentPadding,
-  }) : super(key: key);
+  });
 
   final String? placeholder;
   final TextEditingController? controller;
@@ -50,7 +50,7 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: height ?? 45.h,
       child: TextFormField(
         controller: controller,

@@ -8,14 +8,14 @@ import '../core/app_export.dart';
 
 extension ImageTypeExtension on String {
   ImageType get imageType {
-    if (this.startsWith('http') || this.startsWith('https')) {
-      if (this.endsWith('.svg')) {
+    if (startsWith('http') || startsWith('https')) {
+      if (endsWith('.svg')) {
         return ImageType.networkSvg;
       }
       return ImageType.network;
-    } else if (this.endsWith('.svg')) {
+    } else if (endsWith('.svg')) {
       return ImageType.svg;
-    } else if (this.startsWith('file://')) {
+    } else if (startsWith('file://')) {
       return ImageType.file;
     } else {
       return ImageType.png;
@@ -26,25 +26,26 @@ extension ImageTypeExtension on String {
 enum ImageType { svg, png, network, networkSvg, file, unknown }
 
 class CustomImageView extends StatelessWidget {
-  CustomImageView(
-      {this.imagePath,
-      this.height,
-      this.width,
-      this.color,
-      this.fit,
-      this.alignment,
-      this.onTap,
-      this.radius,
-      this.margin,
-      this.border,
-      this.placeHolder}) {
-    if (imagePath == null || imagePath!.isEmpty) {
-      imagePath = ImageConstant.imgImageNotFound;
-    }
-  }
+  CustomImageView({
+    super.key,
+    String? imagePath,
+    this.height,
+    this.width,
+    this.color,
+    this.fit,
+    this.alignment,
+    this.onTap,
+    this.radius,
+    this.margin,
+    this.border,
+    this.placeHolder,
+  })  : imagePath =
+            (imagePath == null || imagePath.isEmpty)
+                ? ImageConstant.imgImageNotFound
+                : imagePath;
 
-  
-  late String? imagePath;
+
+  final String imagePath;
 
   final double? height;
 
@@ -84,7 +85,7 @@ class CustomImageView extends StatelessWidget {
   }
 
   
-  _buildCircleImage() {
+  Widget _buildCircleImage() {
     if (radius != null) {
       return ClipRRect(
         borderRadius: radius ?? BorderRadius.zero,
@@ -96,7 +97,7 @@ class CustomImageView extends StatelessWidget {
   }
 
   
-  _buildImageWithBorder() {
+  Widget _buildImageWithBorder() {
     if (border != null) {
       return Container(
         decoration: BoxDecoration(
@@ -110,26 +111,26 @@ class CustomImageView extends StatelessWidget {
     }
   }
 
-  Widget _buildImageView() {
-    switch (imagePath!.imageType) {
+    Widget _buildImageView() {
+      switch (imagePath.imageType) {
       case ImageType.svg:
-        return Container(
+        return SizedBox(
           height: height,
           width: width,
           child: SvgPicture.asset(
-            imagePath!,
+            imagePath,
             height: height,
             width: width,
             fit: fit ?? BoxFit.contain,
-            colorFilter: this.color != null
+            colorFilter: color != null
                 ? ColorFilter.mode(
-                    this.color ?? appTheme.transparentCustom, BlendMode.srcIn)
+                    color ?? appTheme.transparentCustom, BlendMode.srcIn)
                 : null,
           ),
         );
       case ImageType.file:
         return Image.file(
-          File(imagePath!),
+          File(imagePath),
           height: height,
           width: width,
           fit: fit ?? BoxFit.cover,
@@ -137,13 +138,13 @@ class CustomImageView extends StatelessWidget {
         );
       case ImageType.networkSvg:
         return SvgPicture.network(
-          imagePath!,
+          imagePath,
           height: height,
           width: width,
           fit: fit ?? BoxFit.contain,
-          colorFilter: this.color != null
+          colorFilter: color != null
               ? ColorFilter.mode(
-                  this.color ?? appTheme.transparentCustom, BlendMode.srcIn)
+                  color ?? appTheme.transparentCustom, BlendMode.srcIn)
               : null,
         );
       case ImageType.network:
@@ -151,9 +152,9 @@ class CustomImageView extends StatelessWidget {
           height: height,
           width: width,
           fit: fit,
-          imageUrl: imagePath!,
+          imageUrl: imagePath,
           color: color,
-          placeholder: (context, url) => Container(
+          placeholder: (context, url) => SizedBox(
             height: 30,
             width: 30,
             child: LinearProgressIndicator(
@@ -171,7 +172,7 @@ class CustomImageView extends StatelessWidget {
       case ImageType.png:
       default:
         return Image.asset(
-          imagePath!,
+          imagePath,
           height: height,
           width: width,
           fit: fit ?? BoxFit.cover,
