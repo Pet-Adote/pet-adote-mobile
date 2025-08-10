@@ -6,11 +6,11 @@ import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_text_field.dart';
 
 class RegistrationScreen extends StatelessWidget {
-  RegistrationScreen({Key? key}) : super(key: key);
+  RegistrationScreen({super.key});
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class RegistrationScreen extends StatelessWidget {
       backgroundColor: appTheme.colorFFF1F1,
       body: Stack(
         children: [
-          // Background with paw prints
+          
           Positioned(
             top: 11.h,
             left: 0,
@@ -30,7 +30,7 @@ class RegistrationScreen extends StatelessWidget {
             ),
           ),
 
-          // Main Content
+          
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -41,7 +41,7 @@ class RegistrationScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // PetAdote Logo
+                      
                       Container(
                         margin: EdgeInsets.only(bottom: 32.h),
                         child: Text(
@@ -53,10 +53,10 @@ class RegistrationScreen extends StatelessWidget {
                         ),
                       ),
 
-                      // Registration Form
+                      
                       Column(
                         children: [
-                          // Name Input
+                          
                           CustomTextField(
                             placeholder: 'Nome',
                             controller: nameController,
@@ -70,7 +70,7 @@ class RegistrationScreen extends StatelessWidget {
 
                           SizedBox(height: 24.h),
 
-                          // Email Input
+                          
                           CustomTextField(
                             placeholder: 'E-mail',
                             controller: emailController,
@@ -90,12 +90,12 @@ class RegistrationScreen extends StatelessWidget {
 
                           SizedBox(height: 24.h),
 
-                          // Password Input with visibility toggle
+                          
                           _buildPasswordField(),
 
                           SizedBox(height: 32.h),
 
-                          // Register Button
+                          
                           CustomButton(
                             text: 'Cadastrar',
                             onPressed: () {
@@ -174,7 +174,7 @@ class RegistrationScreen extends StatelessWidget {
 
   void _handleRegistration(BuildContext context) {
 
-    // Basic validation
+
     String name = nameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -189,7 +189,7 @@ class RegistrationScreen extends StatelessWidget {
       return;
     }
 
-    // Email validation
+    
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -200,7 +200,7 @@ class RegistrationScreen extends StatelessWidget {
       return;
     }
 
-    // Password validation
+    
     if (password.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -211,7 +211,8 @@ class RegistrationScreen extends StatelessWidget {
       return;
     }
 
-    // Simulate successful registration
+    
+    final navigator = Navigator.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Cadastro realizado com sucesso!'),
@@ -219,9 +220,9 @@ class RegistrationScreen extends StatelessWidget {
       ),
     );
 
-    // Navigate to login screen after successful registration
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+
+    Future.delayed(const Duration(seconds: 2), () {
+      navigator.pushReplacementNamed(AppRoutes.loginScreen);
     });
   }
 }
