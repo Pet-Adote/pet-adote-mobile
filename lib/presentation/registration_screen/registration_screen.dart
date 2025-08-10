@@ -6,11 +6,11 @@ import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_text_field.dart';
 
 class RegistrationScreen extends StatelessWidget {
-  RegistrationScreen({Key? key}) : super(key: key);
+  RegistrationScreen({super.key});
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +174,7 @@ class RegistrationScreen extends StatelessWidget {
 
   void _handleRegistration(BuildContext context) {
 
-    
+
     String name = nameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -212,6 +212,7 @@ class RegistrationScreen extends StatelessWidget {
     }
 
     
+    final navigator = Navigator.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Cadastro realizado com sucesso!'),
@@ -219,9 +220,9 @@ class RegistrationScreen extends StatelessWidget {
       ),
     );
 
-    
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+
+    Future.delayed(const Duration(seconds: 2), () {
+      navigator.pushReplacementNamed(AppRoutes.loginScreen);
     });
   }
 }

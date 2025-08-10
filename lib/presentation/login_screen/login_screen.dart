@@ -6,13 +6,13 @@ import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
@@ -38,13 +38,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
       
-      print('Login attempt: ${_emailController.text}');
+      debugPrint('Login attempt: ${_emailController.text}');
     }
   }
 
   void _handleForgotPassword() {
     
-    print('Forgot password clicked');
+    debugPrint('Forgot password clicked');
   }
 
   void _handleRegister() {
@@ -70,23 +70,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       fit: BoxFit.cover))),
 
           
-          Positioned(
-              top: 118.h,
-              left: 30.h,
-              child: Container(
-                  height: 669.h,
-                  width: 372.h,
-                  child: Column(children: [
-                    
-                    Container(
-                        height: 84.h,
-                        width: 222.h,
-                        margin: EdgeInsets.only(bottom: 166.h),
-                        child: Center(
-                            child: Text('PetAdote',
-                                style: TextStyleHelper
-                                    .instance.display55LeckerliOne
-                                    .copyWith(height: 1.35)))),
+            Positioned(
+                top: 118.h,
+                left: 30.h,
+                child: SizedBox(
+                    height: 669.h,
+                    width: 372.h,
+                    child: Column(children: [
+
+                      Padding(
+                          padding: EdgeInsets.only(bottom: 166.h),
+                          child: SizedBox(
+                              height: 84.h,
+                              width: 222.h,
+                              child: Center(
+                                  child: Text('PetAdote',
+                                      style: TextStyleHelper
+                                          .instance.display55LeckerliOne
+                                          .copyWith(height: 1.35))))),
 
                     
                     Column(children: [
@@ -108,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 32.h),
 
                       
-                      Container(
+                      SizedBox(
                           height: 45.h,
                           width: 372.h,
                           child: Stack(children: [
@@ -134,21 +135,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onSubmitted: (_) => _handleLogin()),
 
                             
-                            Positioned(
-                                right: 12.h,
-                                top: 0,
-                                bottom: 0,
-                                child: GestureDetector(
-                                    onTap: _togglePasswordVisibility,
-                                    child: Container(
-                                        width: 24.h,
-                                        height: 24.h,
-                                        child: Center(
-                                            child: CustomImageView(
-                                                imagePath: ImageConstant.img2,
-                                                width: 24.h,
-                                                height: 24.h,
-                                                color: appTheme.grey600))))),
+                              Positioned(
+                                  right: 12.h,
+                                  top: 0,
+                                  bottom: 0,
+                                  child: GestureDetector(
+                                      onTap: _togglePasswordVisibility,
+                                      child: SizedBox(
+                                          width: 24.h,
+                                          height: 24.h,
+                                          child: Center(
+                                              child: CustomImageView(
+                                                  imagePath: ImageConstant.img2,
+                                                  width: 24.h,
+                                                  height: 24.h,
+                                                  color: appTheme.grey600))))),
                           ])),
 
                       SizedBox(height: 43.h),

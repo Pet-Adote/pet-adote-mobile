@@ -8,19 +8,19 @@ ThemeData get theme => ThemeHelper().themeData();
 
 
 class ThemeHelper {
-  
-  Map<String, LightCodeColors> _supportedCustomColor = {
+
+  final Map<String, LightCodeColors> _supportedCustomColor = {
     'lightCode': LightCodeColors()
   };
 
-  
-  Map<String, ColorScheme> _supportedColorScheme = {
+
+  final Map<String, ColorScheme> _supportedColorScheme = {
     'lightCode': ColorSchemes.lightCodeColorScheme
   };
 
-  
-  void changeTheme(String _newTheme) {
-    _appTheme = _newTheme;
+
+  void changeTheme(String newTheme) {
+    _appTheme = newTheme;
   }
 
   

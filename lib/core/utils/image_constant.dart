@@ -1,7 +1,7 @@
 
 class ImageConstant {
 
-  static String _basePath = 'assets/images/';
+  static final String _basePath = 'assets/images/';
 
 
   static String imgPlaceholder = '${_basePath}placeholder.png';
