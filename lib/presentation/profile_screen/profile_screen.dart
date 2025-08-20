@@ -108,42 +108,54 @@ class ProfileScreen extends StatelessWidget {
               color: appTheme.colorFF9FE5,
               child: Row(
                 children: [
-                  // Botão voltar (menu hambúrguer)
+                  // Menu hambúrguer
                   Container(
                     margin: EdgeInsets.only(left: 30.h),
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 40.h,
-                        height: 34.h,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              width: 40.h,
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF4F20,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          // TODO: Implementar menu lateral
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Menu - Em desenvolvimento'),
+                              backgroundColor: appTheme.colorFF4F20,
                             ),
-                            Container(
-                              width: 40.h,
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF4F20,
-                                borderRadius: BorderRadius.circular(4),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          width: 40.h,
+                          height: 34.h,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 40.h,
+                                height: 4.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
                               ),
-                            ),
-                            Container(
-                              width: 40.h,
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF4F20,
-                                borderRadius: BorderRadius.circular(4),
+                              Container(
+                                width: 40.h,
+                                height: 4.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                width: 40.h,
+                                height: 4.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -318,18 +330,23 @@ class ProfileScreen extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 38.h,
-                        height: 38.h,
-                        decoration: BoxDecoration(
-                          color: appTheme.colorFF9FE5,
-                          border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.home,
-                          color: appTheme.colorFF4F20,
-                          size: 20.h,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                        },
+                        child: Container(
+                          width: 38.h,
+                          height: 38.h,
+                          decoration: BoxDecoration(
+                            color: appTheme.colorFF9FE5,
+                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.home,
+                            color: appTheme.colorFF4F20,
+                            size: 20.h,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4.h),
@@ -349,18 +366,23 @@ class ProfileScreen extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 38.h,
-                        height: 38.h,
-                        decoration: BoxDecoration(
-                          color: appTheme.colorFF9FE5,
-                          border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.favorite,
-                          color: appTheme.colorFF4F20,
-                          size: 20.h,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(AppRoutes.careScreen);
+                        },
+                        child: Container(
+                          width: 38.h,
+                          height: 38.h,
+                          decoration: BoxDecoration(
+                            color: appTheme.colorFF9FE5,
+                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.favorite,
+                            color: appTheme.colorFF4F20,
+                            size: 20.h,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4.h),

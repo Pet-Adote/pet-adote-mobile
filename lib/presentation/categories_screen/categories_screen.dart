@@ -107,6 +107,89 @@ class CategoriesScreen extends StatelessWidget {
                 ),
               ),
             ),
+            
+            // Bottom navigation bar
+            Container(
+              width: double.infinity,
+              height: 80.h,
+              color: appTheme.colorFF9FE5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Botão Home
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                        },
+                        child: Container(
+                          width: 38.h,
+                          height: 38.h,
+                          decoration: BoxDecoration(
+                            color: appTheme.colorFF9FE5,
+                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.home,
+                            color: appTheme.colorFF4F20,
+                            size: 20.h,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Home',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11.fSize,
+                          fontWeight: FontWeight.w600,
+                          color: appTheme.colorFF4F20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  // Botão Cuidados
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(AppRoutes.careScreen);
+                        },
+                        child: Container(
+                          width: 38.h,
+                          height: 38.h,
+                          decoration: BoxDecoration(
+                            color: appTheme.colorFF9FE5,
+                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.favorite,
+                            color: appTheme.colorFF4F20,
+                            size: 20.h,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Cuidados',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11.fSize,
+                          fontWeight: FontWeight.w600,
+                          color: appTheme.colorFF4F20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
