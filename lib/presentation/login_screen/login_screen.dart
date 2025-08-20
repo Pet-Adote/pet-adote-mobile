@@ -38,6 +38,7 @@ class LoginScreenState extends State<LoginScreen> {
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
       debugPrint('Login attempt: ${_emailController.text}');
+      Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
     }
   }
 
@@ -100,26 +101,27 @@ class LoginScreenState extends State<LoginScreen> {
                           height: 45.h,
                           width: 372.h,
                           child: Stack(children: [
-                            CustomTextField(
-                                placeholder: 'Senha',
-                                controller: _passwordController,
-                                focusNode: _passwordFocusNode,
-                                keyboardType: _isPasswordVisible
-                                    ? TextInputType.text
-                                    : TextInputType.visiblePassword,
-                                textInputAction: TextInputAction.done,
-                                height: 45.h,
-                                backgroundColor: appTheme.whiteCustom,
-                                borderColor: appTheme.transparentCustom,
-                                focusBorderColor:
-                                    appTheme.whiteCustom.withAlpha(128),
-                                fontSize: 20.fSize,
-                                contentPadding: EdgeInsets.only(
-                                    left: 16.h,
-                                    right: 48.h,
-                                    top: 12.h,
-                                    bottom: 12.h),
-                                onSubmitted: (_) => _handleLogin()),
+              CustomTextField(
+                placeholder: 'Senha',
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
+                keyboardType: _isPasswordVisible
+                  ? TextInputType.text
+                  : TextInputType.visiblePassword,
+                textInputAction: TextInputAction.done,
+                height: 45.h,
+                backgroundColor: appTheme.whiteCustom,
+                borderColor: appTheme.transparentCustom,
+                focusBorderColor:
+                  appTheme.whiteCustom.withAlpha(128),
+                fontSize: 20.fSize,
+                contentPadding: EdgeInsets.only(
+                  left: 16.h,
+                  right: 48.h,
+                  top: 12.h,
+                  bottom: 12.h),
+                obscureText: !_isPasswordVisible,
+                onSubmitted: (_) => _handleLogin()),
                             Positioned(
                                 right: 12.h,
                                 top: 0,
