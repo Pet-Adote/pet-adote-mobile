@@ -7,6 +7,10 @@ import '../presentation/app_navigation_screen/app_navigation_screen.dart';
 import '../presentation/home_screen/home_screen.dart';
 import '../presentation/categories_screen/categories_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
+import '../presentation/favorites_screen/favorites_screen.dart';
+import '../presentation/about_us_screen/about_us_screen.dart';
+import '../presentation/faq_screen/faq_screen.dart';
+import '../presentation/care_screen/care_screen.dart';
 
 class AppRoutes {
   static const String registrationScreen = '/registration_screen';
@@ -17,6 +21,10 @@ class AppRoutes {
   static const String dogsScreen = '/dogs_screen';
   static const String catsScreen = '/cats_screen';
   static const String profileScreen = '/profile_screen';
+  static const String favoritesScreen = '/favorites_screen';
+  static const String aboutUsScreen = '/about_us_screen';
+  static const String faqScreen = '/faq_screen';
+  static const String careScreen = '/care_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/';
@@ -29,6 +37,10 @@ class AppRoutes {
         dogsScreen: (context) => CategoriesScreen(categoryTitle: 'Cachorros', categoryType: 'dogs'),
         catsScreen: (context) => CategoriesScreen(categoryTitle: 'Gatos', categoryType: 'cats'),
         profileScreen: (context) => ProfileScreen(),
+        favoritesScreen: (context) => FavoritesScreen(),
+        aboutUsScreen: (context) => AboutUsScreen(),
+        faqScreen: (context) => FaqScreen(),
+        careScreen: (context) => CareScreen(),
         appNavigationScreen: (context) => AppNavigationScreen(),
         initialRoute: (context) => LoginScreen()
       };
