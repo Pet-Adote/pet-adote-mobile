@@ -38,6 +38,7 @@ class LoginScreenState extends State<LoginScreen> {
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
       debugPrint('Login attempt: ${_emailController.text}');
+      Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
     }
   }
 
