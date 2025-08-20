@@ -26,8 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _handleLogout() {
+    // Fechar o menu
     _closeMenu();
-    Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+    // Navegar para a tela de perfil onde está o logout
+    Navigator.of(context).pushNamed(AppRoutes.profileScreen);
   }
 
   void _handleFavorites() {
@@ -54,24 +56,70 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _handleDogsCategory() {
+    Navigator.of(context).pushNamed(AppRoutes.dogsScreen);
+  }
+
+  void _handleCatsCategory() {
+    Navigator.of(context).pushNamed(AppRoutes.catsScreen);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.colorFF9FE5,
+      backgroundColor: appTheme.colorFFF1F1,
       body: Stack(
         children: [
           // Conteúdo principal
           SafeArea(
             child: Column(
               children: [
-                // AppBar customizado
+                // Header verde
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.h, vertical: 8.h),
+                  width: double.infinity,
+                  height: 113.h,
+                  color: appTheme.colorFF9FE5,
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.menu, color: appTheme.colorFF4F20, size: 28),
-                        onPressed: _toggleMenu,
+                      // Menu hambúrguer
+                      Container(
+                        margin: EdgeInsets.only(left: 22.h),
+                        child: GestureDetector(
+                          onTap: _toggleMenu,
+                          child: Container(
+                            width: 40.h,
+                            height: 34.h,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  width: 40.h,
+                                  height: 4.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF4F20,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                Container(
+                                  width: 40.h,
+                                  height: 4.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF4F20,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                Container(
+                                  width: 40.h,
+                                  height: 4.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF4F20,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: Center(
@@ -84,42 +132,263 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.person, color: appTheme.colorFF4F20, size: 28),
-                        onPressed: () {
-                          // TODO: Implementar perfil do usuário
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Perfil - Em desenvolvimento')),
-                          );
-                        },
+                                             // Ícone de perfil
+                       Container(
+                         margin: EdgeInsets.only(right: 22.h),
+                         child: GestureDetector(
+                           onTap: () {
+                             Navigator.of(context).pushNamed(AppRoutes.profileScreen);
+                           },
+                          child: Container(
+                            width: 49.h,
+                            height: 64.h,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 49.h,
+                                  height: 49.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF9FE5,
+                                    border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 30.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                                SizedBox(height: 2.h),
+                                Text(
+                                  'Perfil',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11.fSize,
+                                    fontWeight: FontWeight.w600,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                // Conteúdo do corpo
-                Expanded(
+                
+                // Imagem de banner
+                Container(
+                  width: double.infinity,
+                  height: 157.h,
+                  margin: EdgeInsets.only(top: 8.h),
+                  decoration: BoxDecoration(
+                    color: appTheme.colorFF9FE5,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Bem-vindo ao PetAdote!',
-                          style: TextStyleHelper.instance.title20RegularRoboto.copyWith(
-                            fontSize: 24.fSize,
-                            color: appTheme.colorFF4F20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                        Text(
-                          'Encontre seu companheiro ideal',
-                          style: TextStyleHelper.instance.body15MediumInter.copyWith(
-                            fontSize: 16.fSize,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                      ],
+                    child: Icon(
+                      Icons.pets,
+                      size: 80.h,
+                      color: appTheme.colorFF4F20,
                     ),
+                  ),
+                ),
+                
+                // Seção de categorias
+                Padding(
+                  padding: EdgeInsets.only(top: 32.h, left: 27.h, right: 27.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Título "Categorias"
+                      Row(
+                        children: [
+                          Text(
+                            'Categorias',
+                            style: TextStyle(
+                              fontFamily: 'Coiny',
+                              fontSize: 18.fSize,
+                              fontWeight: FontWeight.w400,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 16.h),
+                              height: 1,
+                              color: appTheme.blackCustom,
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 32.h),
+                      
+                      // Grid de categorias
+                      Row(
+                        children: [
+                          // Categoria Gatos
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: _handleCatsCategory,
+                              child: Container(
+                                height: 140.h,
+                                child: Column(
+                                  children: [
+                                    // Círculo com imagem
+                                    Container(
+                                      width: 108.h,
+                                      height: 109.h,
+                                      decoration: BoxDecoration(
+                                        color: appTheme.whiteCustom,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: appTheme.blackCustom, width: 1),
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.pets,
+                                          size: 50.h,
+                                          color: appTheme.colorFF4F20,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'Gatos',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 15.fSize,
+                                        fontWeight: FontWeight.w600,
+                                        color: appTheme.colorFF4F20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          
+                          SizedBox(width: 16.h),
+                          
+                          // Categoria Cachorros
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: _handleDogsCategory,
+                              child: Container(
+                                height: 140.h,
+                                child: Column(
+                                  children: [
+                                    // Círculo com imagem
+                                    Container(
+                                      width: 112.h,
+                                      height: 107.h,
+                                      decoration: BoxDecoration(
+                                        color: appTheme.whiteCustom,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: appTheme.blackCustom, width: 1),
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.pets,
+                                          size: 50.h,
+                                          color: appTheme.colorFF4F20,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'Cachorros',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 15.fSize,
+                                        fontWeight: FontWeight.w600,
+                                        color: appTheme.colorFF4F20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Espaço restante
+                Expanded(child: SizedBox()),
+                
+                // Bottom navigation bar
+                Container(
+                  width: double.infinity,
+                  height: 80.h,
+                  color: appTheme.colorFF9FE5,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Botão Home
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 38.h,
+                            height: 38.h,
+                            decoration: BoxDecoration(
+                              color: appTheme.colorFF4F20,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.home,
+                              color: appTheme.colorFF9FE5,
+                              size: 20.h,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'Home',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11.fSize,
+                              fontWeight: FontWeight.w600,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                      // Botão Cuidados
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 38.h,
+                            height: 38.h,
+                            decoration: BoxDecoration(
+                              color: appTheme.colorFF9FE5,
+                              border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.favorite,
+                              color: appTheme.colorFF4F20,
+                              size: 20.h,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'Cuidados',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11.fSize,
+                              fontWeight: FontWeight.w600,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
