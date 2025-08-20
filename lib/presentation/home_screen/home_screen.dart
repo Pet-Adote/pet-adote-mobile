@@ -28,32 +28,84 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleLogout() {
     // Fechar o menu
     _closeMenu();
-    // Navegar para a tela de perfil onde está o logout
-    Navigator.of(context).pushNamed(AppRoutes.profileScreen);
+    // Mostrar diálogo de confirmação
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Sair do App',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 20.fSize,
+              fontWeight: FontWeight.bold,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          content: Text(
+            'Tem certeza que deseja sair?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16.fSize,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  color: appTheme.grey600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.colorFF4F20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.colorFFF1F1,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _handleFavorites() {
     _closeMenu();
-    // TODO: Implementar navegação para favoritos
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Favoritos - Em desenvolvimento')),
-    );
+    Navigator.of(context).pushNamed(AppRoutes.favoritesScreen);
   }
 
   void _handleAboutUs() {
     _closeMenu();
-    // TODO: Implementar navegação para "Quem Somos"
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Quem Somos - Em desenvolvimento')),
-    );
+    Navigator.of(context).pushNamed(AppRoutes.aboutUsScreen);
   }
 
   void _handleFAQ() {
     _closeMenu();
-    // TODO: Implementar navegação para FAQ
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('FAQ - Em desenvolvimento')),
-    );
+    Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
   void _handleDogsCategory() {
@@ -84,39 +136,43 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Menu hambúrguer
                       Container(
                         margin: EdgeInsets.only(left: 22.h),
-                        child: GestureDetector(
-                          onTap: _toggleMenu,
-                          child: Container(
-                            width: 40.h,
-                            height: 34.h,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  width: 40.h,
-                                  height: 4.h,
-                                  decoration: BoxDecoration(
-                                    color: appTheme.colorFF4F20,
-                                    borderRadius: BorderRadius.circular(4),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _toggleMenu,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: 40.h,
+                              height: 34.h,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  width: 40.h,
-                                  height: 4.h,
-                                  decoration: BoxDecoration(
-                                    color: appTheme.colorFF4F20,
-                                    borderRadius: BorderRadius.circular(4),
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  width: 40.h,
-                                  height: 4.h,
-                                  decoration: BoxDecoration(
-                                    color: appTheme.colorFF4F20,
-                                    borderRadius: BorderRadius.circular(4),
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -362,18 +418,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 38.h,
-                            height: 38.h,
-                            decoration: BoxDecoration(
-                              color: appTheme.colorFF9FE5,
-                              border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.favorite,
-                              color: appTheme.colorFF4F20,
-                              size: 20.h,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(AppRoutes.careScreen);
+                            },
+                            child: Container(
+                              width: 38.h,
+                              height: 38.h,
+                              decoration: BoxDecoration(
+                                color: appTheme.colorFF9FE5,
+                                border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.favorite,
+                                color: appTheme.colorFF4F20,
+                                size: 20.h,
+                              ),
                             ),
                           ),
                           SizedBox(height: 4.h),
