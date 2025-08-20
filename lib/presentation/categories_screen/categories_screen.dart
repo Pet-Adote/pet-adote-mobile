@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
+import '../../routes/app_routes.dart';
 
 class CategoriesScreen extends StatelessWidget {
   final String categoryTitle;
@@ -19,29 +20,130 @@ class CategoriesScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
+            // Header verde
             Container(
               width: double.infinity,
               height: 113.h,
               color: appTheme.colorFF9FE5,
               child: Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, color: appTheme.colorFF4F20, size: 28),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        categoryTitle,
-                        style: TextStyleHelper.instance.display55LeckerliOne.copyWith(
-                          fontSize: 28.fSize,
-                          color: appTheme.colorFF4F20,
+                  // Menu hambúrguer
+                  Container(
+                    margin: EdgeInsets.only(left: 30.h),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          // Aqui você pode implementar o menu lateral se necessário
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Menu - Em desenvolvimento')),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          width: 40.h,
+                          height: 34.h,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 40.h,
+                                height: 4.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              Container(
+                                width: 40.h,
+                                height: 4.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              Container(
+                                width: 40.h,
+                                height: 4.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 56.h), // Espaço para balancear o layout
+                  
+                  Expanded(
+                    child: Container(), // Espaço central vazio
+                  ),
+                  
+                  // Botão Perfil
+                  Container(
+                    margin: EdgeInsets.only(right: 30.h),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(AppRoutes.profileScreen);
+                      },
+                      child: Container(
+                        width: 49.h,
+                        height: 64.h,
+                        decoration: BoxDecoration(
+                          color: appTheme.colorFF9FE5,
+                          border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.person,
+                              color: appTheme.colorFF4F20,
+                              size: 24.h,
+                            ),
+                            SizedBox(height: 2.h),
+                            Text(
+                              'Perfil',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11.fSize,
+                                fontWeight: FontWeight.w600,
+                                color: appTheme.colorFF4F20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Título da categoria com linha divisória
+            Container(
+              padding: EdgeInsets.only(left: 9.h, top: 10.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    categoryType == 'dogs' ? 'Cachorros' : 'Gatos',
+                    style: TextStyle(
+                      fontFamily: 'Coiny',
+                      fontSize: 18.fSize,
+                      fontWeight: FontWeight.w400,
+                      color: appTheme.colorFF4F20,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Container(
+                    width: 246.h,
+                    height: 1.h,
+                    color: Colors.black,
+                  ),
                 ],
               ),
             ),
@@ -117,31 +219,64 @@ class CategoriesScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Botão Home
+                  Container(
+                    margin: EdgeInsets.only(left: 25.h),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                          },
+                          child: Container(
+                            width: 38.h,
+                            height: 38.h,
+                            decoration: BoxDecoration(
+                              color: appTheme.colorFF9FE5,
+                              border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.home,
+                              color: appTheme.colorFF4F20,
+                              size: 20.h,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'Home',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11.fSize,
+                            fontWeight: FontWeight.w600,
+                            color: appTheme.colorFF4F20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Botão Adicionar (central)
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
-                        },
-                        child: Container(
-                          width: 38.h,
-                          height: 38.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.colorFF9FE5,
-                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.home,
-                            color: appTheme.colorFF4F20,
-                            size: 20.h,
-                          ),
+                      Container(
+                        width: 51.h,
+                        height: 51.h,
+                        decoration: BoxDecoration(
+                          color: appTheme.colorFF4F20,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          color: appTheme.colorFF9FE5,
+                          size: 24.h,
                         ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        'Home',
+                        'Adicionar',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 11.fSize,
@@ -153,39 +288,52 @@ class CategoriesScreen extends StatelessWidget {
                   ),
                   
                   // Botão Cuidados
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(AppRoutes.careScreen);
-                        },
-                        child: Container(
-                          width: 38.h,
-                          height: 38.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.colorFF9FE5,
-                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                            shape: BoxShape.circle,
+                  Container(
+                    margin: EdgeInsets.only(right: 25.h),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(AppRoutes.careScreen);
+                          },
+                          child: Container(
+                            width: 51.h,
+                            height: 61.h,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Ícone de cuidados (simplificado)
+                                Container(
+                                  width: 38.h,
+                                  height: 38.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF9FE5,
+                                    border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: appTheme.colorFF4F20,
+                                    size: 20.h,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Icon(
-                            Icons.favorite,
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'Cuidados',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11.fSize,
+                            fontWeight: FontWeight.w600,
                             color: appTheme.colorFF4F20,
-                            size: 20.h,
                           ),
                         ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'Cuidados',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11.fSize,
-                          fontWeight: FontWeight.w600,
-                          color: appTheme.colorFF4F20,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
