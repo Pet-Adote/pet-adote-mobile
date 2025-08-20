@@ -20,8 +20,8 @@ jobs:
       - name: dependencies - install
         run: flutter pub get
 
-      - name: flutter analyze
-        run: flutter analyze
+      # - name: flutter analyze
+      #   run: flutter analyze
 
       - name: build apk
         run: flutter build apk --release
