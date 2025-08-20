@@ -25,8 +25,10 @@ class CustomTextField extends StatelessWidget {
     this.height,
     this.borderRadius,
     this.contentPadding,
+    this.obscureText = false,
   });
 
+  final bool obscureText;
   final String? placeholder;
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -64,6 +66,7 @@ class CustomTextField extends StatelessWidget {
         validator: validator,
         style: TextStyleHelper.instance.bodyTextSemiBold
             .copyWith(color: textColor ?? appTheme.blackCustom, height: 1.25),
+        obscureText: obscureText,
         decoration: InputDecoration(
           hintText: placeholder ?? '',
           hintStyle: TextStyleHelper.instance.bodyTextSemiBold
