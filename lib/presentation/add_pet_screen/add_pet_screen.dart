@@ -4,6 +4,7 @@ import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../models/pet_model.dart';
 
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({super.key});
@@ -60,7 +61,20 @@ class _AddPetScreenState extends State<AddPetScreen> {
       return;
     }
 
-    // Aqui seria implementada a lógica de cadastro do pet
+    // Criar objeto Pet com os dados do formulário
+    final pet = Pet(
+      name: _petNameController.text.trim(),
+      location: _locationController.text.trim(),
+      age: _ageController.text.trim(),
+      species: _selectedSpecies,
+      gender: _selectedGender,
+      isVaccinated: _isVaccinated,
+      description: _descriptionController.text.trim(),
+      responsibleName: _responsibleNameController.text.trim(),
+      phone: _phoneController.text.trim(),
+    );
+
+    // Aqui seria implementada a lógica de cadastro do pet (salvar no banco, etc.)
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Pet cadastrado com sucesso!'),
@@ -68,8 +82,11 @@ class _AddPetScreenState extends State<AddPetScreen> {
       ),
     );
     
-    // Voltar para a tela anterior
-    Navigator.of(context).pop();
+    // Navegar para a tela do perfil do pet passando os dados
+    Navigator.of(context).pushReplacementNamed(
+      AppRoutes.petProfileScreen, 
+      arguments: pet,
+    );
   }
 
   @override
