@@ -11,6 +11,7 @@ import '../presentation/favorites_screen/favorites_screen.dart';
 import '../presentation/about_us_screen/about_us_screen.dart';
 import '../presentation/faq_screen/faq_screen.dart';
 import '../presentation/care_screen/care_screen.dart';
+import '../presentation/add_pet_screen/add_pet_screen.dart';
 
 class AppRoutes {
   static const String registrationScreen = '/registration_screen';
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String aboutUsScreen = '/about_us_screen';
   static const String faqScreen = '/faq_screen';
   static const String careScreen = '/care_screen';
+  static const String addPetScreen = '/add_pet_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/';
@@ -41,6 +43,7 @@ class AppRoutes {
         aboutUsScreen: (context) => AboutUsScreen(),
         faqScreen: (context) => FaqScreen(),
         careScreen: (context) => CareScreen(),
+        addPetScreen: (context) => AddPetScreen(),
         appNavigationScreen: (context) => AppNavigationScreen(),
         initialRoute: (context) => LoginScreen()
       };
