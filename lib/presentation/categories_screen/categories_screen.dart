@@ -261,17 +261,22 @@ class CategoriesScreen extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 51.h,
-                        height: 51.h,
-                        decoration: BoxDecoration(
-                          color: appTheme.colorFF4F20,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          color: appTheme.colorFF9FE5,
-                          size: 24.h,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(AppRoutes.addPetScreen);
+                        },
+                        child: Container(
+                          width: 51.h,
+                          height: 51.h,
+                          decoration: BoxDecoration(
+                            color: appTheme.colorFF4F20,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: appTheme.colorFF9FE5,
+                            size: 24.h,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4.h),
