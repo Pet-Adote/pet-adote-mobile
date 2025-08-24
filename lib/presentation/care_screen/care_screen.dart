@@ -1,370 +1,609 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 
-class CareScreen extends StatelessWidget {
+class CareScreen extends StatefulWidget {
   const CareScreen({super.key});
+
+  @override
+  State<CareScreen> createState() => _CareScreenState();
+}
+
+class _CareScreenState extends State<CareScreen> {
+  bool _isMenuOpen = false;
+
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+    });
+  }
+
+  void _closeMenu() {
+    setState(() {
+      _isMenuOpen = false;
+    });
+  }
+
+  void _handleLogout() {
+    _closeMenu();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Sair do App',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 20.fSize,
+              fontWeight: FontWeight.bold,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          content: Text(
+            'Tem certeza que deseja sair?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16.fSize,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  color: appTheme.grey600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.colorFF4F20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.colorFFF1F1,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleFavorites() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.favoritesScreen);
+  }
+
+  void _handleAboutUs() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.aboutUsScreen);
+  }
+
+  void _handleFAQ() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.faqScreen);
+  }
+
+  void _handleCare() {
+    _closeMenu();
+  }
+
+  void _launchPhone(String phoneNumber) {
+    // Copia o número para a área de transferência
+    Clipboard.setData(ClipboardData(text: phoneNumber));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Número $phoneNumber copiado para área de transferência'),
+        backgroundColor: appTheme.colorFF4F20,
+      ),
+    );
+  }
+
+  void _launchMaps(String address) {
+    // Copia o endereço para a área de transferência
+    Clipboard.setData(ClipboardData(text: address));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Endereço "$address" copiado para área de transferência'),
+        backgroundColor: appTheme.colorFF4F20,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.colorFFF1F1,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header verde
-            Container(
-              width: double.infinity,
-              height: 113.h,
-              color: appTheme.colorFF9FE5,
-              child: Row(
-                children: [
-                  // Menu hambúrguer
-                  Container(
-                    margin: EdgeInsets.only(left: 30.h),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          // TODO: Implementar menu lateral
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Menu - Em desenvolvimento'),
-                              backgroundColor: appTheme.colorFF4F20,
+      body: Stack(
+        children: [
+          // Conteúdo principal
+          Column(
+            children: [
+              // Header verde
+              Container(
+                width: double.infinity,
+                height: 113.h,
+                color: appTheme.colorFF9FE5,
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      // Menu hambúrguer
+                      Container(
+                        margin: EdgeInsets.only(left: 22.h),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _toggleMenu,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: 40.h,
+                              height: 34.h,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          width: 40.h,
-                          height: 34.h,
+                          ),
+                        ),
+                      ),
+
+                      // Logo centralizado
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'PetAdote',
+                            style: TextStyle(
+                              fontFamily: 'Leckerli One',
+                              fontSize: 28.fSize,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Ícone de perfil
+                      Container(
+                        margin: EdgeInsets.only(right: 22.h),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(AppRoutes.profileScreen);
+                          },
+                          child: Container(
+                            width: 49.h,
+                            height: 64.h,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 49.h,
+                                  height: 49.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF9FE5,
+                                    border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 30.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                                SizedBox(height: 2.h),
+                                Text(
+                                  'Perfil',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11.fSize,
+                                    fontWeight: FontWeight.w600,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Conteúdo da tela de cuidados
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 16.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10.h),
+
+                      // Título "Cuidados"
+                      Row(
+                        children: [
+                          Text(
+                            'Cuidados',
+                            style: TextStyle(
+                              fontFamily: 'Coiny',
+                              fontSize: 18.fSize,
+                              fontWeight: FontWeight.w400,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10.h),
+                              height: 1,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 24.h),
+
+                      // Item ONGs
+                      _buildCareItem(
+                        icon: Icons.pets,
+                        title: 'ONGs',
+                        description: 'Veja aqui ONGs mais próximas de você.',
+                        details: [
+                          'APAC Garanhuns - Rua José Mariano, 123',
+                          'Proteção Animal Garanhuns - Av. Caruaru, 456',
+                          'Adote um Amigo - Rua do Socorro, 789'
+                        ],
+                        onTap: () => _launchMaps('ONGs proteção animal Garanhuns PE'),
+                      ),
+
+                      _buildDivider(),
+
+                      // Item Veterinários
+                      _buildCareItem(
+                        icon: Icons.medical_services,
+                        title: 'Veterinários',
+                        description: 'Veja aqui Veterinários e especialidades mais próximos de você.',
+                        details: [
+                          'Clínica Veterinária Pet Care - (87) 3761-2345',
+                          'Dr. João Silva - Especialista em felinos - (87) 3761-1234',
+                          'Veterinária São Francisco - (87) 3761-5678',
+                          'Hospital Veterinário Central - (87) 3761-9999'
+                        ],
+                        onTap: () => _launchMaps('veterinário Garanhuns PE'),
+                      ),
+
+                      _buildDivider(),
+
+                      // Item PetShops
+                      _buildCareItem(
+                        icon: Icons.store,
+                        title: 'PetShops',
+                        description: 'Veja aqui PetShops mais próximos de você.',
+                        details: [
+                          'Pet Shop Central - Rua 15 de Novembro, 234',
+                          'Mundo Pet - Av. Rui Barbosa, 567',
+                          'Casa do Pet - Rua Santo Antônio, 890',
+                          'Pet Mania - Rua do Comércio, 321'
+                        ],
+                        onTap: () => _launchMaps('pet shop Garanhuns PE'),
+                      ),
+
+                      _buildDivider(),
+
+                      // Item Cuidados Básicos
+                      _buildCareItem(
+                        icon: Icons.shower,
+                        title: 'Cuidados básicos',
+                        description: 'Hora do banho! Veja aqui dicas de cuidados para o seu pet.',
+                        details: [
+                          'Banho quinzenal ou mensal',
+                          'Escovação diária',
+                          'Corte de unhas mensal',
+                          'Limpeza de ouvidos semanal',
+                          'Escovação dos dentes 3x/semana'
+                        ],
+                        onTap: null,
+                      ),
+
+                      _buildDivider(),
+
+                      // Item Clube do Pet
+                      _buildCareItem(
+                        icon: Icons.group,
+                        title: 'Clube do Pet',
+                        description: 'Traga seu amigo para o nosso Clubinho e interaja em locais públicos.',
+                        details: [
+                          'Parque José Mariano - Área pet liberada',
+                          'Praça Tavares Correia - Caminhadas matinais',
+                          'Parque da Criança - Espaço pet aos domingos',
+                          'Encontros quinzenais no Parque Central'
+                        ],
+                        onTap: () => _launchMaps('parques pet friendly Garanhuns PE'),
+                      ),
+
+                      _buildDivider(),
+
+                      // Item Vacinação
+                      _buildCareItem(
+                        icon: Icons.vaccines,
+                        title: 'Vacinação',
+                        description: 'Veja aqui locais de vacinação mais próximos de você.',
+                        details: [
+                          'Centro de Controle de Zoonoses - (87) 3761-3333',
+                          'UBS Centro - Campanhas mensais',
+                          'Clínica Municipal de Saúde Animal',
+                          'Vacinação antirrábica anual gratuita'
+                        ],
+                        onTap: () => _launchPhone('87 3761-3333'),
+                      ),
+
+                      _buildDivider(),
+
+                      // Item Outros
+                      _buildCareItem(
+                        icon: Icons.more_horiz,
+                        title: 'Outros',
+                        description: 'Outros cuidados e dicas para você e seu pet.',
+                        details: [
+                          'Microchipagem na Secretaria de Saúde',
+                          'Castração gratuita - Programa municipal',
+                          'Adestramento: Escola Canina Garanhuns',
+                          'Emergências 24h: Hospital Pet Care'
+                        ],
+                        onTap: () => _launchPhone('87 3761-1500'),
+                      ),
+
+                      SizedBox(height: 100.h), // Espaço para o rodapé
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Menu lateral
+          if (_isMenuOpen)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _closeMenu,
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 280.h,
+                        color: appTheme.colorFFF1F1,
+                        child: SafeArea(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Header do menu
                               Container(
-                                width: 40.h,
-                                height: 4.h,
+                                padding: EdgeInsets.all(24.h),
                                 decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(4),
+                                  color: appTheme.colorFF9FE5,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.pets,
+                                      color: appTheme.colorFF4F20,
+                                      size: 32.h,
+                                    ),
+                                    SizedBox(width: 12.h),
+                                    Text(
+                                      'Menu',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 24.fSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: appTheme.colorFF4F20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Container(
-                                width: 40.h,
-                                height: 4.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              Container(
-                                width: 40.h,
-                                height: 4.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(4),
+
+                              // Itens do menu
+                              Expanded(
+                                child: ListView(
+                                  padding: EdgeInsets.all(16.h),
+                                  children: [
+                                    _buildMenuItem(Icons.favorite, 'Favoritos', _handleFavorites),
+                                    _buildMenuItem(Icons.info, 'Sobre Nós', _handleAboutUs),
+                                    _buildMenuItem(Icons.help, 'FAQ', _handleFAQ),
+                                    _buildMenuItem(Icons.pets, 'Cuidados', _handleCare),
+                                    Divider(color: appTheme.grey200),
+                                    _buildMenuItem(Icons.logout, 'Sair', _handleLogout),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ),
+                      Expanded(child: Container()),
+                    ],
                   ),
-                  
-                  // Logo centralizado
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        'PetAdote',
-                        style: TextStyleHelper.instance.display55LeckerliOne.copyWith(
-                          fontSize: 28.fSize,
-                          color: appTheme.colorFF4F20,
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  // Ícone de perfil
-                  Container(
-                    margin: EdgeInsets.only(right: 22.h),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(AppRoutes.profileScreen);
-                      },
-                      child: Container(
-                        width: 49.h,
-                        height: 64.h,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 49.h,
-                              height: 49.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF9FE5,
-                                border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                size: 30.h,
-                                color: appTheme.colorFF4F20,
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            Text(
-                              'Perfil',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 11.fSize,
-                                fontWeight: FontWeight.w600,
-                                color: appTheme.colorFF4F20,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Conteúdo dos cuidados
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10.h),
-                    
-                    // Título "Cuidados"
-                    Row(
-                      children: [
-                        Text(
-                          'Cuidados',
-                          style: TextStyle(
-                            fontFamily: 'Coiny',
-                            fontSize: 18.fSize,
-                            fontWeight: FontWeight.w400,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 16.h),
-                            height: 1,
-                            color: appTheme.blackCustom,
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    SizedBox(height: 40.h),
-                    
-                    // Lista de serviços de cuidados
-                    Column(
-                      children: [
-                        // ONGs
-                        _buildCareItem(
-                          'Ongs',
-                          'Veja aqui Ongs mais próximas de você.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('ONGs - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Veterinários
-                        _buildCareItem(
-                          'Veterinários',
-                          'Veja aqui Veterinários e especialidades mais próximos de você.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Veterinários - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Petshops
-                        _buildCareItem(
-                          'Petshops',
-                          'Veja aqui PetShops mais próximos de você.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Petshops - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Cuidados básicos
-                        _buildCareItem(
-                          'Cuidados básicos',
-                          'Hora do banho! Veja aqui dicas de cuidados para o seu pet.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Cuidados básicos - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Clube do Pet
-                        _buildCareItem(
-                          'Clube do Pet',
-                          'Traga seu amigo para o nosso Clubinho e interaja em locais públicos.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Clube do Pet - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Vacinação
-                        _buildCareItem(
-                          'Vacinação',
-                          'Veja aqui locais de vacinação mais próximos de você.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Vacinação - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Outros
-                        _buildCareItem(
-                          'Outros',
-                          'Outros cuidados e dicas para você e seu pet.',
-                          'assets/images/image_not_found.png',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Outros cuidados - Em desenvolvimento'),
-                                backgroundColor: appTheme.colorFF4F20,
-                              ),
-                            );
-                          },
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                      ],
-                    ),
-                  ],
                 ),
               ),
             ),
-            
-            // Bottom navigation bar
-            Container(
-              width: double.infinity,
+
+          // Rodapé fixo
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
               height: 80.h,
               color: appTheme.colorFF9FE5,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Botão Home
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
-                        },
-                        child: Container(
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                  },
+                  child: Container(
+                    width: 38.h,
+                    height: 57.h,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
                           width: 38.h,
                           height: 38.h,
                           decoration: BoxDecoration(
-                            color: appTheme.colorFF9FE5,
-                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
                             shape: BoxShape.circle,
+                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
                           ),
                           child: Icon(
                             Icons.home,
+                            size: 24.h,
                             color: appTheme.colorFF4F20,
-                            size: 20.h,
                           ),
                         ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'Home',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11.fSize,
-                          fontWeight: FontWeight.w600,
-                          color: appTheme.colorFF4F20,
+                        SizedBox(height: 4.h),
+                        Text(
+                          'Home',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11.fSize,
+                            fontWeight: FontWeight.w600,
+                            color: appTheme.colorFF4F20,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  
-                  // Botão Cuidados
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 38.h,
-                        height: 38.h,
-                        decoration: BoxDecoration(
-                          color: appTheme.colorFF4F20,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.favorite,
-                          color: appTheme.colorFF9FE5,
-                          size: 20.h,
-                        ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'Cuidados',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11.fSize,
-                          fontWeight: FontWeight.w600,
-                          color: appTheme.colorFF4F20,
-                        ),
-                      ),
-                    ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCareItem({
+    required IconData icon,
+    required String title,
+    required String description,
+    required List<String> details,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Ícone
+            Container(
+              width: 74.h,
+              height: 74.h,
+              decoration: BoxDecoration(
+                color: appTheme.whiteCustom,
+                shape: BoxShape.circle,
+                border: Border.all(color: appTheme.blackCustom, width: 1),
+              ),
+              child: Icon(
+                icon,
+                size: 40.h,
+                color: appTheme.colorFF4F20,
+              ),
+            ),
+            
+            SizedBox(width: 16.h),
+            
+            // Conteúdo
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Título
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 18.fSize,
+                      fontWeight: FontWeight.bold,
+                      color: appTheme.colorFF4F20,
+                    ),
                   ),
+
+                  SizedBox(height: 8.h),
+
+                  // Descrição
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12.fSize,
+                      fontWeight: FontWeight.w400,
+                      color: appTheme.colorFF4F20,
+                    ),
+                  ),
+
+                  SizedBox(height: 12.h),
+
+                  // Detalhes específicos de Garanhuns
+                  ...details.map((detail) => Padding(
+                    padding: EdgeInsets.only(bottom: 4.h),
+                    child: Text(
+                      detail,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11.fSize,
+                        fontWeight: FontWeight.w400,
+                        color: appTheme.colorFF4F20.withOpacity(0.8),
+                      ),
+                    ),
+                  )).toList(),
                 ],
               ),
             ),
@@ -374,81 +613,30 @@ class CareScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCareItem(String title, String description, String imagePath, {required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(16.h),
-        decoration: BoxDecoration(
-          color: appTheme.whiteCustom,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: appTheme.colorFF4F20.withOpacity(0.2)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Imagem do serviço
-            Container(
-              width: 74.h,
-              height: 74.h,
-              decoration: BoxDecoration(
-                color: appTheme.grey200,
-                shape: BoxShape.circle,
-                border: Border.all(color: appTheme.blackCustom, width: 1),
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            
-            SizedBox(width: 16.h),
-            
-            // Informações do serviço
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 18.fSize,
-                      fontWeight: FontWeight.w700,
-                      color: appTheme.colorFF4F20,
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12.fSize,
-                      fontWeight: FontWeight.w400,
-                      color: appTheme.colorFF4F20,
-                      height: 1.3,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Ícone de seta
-            Icon(
-              Icons.arrow_forward_ios,
-              color: appTheme.colorFF4F20,
-              size: 16.h,
-            ),
-          ],
+  Widget _buildDivider() {
+    return Container(
+      height: 1,
+      margin: EdgeInsets.only(left: 90.h, right: 16.h),
+      color: appTheme.blackCustom,
+    );
+  }
+
+  Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: appTheme.colorFF4F20,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 16.fSize,
+          fontWeight: FontWeight.w500,
+          color: appTheme.colorFF4F20,
         ),
       ),
+      onTap: onTap,
     );
   }
 }
