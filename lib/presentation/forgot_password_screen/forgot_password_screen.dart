@@ -1,3 +1,5 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
@@ -11,7 +13,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController confirmEmailController = TextEditingController();
 
-  void _handleRecover(BuildContext context) {
+  Future<void> _handleRecover(BuildContext context) async {
     String email = emailController.text.trim();
     String confirmEmail = confirmEmailController.text.trim();
 
@@ -46,16 +48,25 @@ class ForgotPasswordScreen extends StatelessWidget {
     }
 
     final navigator = Navigator.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('E-mail de recuperação enviado!'),
-        backgroundColor: appTheme.greenCustom,
-      ),
-    );
-
-    Future.delayed(const Duration(seconds: 2), () {
-      navigator.pop();
-    });
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('E-mail de recuperação enviado!'),
+          backgroundColor: appTheme.greenCustom,
+        ),
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        navigator.pop();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao enviar e-mail: ${e.toString()}'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
   }
 
   @override
