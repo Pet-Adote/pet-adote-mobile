@@ -103,6 +103,13 @@ class RegistrationScreen extends StatelessWidget {
                               _handleRegistration(context);
                             },
                           ),
+                          SizedBox(height: 16.h),
+                          CustomButton(
+                            text: 'Voltar',
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
+                            },
+                          ),
                         ],
                       ),
                     ],
