@@ -25,6 +25,10 @@ migrate_working_dir/
 
 # Flutter/Dart/Pub related
 **/doc/api/
+
+# VSCode related
+.vscode/
+
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
@@ -39,7 +43,66 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+
+# Flutter/Dart extra
+.packages
+pubspec.lock
+**/build/
+
+# Android
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/google-services.json
+android/app/build/
+android/build/
+android/app/debug
+android/app/profile
+android/app/release
+
+# iOS/macOS
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/AppFrameworkInfo.plist
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcodeproj/xcshareddata/
+ios/Runner.xcworkspace/xcshareddata/
+ios/RunnerTests/
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+macos/Flutter/Generated.xcconfig
+macos/Flutter/Flutter.podspec
+macos/Runner.xcworkspace/
+macos/Runner.xcodeproj/xcuserdata/
+macos/Runner.xcodeproj/project.xcworkspace/
+macos/Runner.xcodeproj/xcshareddata/
+macos/Runner.xcworkspace/xcshareddata/
+macos/RunnerTests/
+
+# Linux
+linux/flutter/ephemeral/
+linux/build/
+
+# Web
+web/build/
+
+# Assets
+assets/.gitkeep
+
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# Others
+.env
+.cache/
+.tmp/
+node_modules/
