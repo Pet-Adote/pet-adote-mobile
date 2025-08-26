@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../core/utils/validator_helper.dart';
 
-class RegistrationScreen extends StatelessWidget {
+class RegistrationScreen extends StatefulWidget {
   RegistrationScreen({super.key});
 
+  @override
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
+}
+
+class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +27,6 @@ class RegistrationScreen extends StatelessWidget {
       backgroundColor: appTheme.colorFFF1F1,
       body: Stack(
         children: [
-          
           Positioned(
             top: 11.h,
             left: 0,
@@ -29,8 +37,6 @@ class RegistrationScreen extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-
-          
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -41,7 +47,6 @@ class RegistrationScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      
                       Container(
                         margin: EdgeInsets.only(bottom: 32.h),
                         child: Text(
@@ -52,54 +57,39 @@ class RegistrationScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                       ),
-
-                      
                       Column(
                         children: [
-                          
                           CustomTextField(
                             placeholder: 'Nome',
                             controller: nameController,
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
-                            validator: (value) =>
-                                (value?.trim().isEmpty ?? true)
-                                    ? 'Por favor, preencha o nome'
-                                    : null,
                           ),
-
                           SizedBox(height: 24.h),
-
-                          
                           CustomTextField(
                             placeholder: 'E-mail',
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value?.trim().isEmpty ?? true) {
-                                return 'Por favor, preencha o e-mail';
-                              }
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value!)) {
-                                return 'E-mail inválido';
-                              }
-                              return null;
-                            },
                           ),
-
                           SizedBox(height: 24.h),
-
-                          
                           _buildPasswordField(),
-
+                          SizedBox(height: 24.h),
+                          _buildConfirmPasswordField(),
                           SizedBox(height: 32.h),
-
-                          
+                          _isLoading
+                              ? Center(child: CircularProgressIndicator())
+                              : CustomButton(
+                                  text: 'Cadastrar',
+                                  onPressed: () {
+                                    _handleRegistration(context);
+                                  },
+                                ),
+                          SizedBox(height: 16.h),
                           CustomButton(
-                            text: 'Cadastrar',
+                            text: 'Voltar',
                             onPressed: () {
-                              _handleRegistration(context);
+                              Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
                             },
                           ),
                         ],
@@ -119,7 +109,6 @@ class RegistrationScreen extends StatelessWidget {
     return StatefulBuilder(
       builder: (context, setState) {
         bool isPasswordVisible = false;
-
         return Container(
           height: 45.h,
           decoration: BoxDecoration(
@@ -131,7 +120,7 @@ class RegistrationScreen extends StatelessWidget {
             controller: passwordController,
             obscureText: !isPasswordVisible,
             keyboardType: TextInputType.visiblePassword,
-            textInputAction: TextInputAction.done,
+            textInputAction: TextInputAction.next,
             style: TextStyleHelper.instance.title20SemiBoldInter,
             decoration: InputDecoration(
               hintText: 'Senha',
@@ -157,72 +146,126 @@ class RegistrationScreen extends StatelessWidget {
                 ),
               ),
             ),
-            validator: (value) {
-              if (value?.trim().isEmpty ?? true) {
-                return 'Por favor, preencha a senha';
-              }
-              if ((value?.length ?? 0) < 6) {
-                return 'A senha deve ter pelo menos 6 caracteres';
-              }
-              return null;
-            },
           ),
         );
       },
     );
   }
 
-  void _handleRegistration(BuildContext context) {
-
-
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Por favor, preencha todos os campos.'),
-          backgroundColor: appTheme.redCustom,
-        ),
-      );
-      return;
-    }
-
-    
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Por favor, insira um e-mail válido.'),
-          backgroundColor: appTheme.redCustom,
-        ),
-      );
-      return;
-    }
-
-    
-    if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('A senha deve ter pelo menos 6 caracteres.'),
-          backgroundColor: appTheme.redCustom,
-        ),
-      );
-      return;
-    }
-
-    
-    final navigator = Navigator.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Cadastro realizado com sucesso!'),
-        backgroundColor: appTheme.greenCustom,
-      ),
+  Widget _buildConfirmPasswordField() {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        bool isPasswordVisible = false;
+        return Container(
+          height: 45.h,
+          decoration: BoxDecoration(
+            color: appTheme.whiteCustom,
+            border: Border.all(color: appTheme.colorFFE5E7),
+            borderRadius: BorderRadius.circular(6.h),
+          ),
+          child: TextFormField(
+            controller: confirmPasswordController,
+            obscureText: !isPasswordVisible,
+            keyboardType: TextInputType.visiblePassword,
+            textInputAction: TextInputAction.done,
+            style: TextStyleHelper.instance.title20SemiBoldInter,
+            decoration: InputDecoration(
+              hintText: 'Confirmar senha',
+              hintStyle: TextStyleHelper.instance.title20SemiBoldInter
+                  .copyWith(color: appTheme.grey500),
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.h, vertical: 12.h),
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isPasswordVisible = !isPasswordVisible;
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(12.h),
+                  child: CustomImageView(
+                    imagePath: ImageConstant.img,
+                    width: 20.h,
+                    height: 20.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
+  }
 
+  Future<void> _handleRegistration(BuildContext context) async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      navigator.pushReplacementNamed(AppRoutes.loginScreen);
-    });
+    String? nameError = (name.isEmpty) ? 'Por favor, preencha o nome' : null;
+    String? emailError = ValidatorHelper.validateEmail(email);
+    String? passwordError = ValidatorHelper.validatePassword(password);
+    String? confirmPasswordError = ValidatorHelper.validateConfirmPassword(password, confirmPassword);
+
+    final errorMsg = nameError ?? emailError ?? passwordError ?? confirmPasswordError;
+    if (errorMsg != null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(errorMsg),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Sucesso'),
+          content: const Text('Cadastro realizado com sucesso!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+              },
+              child: const Text('Ir para login'),
+            ),
+          ],
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(e.message ?? 'Erro ao realizar cadastro.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

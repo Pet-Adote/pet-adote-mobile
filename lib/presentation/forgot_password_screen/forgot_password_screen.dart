@@ -1,61 +1,86 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../core/utils/validator_helper.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   ForgotPasswordScreen({super.key});
 
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController confirmEmailController = TextEditingController();
+  bool _isLoading = false;
 
-  void _handleRecover(BuildContext context) {
-    String email = emailController.text.trim();
-    String confirmEmail = confirmEmailController.text.trim();
+  Future<void> _handleRecover(BuildContext context) async {
+    final email = emailController.text.trim();
+    final confirmEmail = confirmEmailController.text.trim();
 
-    if (email.isEmpty || confirmEmail.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Por favor, preencha ambos os e-mails.'),
-          backgroundColor: appTheme.redCustom,
+    final emailError = ValidatorHelper.validateEmail(email);
+    final confirmEmailError = ValidatorHelper.validateEmail(confirmEmail);
+    final matchError = email != confirmEmail ? 'Os e-mails devem ser iguais' : null;
+
+    if (emailError != null || confirmEmailError != null || matchError != null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(emailError ?? confirmEmailError ?? matchError!),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
         ),
       );
       return;
     }
 
-    if (!email.contains('@') || !email.contains('.')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Por favor, insira um e-mail válido.'),
-          backgroundColor: appTheme.redCustom,
+    setState(() => _isLoading = true);
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Sucesso'),
+          content: const Text('E-mail de recuperação enviado!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Voltar para o login'),
+            ),
+          ],
         ),
       );
-      return;
-    }
-
-    if (email != confirmEmail) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Os e-mails devem ser iguais.'),
-          backgroundColor: appTheme.redCustom,
+    } catch (e) {
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text('Erro ao enviar e-mail: ${e.toString()}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
         ),
       );
-      return;
     }
-
-    final navigator = Navigator.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('E-mail de recuperação enviado!'),
-        backgroundColor: appTheme.greenCustom,
-      ),
-    );
-
-    Future.delayed(const Duration(seconds: 2), () {
-      navigator.pop();
-    });
   }
 
   @override
@@ -111,9 +136,25 @@ class ForgotPasswordScreen extends StatelessWidget {
                             onSubmitted: (_) => _handleRecover(context),
                           ),
                           SizedBox(height: 32.h),
-                          CustomButton(
-                            text: 'Recuperar',
-                            onPressed: () => _handleRecover(context),
+                          _isLoading
+                              ? Center(child: CircularProgressIndicator())
+                              : CustomButton(
+                                  text: 'Recuperar',
+                                  onPressed: () => _handleRecover(context),
+                                ),
+                          SizedBox(height: 16.h),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'Voltar para o login',
+                              style: TextStyle(
+                                color: appTheme.greenCustom,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ],
                       ),
