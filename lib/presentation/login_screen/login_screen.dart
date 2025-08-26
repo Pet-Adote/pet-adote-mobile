@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_button.dart';
@@ -34,11 +35,25 @@ class LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
-      debugPrint('Login attempt: ${_emailController.text}');
-      Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+        }
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'Erro ao realizar login.'),
+            backgroundColor: appTheme.redCustom,
+          ),
+        );
+      }
     }
   }
 
