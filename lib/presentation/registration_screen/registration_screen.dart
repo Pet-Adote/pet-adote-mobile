@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../widgets/custom_button.dart';
@@ -172,7 +173,7 @@ class RegistrationScreen extends StatelessWidget {
     );
   }
 
-  void _handleRegistration(BuildContext context) {
+  Future<void> _handleRegistration(BuildContext context) async {
 
 
     String name = nameController.text.trim();
@@ -212,17 +213,28 @@ class RegistrationScreen extends StatelessWidget {
     }
 
     
-    final navigator = Navigator.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Cadastro realizado com sucesso!'),
-        backgroundColor: appTheme.greenCustom,
-      ),
-    );
-
-
-    Future.delayed(const Duration(seconds: 2), () {
-      navigator.pushReplacementNamed(AppRoutes.loginScreen);
-    });
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final navigator = Navigator.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cadastro realizado com sucesso!'),
+          backgroundColor: appTheme.greenCustom,
+        ),
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        navigator.pushReplacementNamed(AppRoutes.loginScreen);
+      });
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Erro ao realizar cadastro.'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
   }
 }
