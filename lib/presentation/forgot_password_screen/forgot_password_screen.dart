@@ -126,6 +126,20 @@ class ForgotPasswordScreen extends StatelessWidget {
                             text: 'Recuperar',
                             onPressed: () => _handleRecover(context),
                           ),
+                            SizedBox(height: 16.h),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'Voltar para o login',
+                                style: TextStyle(
+                                  color: appTheme.greenCustom,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ],
