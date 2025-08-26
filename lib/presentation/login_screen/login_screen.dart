@@ -5,6 +5,7 @@ import '../../core/app_export.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../core/utils/validator_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +20,7 @@ class LoginScreenState extends State<LoginScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -36,24 +38,50 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-        if (mounted) {
-          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
-        }
-      } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message ?? 'Erro ao realizar login.'),
-            backgroundColor: appTheme.redCustom,
-          ),
-        );
-      }
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final emailError = ValidatorHelper.validateEmail(email);
+    final passwordError = ValidatorHelper.validatePassword(password);
+    final errorMsg = emailError ?? passwordError;
+    if (errorMsg != null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(errorMsg),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    setState(() => _isLoading = true);
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      setState(() => _isLoading = false);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(e.message ?? 'Erro ao realizar login.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -154,18 +182,20 @@ class LoginScreenState extends State<LoginScreen> {
                                                 color: appTheme.grey600))))),
                           ])),
                       SizedBox(height: 43.h),
-                      CustomButton(
-                          text: 'Entrar',
-                          onPressed: _handleLogin,
-                          backgroundColor: appTheme.colorFFF1F1,
-                          textColor: appTheme.colorFF120F,
-                          height: 39.h,
-                          width: 150.h,
-                          fontSize: 20.fSize,
-                          fontWeight: FontWeight.normal,
-                          borderRadius: 0,
-                          elevation: 4.h,
-                          shadowColor: appTheme.blackCustom),
+            _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : CustomButton(
+                text: 'Entrar',
+                onPressed: _handleLogin,
+                backgroundColor: appTheme.colorFFF1F1,
+                textColor: appTheme.colorFF120F,
+                height: 39.h,
+                width: 150.h,
+                fontSize: 20.fSize,
+                fontWeight: FontWeight.normal,
+                borderRadius: 0,
+                elevation: 4.h,
+                shadowColor: appTheme.blackCustom),
                       SizedBox(height: 14.h),
                       GestureDetector(
                           onTap: _handleForgotPassword,
