@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
@@ -81,8 +82,57 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _handleRedefinirSenha(BuildContext context) {
-    Navigator.of(context).pushNamed(AppRoutes.forgotPasswordScreen);
+  Future<void> _handleRedefinirSenha(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user?.email == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: const Text('Usuário não autenticado.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: user!.email!);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Sucesso'),
+          content: const Text('E-mail de redefinição enviado!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(e.message ?? 'Erro ao enviar e-mail.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void _handleMeusFavoritos(BuildContext context) {
