@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
+import '../../models/pet_model.dart';
+import '../../repositories/pet_repository.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final String categoryTitle;
@@ -19,6 +21,30 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   bool _isMenuOpen = false;
+  List<Pet> _pets = [];
+  bool _isLoading = true;
+  final PetRepository _petRepository = PetRepository();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPets();
+  }
+
+  Future<void> _loadPets() async {
+    try {
+      final pets = await _petRepository.getPetsBySpecies(widget.categoryType);
+      setState(() {
+        _pets = pets;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Erro ao carregar pets: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   void _toggleMenu() {
     setState(() {
@@ -270,37 +296,153 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     ),
                     SizedBox(height: 32.h),
                     
-                    // Lista de animais (placeholder)
+                    // Lista de pets
                     Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              widget.categoryType == 'dogs' ? Icons.pets : Icons.pets,
-                              size: 80.h,
+                      child: _isLoading 
+                        ? Center(
+                            child: CircularProgressIndicator(
                               color: appTheme.colorFF4F20,
                             ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              'Em breve: Lista de ${widget.categoryType == 'dogs' ? 'cães' : 'gatos'}',
-                              style: TextStyleHelper.instance.body15MediumInter.copyWith(
-                                fontSize: 18.fSize,
-                                color: appTheme.colorFF4F20,
-                                fontWeight: FontWeight.w600,
+                          )
+                        : _pets.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    widget.categoryType == 'dogs' ? Icons.pets : Icons.pets,
+                                    size: 80.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  Text(
+                                    'Nenhum ${widget.categoryType == 'dogs' ? 'cão' : 'gato'} disponível',
+                                    style: TextStyleHelper.instance.body15MediumInter.copyWith(
+                                      fontSize: 18.fSize,
+                                      color: appTheme.colorFF4F20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Cadastre um pet para vê-lo aqui',
+                                    style: TextStyleHelper.instance.body15MediumInter.copyWith(
+                                      fontSize: 14.fSize,
+                                      color: appTheme.grey600,
+                                    ),
+                                  ),
+                                ],
                               ),
+                            )
+                          : ListView.builder(
+                              itemCount: _pets.length,
+                              itemBuilder: (context, index) {
+                                final pet = _pets[index];
+                                return Card(
+                                  margin: EdgeInsets.only(bottom: 16.h),
+                                  color: appTheme.whiteCustom,
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.h),
+                                    side: BorderSide(
+                                      color: appTheme.colorFF4F20,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        AppRoutes.petProfileScreen,
+                                        arguments: pet,
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(12.h),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16.h),
+                                      child: Row(
+                                        children: [
+                                          // Avatar do pet
+                                          Container(
+                                            width: 60.h,
+                                            height: 60.h,
+                                            decoration: BoxDecoration(
+                                              color: appTheme.colorFF9FE5,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: appTheme.colorFF4F20,
+                                                width: 2,
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              pet.species == 'dogs' ? Icons.pets : Icons.pets,
+                                              color: appTheme.colorFF4F20,
+                                              size: 30.h,
+                                            ),
+                                          ),
+                                          SizedBox(width: 16.h),
+                                          
+                                          // Informações do pet
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  pet.name,
+                                                  style: TextStyle(
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 18.fSize,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: appTheme.colorFF4F20,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4.h),
+                                                Text(
+                                                  '${pet.genderDisplayName} • ${pet.age}',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 14.fSize,
+                                                    color: appTheme.grey600,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4.h),
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.location_on,
+                                                      size: 16.h,
+                                                      color: appTheme.colorFF4F20,
+                                                    ),
+                                                    SizedBox(width: 4.h),
+                                                    Expanded(
+                                                      child: Text(
+                                                        pet.location,
+                                                        style: TextStyle(
+                                                          fontFamily: 'Inter',
+                                                          fontSize: 12.fSize,
+                                                          color: appTheme.colorFF4F20,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          
+                                          // Seta
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: appTheme.colorFF4F20,
+                                            size: 16.h,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              'Funcionalidade em desenvolvimento',
-                              style: TextStyleHelper.instance.body15MediumInter.copyWith(
-                                fontSize: 14.fSize,
-                                color: appTheme.grey600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   ],
                 ),

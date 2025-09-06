@@ -75,4 +75,36 @@ $description
 Adote com amor! 💙
     ''';
   }
+
+  // Converter para JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'location': location,
+      'age': age,
+      'species': species,
+      'gender': gender,
+      'isVaccinated': isVaccinated,
+      'description': description,
+      'responsibleName': responsibleName,
+      'phone': phone,
+      'imagePath': imagePath,
+    };
+  }
+
+  // Criar Pet a partir de JSON
+  factory Pet.fromJson(Map<String, dynamic> json) {
+    return Pet(
+      name: json['name'] ?? '',
+      location: json['location'] ?? '',
+      age: json['age'] ?? '',
+      species: json['species'] ?? '',
+      gender: json['gender'] ?? '',
+      isVaccinated: json['isVaccinated'] ?? false,
+      description: json['description'] ?? '',
+      responsibleName: json['responsibleName'] ?? '',
+      phone: json['phone'] ?? '',
+      imagePath: json['imagePath'],
+    );
+  }
 }

@@ -197,8 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
                            },
                           child: Container(
                             width: 49.h,
-                            height: 64.h,
                             child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
                                   width: 49.h,
