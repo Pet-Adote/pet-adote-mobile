@@ -56,26 +56,22 @@ class Pet {
 
   // Método para gerar texto de compartilhamento do WhatsApp
   String generateWhatsAppMessage() {
-    final petIcon = species == 'cats' ? '🐱' : '🐶';
-    
-    return '''
-$petIcon *$name* está disponível para adoção!
+    return '''*$name* está disponível para adoção!
 
-📍 *Localização:* $location
-📞 *Contato:* $phone
-👤 *Responsável:* $responsibleName
+*Localização:* $location
+*Contato:* $phone
+*Responsável:* $responsibleName
 
-🏷️ *Informações:*
-• Espécie: $speciesDisplayName
-• Idade: $age  
-• Sexo: $genderDisplayName
-• Vacinado: $vaccinationStatus
+*Informações:*
+- Espécie: $speciesDisplayName
+- Idade: $age
+- Sexo: $genderDisplayName
+- Vacinado: $vaccinationStatus
 
-ℹ️ *Sobre o $name:*
+*Sobre o $name:*
 $description
 
-Adote com amor! 💙
-    ''';
+Adote com amor!''';
   }
 
   // Converter para JSON

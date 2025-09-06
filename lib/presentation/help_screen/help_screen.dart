@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class HelpScreen extends StatefulWidget {
+  const HelpScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<HelpScreen> createState() => _HelpScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _HelpScreenState extends State<HelpScreen> {
   bool _isMenuOpen = false;
 
   void _toggleMenu() {
@@ -26,10 +25,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void _handleLogout(BuildContext context) {
-    // Fechar o menu se estiver aberto
+  void _handleLogout() {
     _closeMenu();
-    // Mostrar diálogo de confirmação
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -109,80 +106,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
-  void _handleVisualizarSenha(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Funcionalidade em desenvolvimento'),
-        backgroundColor: appTheme.colorFF4F20,
-      ),
-    );
-  }
-
-  Future<void> _handleRedefinirSenha(BuildContext context) async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user?.email == null) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Erro'),
-          content: const Text('Usuário não autenticado.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-
-    try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: user!.email!);
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Sucesso'),
-          content: const Text('E-mail de redefinição enviado!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Erro'),
-          content: Text(e.message ?? 'Erro ao enviar e-mail.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  void _handleMeusFavoritos(BuildContext context) {
-    _closeMenu();
-    Navigator.of(context).pushNamed(AppRoutes.favoritesScreen);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.colorFFF1F1,
       body: Stack(
         children: [
-          // Conteúdo principal
           SafeArea(
             child: Column(
               children: [
@@ -195,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       // Menu hambúrguer
                       Container(
-                        margin: EdgeInsets.only(left: 30.h),
+                        margin: EdgeInsets.only(left: 30.h, top: 48.h),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -240,41 +169,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       
                       // Logo centralizado
                       Expanded(
-                        child: Center(
-                          child: Text(
-                            'PetAdote',
-                            style: TextStyleHelper.instance.display55LeckerliOne.copyWith(
-                              fontSize: 28.fSize,
-                              color: appTheme.colorFF4F20,
+                        child: Container(
+                          margin: EdgeInsets.only(top: 40.h),
+                          child: Center(
+                            child: Text(
+                              'PetAdote',
+                              style: TextStyleHelper.instance.display55LeckerliOne.copyWith(
+                                fontSize: 28.fSize,
+                                color: appTheme.colorFF4F20,
+                              ),
                             ),
                           ),
                         ),
                       ),
                       
-                      // Botão de ajuda (?)
+                      // Botão Perfil
                       Container(
-                        margin: EdgeInsets.only(right: 30.h),
+                        margin: EdgeInsets.only(right: 30.h, top: 37.h),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushNamed(AppRoutes.helpScreen);
+                            Navigator.of(context).pushNamed(AppRoutes.profileScreen);
                           },
                           child: Container(
-                            width: 55.h,
-                            height: 55.h,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: appTheme.colorFF4F20, width: 3),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '?',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 40.fSize,
-                                  fontWeight: FontWeight.w600,
-                                  color: appTheme.colorFF4F20,
+                            width: 49.h,
+                            height: 64.h,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 49.h,
+                                  height: 49.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF9FE5,
+                                    border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 30.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
                                 ),
-                              ),
+                                SizedBox(height: 2.h),
+                                Text(
+                                  'Perfil',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11.fSize,
+                                    fontWeight: FontWeight.w600,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -283,34 +228,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 
-                // Conteúdo do perfil
+                // Conteúdo principal
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
+                    padding: EdgeInsets.symmetric(horizontal: 20.h),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 10.h),
                         
-                        // Foto de perfil
-                        Container(
-                          width: 200.h,
-                          height: 200.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.whiteCustom,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: appTheme.blackCustom, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.25),
-                                blurRadius: 4,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.person,
-                              size: 100.h,
+                        // Título
+                        Padding(
+                          padding: EdgeInsets.only(left: 15.h),
+                          child: Text(
+                            'Fale conosco e obtenha ajuda',
+                            style: TextStyle(
+                              fontFamily: 'Coiny',
+                              fontSize: 18.fSize,
+                              fontWeight: FontWeight.w400,
                               color: appTheme.colorFF4F20,
                             ),
                           ),
@@ -318,73 +253,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         
                         SizedBox(height: 12.h),
                         
-                        // Nome do usuário
-                        Text(
-                          'Luiz Fellipe',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 24.fSize,
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.colorFF4F20,
-                          ),
+                        // Linha divisória
+                        Container(
+                          margin: EdgeInsets.only(left: 62.h),
+                          width: 296.h,
+                          height: 1.h,
+                          color: Colors.black,
                         ),
                         
-                        SizedBox(height: 32.h),
+                        SizedBox(height: 70.h),
                         
-                        // Opções do perfil
-                        _buildProfileOption(
-                          'Visualizar senha',
-                          onTap: () => _handleVisualizarSenha(context),
-                        ),
-                        
-                        SizedBox(height: 8.h),
-                        
-                        _buildProfileOption(
-                          'Redefinir Senha',
-                          onTap: () => _handleRedefinirSenha(context),
-                        ),
-                        
-                        SizedBox(height: 8.h),
-                        
-                        _buildProfileOption(
-                          'Meus Favoritos',
-                          onTap: () => _handleMeusFavoritos(context),
-                        ),
-                        
-                        SizedBox(height: 32.h),
-                        
-                        // Botão de logout
-                        GestureDetector(
-                          onTap: () => _handleLogout(context),
-                          child: Container(
-                            width: 100.h,
-                            height: 40.h,
-                            decoration: BoxDecoration(
-                              color: appTheme.colorFF4F20,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.25),
-                                  blurRadius: 4,
-                                  offset: Offset(0, 4),
+                        // Seção Fale conosco
+                        Center(
+                          child: Column(
+                            children: [
+                              // Botão Fale conosco
+                              Container(
+                                width: 101.h,
+                                height: 33.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                'SAIR',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 18.fSize,
-                                  fontWeight: FontWeight.w500,
-                                  color: appTheme.whiteCustom,
+                                child: Center(
+                                  child: Text(
+                                    'Fale conosco',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 12.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFFF1F1,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              
+                              SizedBox(height: 17.h),
+                              
+                              // Informações de contato
+                              Container(
+                                width: 270.h,
+                                padding: EdgeInsets.symmetric(horizontal: 10.h),
+                                child: Text(
+                                  'Central de Atendimento do PetAdote:\n0800 4241-0758 (para todo o Brasil)\n0800 5587-4768 (para deficientes auditivos)',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w700,
+                                    color: appTheme.colorFF4F20,
+                                    height: 1.25,
+                                  ),
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ),
+                              
+                              SizedBox(height: 76.h),
+                              
+                              // Botão Denuncie
+                              Container(
+                                width: 101.h,
+                                height: 33.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF4F20,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Denuncie',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 12.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFFF1F1,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              
+                              SizedBox(height: 17.h),
+                              
+                              // Informações de denúncia
+                              Container(
+                                width: 270.h,
+                                padding: EdgeInsets.symmetric(horizontal: 10.h),
+                                child: Text(
+                                  'Disque Denúncia 181\n(para todo o Brasil)',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w700,
+                                    color: appTheme.colorFF4F20,
+                                    height: 1.25,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black.withOpacity(0.25),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ),
+                              
+                              SizedBox(height: 40.h),
+                            ],
                           ),
                         ),
-                        
-                        SizedBox(height: 32.h),
                       ],
                     ),
                   ),
@@ -399,75 +374,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       // Botão Home
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
-                            },
-                            child: Container(
-                              width: 38.h,
-                              height: 38.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF9FE5,
-                                border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                                shape: BoxShape.circle,
+                      Container(
+                        margin: EdgeInsets.only(left: 25.h),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                              },
+                              child: Container(
+                                width: 38.h,
+                                height: 38.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF9FE5,
+                                  border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.home,
+                                  color: appTheme.colorFF4F20,
+                                  size: 20.h,
+                                ),
                               ),
-                              child: Icon(
-                                Icons.home,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              'Home',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11.fSize,
+                                fontWeight: FontWeight.w600,
                                 color: appTheme.colorFF4F20,
-                                size: 20.h,
                               ),
                             ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'Home',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 11.fSize,
-                              fontWeight: FontWeight.w600,
-                              color: appTheme.colorFF4F20,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       
                       // Botão Cuidados
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(AppRoutes.careScreen);
-                            },
-                            child: Container(
-                              width: 38.h,
-                              height: 38.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF9FE5,
-                                border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                                shape: BoxShape.circle,
+                      Container(
+                        margin: EdgeInsets.only(right: 25.h),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(AppRoutes.careScreen);
+                              },
+                              child: Container(
+                                width: 38.h,
+                                height: 38.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.colorFF9FE5,
+                                  border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.favorite,
+                                  color: appTheme.colorFF4F20,
+                                  size: 20.h,
+                                ),
                               ),
-                              child: Icon(
-                                Icons.favorite,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              'Cuidados',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11.fSize,
+                                fontWeight: FontWeight.w600,
                                 color: appTheme.colorFF4F20,
-                                size: 20.h,
                               ),
                             ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'Cuidados',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 11.fSize,
-                              fontWeight: FontWeight.w600,
-                              color: appTheme.colorFF4F20,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -588,7 +569,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 76.h),
                     child: GestureDetector(
-                      onTap: () => _handleLogout(context),
+                      onTap: _handleLogout,
                       child: Container(
                         width: 157.h,
                         height: 26.h,
@@ -622,35 +603,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildProfileOption(String title, {required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        height: 40.h,
-        decoration: BoxDecoration(
-          color: appTheme.whiteCustom,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.h),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              title,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 18.fSize,
-                fontWeight: FontWeight.w500,
-                color: appTheme.colorFF4F20,
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
