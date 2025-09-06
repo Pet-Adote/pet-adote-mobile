@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 
-class HelpScreen extends StatefulWidget {
-  const HelpScreen({super.key});
+class DenounceScreen extends StatefulWidget {
+  const DenounceScreen({super.key});
 
   @override
-  State<HelpScreen> createState() => _HelpScreenState();
+  State<DenounceScreen> createState() => _DenounceScreenState();
 }
 
-class _HelpScreenState extends State<HelpScreen> {
+class _DenounceScreenState extends State<DenounceScreen> {
   bool _isMenuOpen = false;
 
   void _toggleMenu() {
@@ -104,6 +105,60 @@ class _HelpScreenState extends State<HelpScreen> {
   void _handleFAQ() {
     _closeMenu();
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
+  }
+
+  // Função para fazer ligação telefônica
+  void _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    try {
+      await launchUrl(launchUri);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Não foi possível fazer a ligação'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
+  }
+
+  // Função para enviar email
+  void _sendEmail(String email, String subject) async {
+    final Uri launchUri = Uri(
+      scheme: 'mailto',
+      path: email,
+      queryParameters: {
+        'subject': subject,
+      },
+    );
+    try {
+      await launchUrl(launchUri);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Não foi possível abrir o email'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
+  }
+
+  // Função para abrir WhatsApp
+  void _openWhatsApp(String phoneNumber, String message) async {
+    final Uri launchUri = Uri.parse('https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}');
+    try {
+      await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Não foi possível abrir o WhatsApp'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
   }
 
   @override
@@ -241,7 +296,7 @@ class _HelpScreenState extends State<HelpScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 15.h),
                           child: Text(
-                            'Fale conosco e obtenha ajuda',
+                            'Canais de Denúncia',
                             style: TextStyle(
                               fontFamily: 'Coiny',
                               fontSize: 18.fSize,
@@ -261,110 +316,144 @@ class _HelpScreenState extends State<HelpScreen> {
                           color: Colors.black,
                         ),
                         
-                        SizedBox(height: 70.h),
+                        SizedBox(height: 30.h),
                         
-                        // Seção Fale conosco
+                        // Subtítulo
                         Center(
+                          child: Text(
+                            'Proteja os animais contra\nmaus-tratos e abandono',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16.fSize,
+                              fontWeight: FontWeight.w600,
+                              color: appTheme.colorFF4F20,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        
+                        SizedBox(height: 40.h),
+                        
+                        // Cards de denúncia
+                        _buildDenounceCard(
+                          icon: Icons.local_police,
+                          title: 'Polícia Militar',
+                          subtitle: 'Emergências e ocorrências',
+                          contact: '190',
+                          description: 'Para situações de emergência envolvendo maus-tratos ou abandono de animais',
+                          onTap: () => _makePhoneCall('190'),
+                        ),
+                        
+                        SizedBox(height: 20.h),
+                        
+                        _buildDenounceCard(
+                          icon: Icons.phone,
+                          title: 'Disque Denúncia',
+                          subtitle: 'Denúncias anônimas',
+                          contact: '181',
+                          description: 'Canal gratuito para denúncias anônimas de crimes contra animais',
+                          onTap: () => _makePhoneCall('181'),
+                        ),
+                        
+                        SizedBox(height: 20.h),
+                        
+                        _buildDenounceCard(
+                          icon: Icons.pets,
+                          title: 'PetAdote',
+                          subtitle: 'Suporte e orientação',
+                          contact: 'denuncia@petadote.com',
+                          description: 'Entre em contato conosco para orientações sobre denúncias',
+                          onTap: () => _sendEmail('denuncia@petadote.com', 'Denúncia de Maus-tratos'),
+                        ),
+                        
+                        SizedBox(height: 20.h),
+                        
+                        _buildDenounceCard(
+                          icon: Icons.message,
+                          title: 'WhatsApp Denúncia',
+                          subtitle: 'Canal direto',
+                          contact: '+55 11 99999-9999',
+                          description: 'Envie sua denúncia com fotos e localização via WhatsApp',
+                          onTap: () => _openWhatsApp('5511999999999', 'Gostaria de fazer uma denúncia sobre maus-tratos de animais.'),
+                        ),
+                        
+                        SizedBox(height: 30.h),
+                        
+                        // Seção de informações importantes
+                        Container(
+                          padding: EdgeInsets.all(20.h),
+                          decoration: BoxDecoration(
+                            color: appTheme.colorFF9FE5.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: appTheme.colorFF4F20, width: 1),
+                          ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Botão Fale conosco
-                              Container(
-                                width: 101.h,
-                                height: 33.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Fale conosco',
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    color: appTheme.colorFF4F20,
+                                    size: 24.h,
+                                  ),
+                                  SizedBox(width: 10.h),
+                                  Text(
+                                    'Informações Importantes',
                                     style: TextStyle(
                                       fontFamily: 'Inter',
-                                      fontSize: 12.fSize,
-                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16.fSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              
+                              SizedBox(height: 15.h),
+                              
+                              _buildInfoItem('• Maus-tratos a animais é crime (Lei 9.605/98)'),
+                              _buildInfoItem('• Abandono de animais é crime'),
+                              _buildInfoItem('• Mantenha evidências: fotos, vídeos, localização'),
+                              _buildInfoItem('• Procure testemunhas quando possível'),
+                              _buildInfoItem('• Denúncias podem ser feitas anonimamente'),
+                            ],
+                          ),
+                        ),
+                        
+                        SizedBox(height: 20.h),
+                        
+                        // Botão de voltar
+                        Center(
+                          child: Container(
+                            width: 150.h,
+                            height: 45.h,
+                            decoration: BoxDecoration(
+                              color: appTheme.colorFF4F20,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                borderRadius: BorderRadius.circular(8),
+                                child: Center(
+                                  child: Text(
+                                    'Voltar',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16.fSize,
+                                      fontWeight: FontWeight.w600,
                                       color: appTheme.colorFFF1F1,
                                     ),
                                   ),
                                 ),
                               ),
-                              
-                              SizedBox(height: 17.h),
-                              
-                              // Informações de contato
-                              Container(
-                                width: 270.h,
-                                padding: EdgeInsets.symmetric(horizontal: 10.h),
-                                child: Text(
-                                  'Central de Atendimento do PetAdote:\n0800 4241-0758 (para todo o Brasil)\n0800 5587-4768 (para deficientes auditivos)',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 12.fSize,
-                                    fontWeight: FontWeight.w700,
-                                    color: appTheme.colorFF4F20,
-                                    height: 1.25,
-                                  ),
-                                  textAlign: TextAlign.justify,
-                                ),
-                              ),
-                              
-                              SizedBox(height: 76.h),
-                              
-                              // Botão Denuncie
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
-                                },
-                                child: Container(
-                                  width: 101.h,
-                                  height: 33.h,
-                                  decoration: BoxDecoration(
-                                    color: appTheme.colorFF4F20,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Denuncie',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 12.fSize,
-                                        fontWeight: FontWeight.w700,
-                                        color: appTheme.colorFFF1F1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              
-                              SizedBox(height: 17.h),
-                              
-                              // Informações de denúncia
-                              Container(
-                                width: 270.h,
-                                padding: EdgeInsets.symmetric(horizontal: 10.h),
-                                child: Text(
-                                  'Disque Denúncia 181\n(para todo o Brasil)',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 12.fSize,
-                                    fontWeight: FontWeight.w700,
-                                    color: appTheme.colorFF4F20,
-                                    height: 1.25,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black.withOpacity(0.25),
-                                        offset: Offset(0, 4),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
-                                  textAlign: TextAlign.justify,
-                                ),
-                              ),
-                              
-                              SizedBox(height: 40.h),
-                            ],
+                            ),
                           ),
                         ),
+                        
+                        SizedBox(height: 40.h),
                       ],
                     ),
                   ),
@@ -608,6 +697,143 @@ class _HelpScreenState extends State<HelpScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDenounceCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String contact,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: appTheme.whiteCustom,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: appTheme.colorFF4F20, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 5,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: EdgeInsets.all(20.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 50.h,
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                        color: appTheme.colorFF9FE5,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                      ),
+                      child: Icon(
+                        icon,
+                        color: appTheme.colorFF4F20,
+                        size: 24.h,
+                      ),
+                    ),
+                    SizedBox(width: 15.h),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18.fSize,
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 12.fSize,
+                              color: appTheme.grey600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: appTheme.colorFF4F20,
+                      size: 16.h,
+                    ),
+                  ],
+                ),
+                
+                SizedBox(height: 15.h),
+                
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(12.h),
+                  decoration: BoxDecoration(
+                    color: appTheme.colorFF9FE5.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    contact,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16.fSize,
+                      fontWeight: FontWeight.bold,
+                      color: appTheme.colorFF4F20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                
+                SizedBox(height: 10.h),
+                
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12.fSize,
+                    color: appTheme.blackCustom,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoItem(String text) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 12.fSize,
+          color: appTheme.colorFF4F20,
+          height: 1.4,
+        ),
       ),
     );
   }
