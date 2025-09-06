@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
-import '../../repositories/pet_repository.dart';
+import '../../repositories/firebase_pet_repository.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final String categoryTitle;
@@ -23,7 +23,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   bool _isMenuOpen = false;
   List<Pet> _pets = [];
   bool _isLoading = true;
-  final PetRepository _petRepository = PetRepository();
+  final FirebasePetRepository _firebasePetRepository = FirebasePetRepository();
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Future<void> _loadPets() async {
     try {
-      final pets = await _petRepository.getPetsBySpecies(widget.categoryType);
+      final pets = await _firebasePetRepository.getPetsBySpecies(widget.categoryType);
       setState(() {
         _pets = pets;
         _isLoading = false;

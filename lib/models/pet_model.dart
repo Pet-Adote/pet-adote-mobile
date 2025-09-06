@@ -1,4 +1,5 @@
 class Pet {
+  final String? id; // ID do documento no Firestore
   final String name;
   final String location;
   final String age;
@@ -11,6 +12,7 @@ class Pet {
   final String? imagePath;
 
   Pet({
+    this.id,
     required this.name,
     required this.location,
     required this.age,
@@ -95,6 +97,7 @@ Adote com amor! 💙
   // Criar Pet a partir de JSON
   factory Pet.fromJson(Map<String, dynamic> json) {
     return Pet(
+      id: json['id'],
       name: json['name'] ?? '',
       location: json['location'] ?? '',
       age: json['age'] ?? '',

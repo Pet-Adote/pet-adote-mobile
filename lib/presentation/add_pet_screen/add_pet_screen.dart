@@ -5,7 +5,7 @@ import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../models/pet_model.dart';
-import '../../repositories/pet_repository.dart';
+import '../../repositories/firebase_pet_repository.dart';
 
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({super.key});
@@ -181,10 +181,10 @@ class _AddPetScreenState extends State<AddPetScreen> {
     );
 
     try {
-      final petRepository = PetRepository();
+      final firebasePetRepository = FirebasePetRepository();
       
       // Verificar se o pet já existe
-      if (await petRepository.petExists(pet)) {
+      if (await firebasePetRepository.petExists(pet)) {
         Navigator.of(context).pop(); // Fechar loading
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -196,7 +196,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
       }
 
       // Salvar o pet
-      final success = await petRepository.savePet(pet);
+      final success = await firebasePetRepository.savePet(pet);
       Navigator.of(context).pop(); // Fechar loading
 
       if (success) {
