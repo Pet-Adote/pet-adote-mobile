@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 
-class CategoriesScreen extends StatelessWidget {
+class CategoriesScreen extends StatefulWidget {
   final String categoryTitle;
   final String categoryType; // 'dogs' ou 'cats'
 
@@ -14,10 +14,112 @@ class CategoriesScreen extends StatelessWidget {
   });
 
   @override
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
+  bool _isMenuOpen = false;
+
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+    });
+  }
+
+  void _closeMenu() {
+    setState(() {
+      _isMenuOpen = false;
+    });
+  }
+
+  void _handleLogout() {
+    _closeMenu();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Sair do App',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 20.fSize,
+              fontWeight: FontWeight.bold,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          content: Text(
+            'Tem certeza que deseja sair?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16.fSize,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  color: appTheme.grey600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.colorFF4F20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.colorFFF1F1,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleFavorites() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.favoritesScreen);
+  }
+
+  void _handleAboutUs() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.aboutUsScreen);
+  }
+
+  void _handleFAQ() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.faqScreen);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.colorFFF1F1,
-      body: SafeArea(
+      body: Stack(
+        children: [
+          SafeArea(
         child: Column(
           children: [
             // Header verde
@@ -29,16 +131,11 @@ class CategoriesScreen extends StatelessWidget {
                 children: [
                   // Menu hambúrguer
                   Container(
-                    margin: EdgeInsets.only(left: 30.h),
+                    margin: EdgeInsets.only(left: 22.h),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () {
-                          // Aqui você pode implementar o menu lateral se necessário
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Menu - Em desenvolvimento')),
-                          );
-                        },
+                        onTap: _toggleMenu,
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
                           width: 40.h,
@@ -130,7 +227,7 @@ class CategoriesScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    categoryType == 'dogs' ? 'Cachorros' : 'Gatos',
+                    widget.categoryType == 'dogs' ? 'Cachorros' : 'Gatos',
                     style: TextStyle(
                       fontFamily: 'Coiny',
                       fontSize: 18.fSize,
@@ -156,7 +253,7 @@ class CategoriesScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Encontre seu ${categoryType == 'dogs' ? 'cão' : 'gato'} ideal',
+                      'Encontre seu ${widget.categoryType == 'dogs' ? 'cão' : 'gato'} ideal',
                       style: TextStyleHelper.instance.title20RegularRoboto.copyWith(
                         fontSize: 24.fSize,
                         color: appTheme.colorFF4F20,
@@ -165,7 +262,7 @@ class CategoriesScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      'Aqui você encontrará ${categoryType == 'dogs' ? 'cães' : 'gatos'} disponíveis para adoção.',
+                      'Aqui você encontrará ${widget.categoryType == 'dogs' ? 'cães' : 'gatos'} disponíveis para adoção.',
                       style: TextStyleHelper.instance.body15MediumInter.copyWith(
                         fontSize: 16.fSize,
                         color: appTheme.colorFF4F20,
@@ -180,13 +277,13 @@ class CategoriesScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              categoryType == 'dogs' ? Icons.pets : Icons.pets,
+                              widget.categoryType == 'dogs' ? Icons.pets : Icons.pets,
                               size: 80.h,
                               color: appTheme.colorFF4F20,
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'Em breve: Lista de ${categoryType == 'dogs' ? 'cães' : 'gatos'}',
+                              'Em breve: Lista de ${widget.categoryType == 'dogs' ? 'cães' : 'gatos'}',
                               style: TextStyleHelper.instance.body15MediumInter.copyWith(
                                 fontSize: 18.fSize,
                                 color: appTheme.colorFF4F20,
@@ -346,6 +443,181 @@ class CategoriesScreen extends StatelessWidget {
           ],
         ),
       ),
+          
+          // Menu lateral
+          if (_isMenuOpen)
+            GestureDetector(
+              onTap: _closeMenu,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+          
+          // Menu lateral
+          AnimatedPositioned(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            left: _isMenuOpen ? 0 : -308,
+            top: 0,
+            child: Container(
+              width: 308,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                color: appTheme.colorFF9FE5,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(45),
+                  bottomRight: Radius.circular(45),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 10,
+                    offset: Offset(2, 0),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Header do menu
+                  Padding(
+                    padding: EdgeInsets.only(top: 36.h, right: 16.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: _closeMenu,
+                          child: Text(
+                            'X',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 24.fSize,
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.blackCustom,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Título do menu
+                  Padding(
+                    padding: EdgeInsets.only(left: 34.h, top: 40.h),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'MENU',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 40.fSize,
+                          fontWeight: FontWeight.bold,
+                          color: appTheme.colorFF4F20,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Opções do menu
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 34.h),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 40.h),
+                          
+                          // Favoritos
+                          _buildMenuItem(
+                            'Favoritos',
+                            onTap: _handleFavorites,
+                          ),
+                          _buildDivider(),
+                          
+                          // Quem Somos
+                          _buildMenuItem(
+                            'Quem Somos',
+                            onTap: _handleAboutUs,
+                          ),
+                          _buildDivider(),
+                          
+                          // FAQ
+                          _buildMenuItem(
+                            'FAQ',
+                            onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                        ],
+                      ),
+                    ),
+                  ),
+                  
+                  // Botão de logout
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 76.h),
+                    child: GestureDetector(
+                      onTap: _handleLogout,
+                      child: Container(
+                        width: 157.h,
+                        height: 26.h,
+                        decoration: BoxDecoration(
+                          color: appTheme.colorFF4F20,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 4,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Sair',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 15.fSize,
+                              fontWeight: FontWeight.w500,
+                              color: appTheme.colorFFF1F1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(String title, {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 20.fSize,
+            fontWeight: FontWeight.bold,
+            color: appTheme.colorFF4F20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      width: 236.h,
+      height: 1,
+      color: appTheme.blackCustom,
     );
   }
 }

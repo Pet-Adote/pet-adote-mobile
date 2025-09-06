@@ -398,7 +398,7 @@ class _CareScreenState extends State<CareScreen> {
                         onTap: () => _launchPhone('87 3761-1500'),
                       ),
 
-                      SizedBox(height: 100.h), // Espaço para o rodapé
+                      SizedBox(height: 120.h), // Espaço para o rodapé
                     ],
                   ),
                 ),
@@ -406,73 +406,151 @@ class _CareScreenState extends State<CareScreen> {
             ],
           ),
 
-          // Menu lateral
+          // Overlay escuro quando menu está aberto
           if (_isMenuOpen)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: _closeMenu,
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 280.h,
-                        color: appTheme.colorFFF1F1,
-                        child: SafeArea(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header do menu
-                              Container(
-                                padding: EdgeInsets.all(24.h),
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF9FE5,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.pets,
-                                      color: appTheme.colorFF4F20,
-                                      size: 32.h,
-                                    ),
-                                    SizedBox(width: 12.h),
-                                    Text(
-                                      'Menu',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 24.fSize,
-                                        fontWeight: FontWeight.bold,
-                                        color: appTheme.colorFF4F20,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+            GestureDetector(
+              onTap: _closeMenu,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
 
-                              // Itens do menu
-                              Expanded(
-                                child: ListView(
-                                  padding: EdgeInsets.all(16.h),
-                                  children: [
-                                    _buildMenuItem(Icons.favorite, 'Favoritos', _handleFavorites),
-                                    _buildMenuItem(Icons.info, 'Sobre Nós', _handleAboutUs),
-                                    _buildMenuItem(Icons.help, 'FAQ', _handleFAQ),
-                                    _buildMenuItem(Icons.pets, 'Cuidados', _handleCare),
-                                    Divider(color: appTheme.grey200),
-                                    _buildMenuItem(Icons.logout, 'Sair', _handleLogout),
-                                  ],
-                                ),
-                              ),
-                            ],
+          // Menu lateral
+          AnimatedPositioned(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            left: _isMenuOpen ? 0 : -308,
+            top: 0,
+            child: Container(
+              width: 308,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                color: appTheme.colorFF9FE5,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(45),
+                  bottomRight: Radius.circular(45),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 10,
+                    offset: Offset(2, 0),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Header do menu
+                  Padding(
+                    padding: EdgeInsets.only(top: 36.h, right: 16.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: _closeMenu,
+                          child: Text(
+                            'X',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 24.fSize,
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.blackCustom,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Título do menu
+                  Padding(
+                    padding: EdgeInsets.only(left: 34.h, top: 40.h),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'MENU',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 40.fSize,
+                          fontWeight: FontWeight.bold,
+                          color: appTheme.colorFF4F20,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Opções do menu
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 34.h),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 40.h),
+                          
+                          // Favoritos
+                          _buildMenuItem(
+                            'Favoritos',
+                            onTap: _handleFavorites,
+                          ),
+                          _buildDivider(),
+                          
+                          // Quem Somos
+                          _buildMenuItem(
+                            'Quem Somos',
+                            onTap: _handleAboutUs,
+                          ),
+                          _buildDivider(),
+                          
+                          // FAQ
+                          _buildMenuItem(
+                            'FAQ',
+                            onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                        ],
+                      ),
+                    ),
+                  ),
+                  
+                  // Botão de logout
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 76.h),
+                    child: GestureDetector(
+                      onTap: _handleLogout,
+                      child: Container(
+                        width: 157.h,
+                        height: 26.h,
+                        decoration: BoxDecoration(
+                          color: appTheme.colorFF4F20,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 4,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Sair',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 15.fSize,
+                              fontWeight: FontWeight.w500,
+                              color: appTheme.colorFFF1F1,
+                            ),
                           ),
                         ),
                       ),
-                      Expanded(child: Container()),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
+          ),
 
           // Rodapé fixo
           Positioned(
@@ -482,44 +560,75 @@ class _CareScreenState extends State<CareScreen> {
             child: Container(
               height: 80.h,
               color: appTheme.colorFF9FE5,
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
-                  },
-                  child: Container(
-                    width: 38.h,
-                    height: 57.h,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Botão Home
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                        },
+                        child: Container(
                           width: 38.h,
                           height: 38.h,
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
+                            color: appTheme.colorFF9FE5,
                             border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                            shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.home,
-                            size: 24.h,
                             color: appTheme.colorFF4F20,
+                            size: 20.h,
                           ),
                         ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          'Home',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 11.fSize,
-                            fontWeight: FontWeight.w600,
-                            color: appTheme.colorFF4F20,
-                          ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Home',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11.fSize,
+                          fontWeight: FontWeight.w600,
+                          color: appTheme.colorFF4F20,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
+                  
+                  // Botão Cuidados (destacado)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 38.h,
+                        height: 38.h,
+                        decoration: BoxDecoration(
+                          color: appTheme.colorFF4F20,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.favorite,
+                          color: appTheme.colorFF9FE5,
+                          size: 20.h,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Cuidados',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11.fSize,
+                          fontWeight: FontWeight.w600,
+                          color: appTheme.colorFF4F20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -621,22 +730,23 @@ class _CareScreenState extends State<CareScreen> {
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: appTheme.colorFF4F20,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 16.fSize,
-          fontWeight: FontWeight.w500,
-          color: appTheme.colorFF4F20,
+  Widget _buildMenuItem(String title, {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 20.fSize,
+            fontWeight: FontWeight.bold,
+            color: appTheme.colorFF4F20,
+          ),
         ),
       ),
-      onTap: onTap,
     );
   }
+
 }
