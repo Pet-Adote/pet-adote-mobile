@@ -3,391 +3,546 @@ import 'package:flutter/material.dart';
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
+
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  bool _isMenuOpen = false;
+
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+    });
+  }
+
+  void _closeMenu() {
+    setState(() {
+      _isMenuOpen = false;
+    });
+  }
+
+  void _handleLogout() {
+    // Fechar o menu
+    _closeMenu();
+    // Mostrar diálogo de confirmação
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Sair do App',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 20.fSize,
+              fontWeight: FontWeight.bold,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          content: Text(
+            'Tem certeza que deseja sair?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16.fSize,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  color: appTheme.grey600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed(AppRoutes.loginScreen);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.colorFF4F20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.colorFFF1F1,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleFavorites() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.favoritesScreen);
+  }
+
+  void _handleAboutUs() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.aboutUsScreen);
+  }
+
+  void _handleFAQ() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.faqScreen);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.colorFFF1F1,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header verde
-            Container(
-              width: double.infinity,
-              height: 113.h,
-              color: appTheme.colorFF9FE5,
-              child: Row(
-                children: [
-                  // Botão voltar (menu hambúrguer)
-                  Container(
-                    margin: EdgeInsets.only(left: 30.h),
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 40.h,
-                        height: 34.h,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
+      body: Stack(
+        children: [
+          // Conteúdo principal
+          SafeArea(
+            child: Column(
+              children: [
+                // Header verde
+                Container(
+                  width: double.infinity,
+                  height: 113.h,
+                  color: appTheme.colorFF9FE5,
+                  child: Row(
+                    children: [
+                      // Menu hambúrguer
+                      Container(
+                        margin: EdgeInsets.only(left: 22.h),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _toggleMenu,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
                               width: 40.h,
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF4F20,
-                                borderRadius: BorderRadius.circular(4),
+                              height: 34.h,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 40.h,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Container(
-                              width: 40.h,
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF4F20,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            Container(
-                              width: 40.h,
-                              height: 4.h,
-                              decoration: BoxDecoration(
-                                color: appTheme.colorFF4F20,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      
+                      // Logo centralizado
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'PetAdote',
+                            style: TextStyleHelper.instance.display55LeckerliOne.copyWith(
+                              fontSize: 28.fSize,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      
+                      // Ícone de perfil
+                      Container(
+                        margin: EdgeInsets.only(right: 22.h),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(AppRoutes.profileScreen);
+                          },
+                          child: Container(
+                            width: 49.h,
+                            height: 64.h,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 49.h,
+                                  height: 49.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF9FE5,
+                                    border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 30.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  'Perfil',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 8.fSize,
+                                    fontWeight: FontWeight.w500,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  
-                  // Logo centralizado
-                  Expanded(
+                ),
+                
+                // Título da tela
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20.h),
+                  child: Text(
+                    'Meus Favoritos',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 24.fSize,
+                      fontWeight: FontWeight.bold,
+                      color: appTheme.colorFF4F20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                
+                // Conteúdo dos favoritos
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.h),
                     child: Center(
-                      child: Text(
-                        'PetAdote',
-                        style: TextStyleHelper.instance.display55LeckerliOne.copyWith(
-                          fontSize: 28.fSize,
-                          color: appTheme.colorFF4F20,
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.favorite_border,
+                            size: 80.h,
+                            color: appTheme.colorFF4F20,
+                          ),
+                          SizedBox(height: 20.h),
+                          Text(
+                            'Nenhum favorito ainda',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18.fSize,
+                              fontWeight: FontWeight.w600,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            'Quando você favoritar um pet, ele aparecerá aqui!',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14.fSize,
+                              color: appTheme.grey600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  
-                  // Ícone de perfil
-                  Container(
-                    margin: EdgeInsets.only(right: 22.h),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(AppRoutes.profileScreen);
-                      },
-                      child: Container(
-                        width: 49.h,
-                        height: 64.h,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 49.h,
-                              height: 49.h,
+                ),
+                
+                // Bottom navigation bar
+                Container(
+                  width: double.infinity,
+                  height: 80.h,
+                  color: appTheme.colorFF9FE5,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Botão Home
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+                            },
+                            child: Container(
+                              width: 38.h,
+                              height: 38.h,
                               decoration: BoxDecoration(
                                 color: appTheme.colorFF9FE5,
                                 border: Border.all(color: appTheme.colorFF4F20, width: 2),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
-                                Icons.person,
-                                size: 30.h,
+                                Icons.home,
                                 color: appTheme.colorFF4F20,
+                                size: 20.h,
                               ),
                             ),
-                            SizedBox(height: 2.h),
-                            Text(
-                              'Perfil',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 11.fSize,
-                                fontWeight: FontWeight.w600,
-                                color: appTheme.colorFF4F20,
-                              ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'Home',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11.fSize,
+                              fontWeight: FontWeight.w600,
+                              color: appTheme.colorFF4F20,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
+                      
+                      // Botão Cuidados
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(AppRoutes.careScreen);
+                            },
+                            child: Container(
+                              width: 38.h,
+                              height: 38.h,
+                              decoration: BoxDecoration(
+                                color: appTheme.colorFF9FE5,
+                                border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.favorite,
+                                color: appTheme.colorFF4F20,
+                                size: 20.h,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'Cuidados',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11.fSize,
+                              fontWeight: FontWeight.w600,
+                              color: appTheme.colorFF4F20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Overlay escuro quando menu está aberto
+          if (_isMenuOpen)
+            GestureDetector(
+              onTap: _closeMenu,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+          
+          // Menu lateral
+          AnimatedPositioned(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            left: _isMenuOpen ? 0 : -308,
+            top: 0,
+            child: Container(
+              width: 308,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                color: appTheme.colorFF9FE5,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(45),
+                  bottomRight: Radius.circular(45),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 10,
+                    offset: Offset(2, 0),
                   ),
                 ],
               ),
-            ),
-            
-            // Conteúdo dos favoritos
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10.h),
-                    
-                    // Título "Favoritos"
-                    Row(
+              child: Column(
+                children: [
+                  // Header do menu
+                  Padding(
+                    padding: EdgeInsets.only(top: 36.h, right: 16.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          'Favoritos',
-                          style: TextStyle(
-                            fontFamily: 'Coiny',
-                            fontSize: 18.fSize,
-                            fontWeight: FontWeight.w400,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 16.h),
-                            height: 1,
-                            color: appTheme.blackCustom,
+                        GestureDetector(
+                          onTap: _closeMenu,
+                          child: Text(
+                            'X',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 24.fSize,
+                              fontWeight: FontWeight.bold,
+                              color: appTheme.blackCustom,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    
-                    SizedBox(height: 32.h),
-                    
-                    // Lista de favoritos
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            // Card do pet favorito
-                            Container(
-                              width: double.infinity,
-                              height: 200.h,
-                              margin: EdgeInsets.only(bottom: 16.h),
-                              decoration: BoxDecoration(
-                                color: appTheme.whiteCustom,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Stack(
-                                children: [
-                                  // Imagem do pet
-                                  Positioned(
-                                    left: 9.11.h,
-                                    top: 21.17.h,
-                                    child: Container(
-                                      width: 130.h,
-                                      height: 130.h,
-                                      decoration: BoxDecoration(
-                                        color: appTheme.grey200,
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                          image: AssetImage('assets/images/image_not_found.png'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  
-                                  // Informações do pet
-                                  Positioned(
-                                    left: 150.h,
-                                    top: 30.h,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Pantera',
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontSize: 15.fSize,
-                                            fontWeight: FontWeight.w700,
-                                            color: appTheme.blackCustom,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        Text(
-                                          '2 anos',
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontSize: 10.fSize,
-                                            fontWeight: FontWeight.w400,
-                                            color: appTheme.blackCustom,
-                                          ),
-                                        ),
-                                        SizedBox(height: 16.h),
-                                        Text(
-                                          'Gato preto muito carinhoso',
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontSize: 12.fSize,
-                                            color: appTheme.colorFF4F20,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  
-                                  // Botão de favorito
-                                  Positioned(
-                                    right: 16.h,
-                                    top: 16.h,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // TODO: Implementar remoção dos favoritos
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text('Removido dos favoritos'),
-                                            backgroundColor: appTheme.colorFF4F20,
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        width: 24.h,
-                                        height: 24.h,
-                                        child: Icon(
-                                          Icons.favorite,
-                                          color: appTheme.colorFF4F20,
-                                          size: 24.h,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            
-                            // Mensagem quando não há favoritos
-                            if (false) // Alterar para true quando não há favoritos
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.favorite_border,
-                                      size: 80.h,
-                                      color: appTheme.colorFF4F20,
-                                    ),
-                                    SizedBox(height: 16.h),
-                                    Text(
-                                      'Nenhum pet favoritado',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 18.fSize,
-                                        fontWeight: FontWeight.w600,
-                                        color: appTheme.colorFF4F20,
-                                      ),
-                                    ),
-                                    SizedBox(height: 8.h),
-                                    Text(
-                                      'Adicione pets aos seus favoritos',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 14.fSize,
-                                        color: appTheme.grey600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
+                  ),
+                  
+                  // Título do menu
+                  Padding(
+                    padding: EdgeInsets.only(left: 34.h, top: 40.h),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'MENU',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 40.fSize,
+                          fontWeight: FontWeight.bold,
+                          color: appTheme.colorFF4F20,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Bottom navigation bar
-            Container(
-              width: double.infinity,
-              height: 80.h,
-              color: appTheme.colorFF9FE5,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Botão Home
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
-                        },
-                        child: Container(
-                          width: 38.h,
-                          height: 38.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.colorFF9FE5,
-                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.home,
-                            color: appTheme.colorFF4F20,
-                            size: 20.h,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'Home',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11.fSize,
-                          fontWeight: FontWeight.w600,
-                          color: appTheme.colorFF4F20,
-                        ),
-                      ),
-                    ],
                   ),
                   
-                  // Botão Cuidados
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(AppRoutes.careScreen);
-                        },
-                        child: Container(
-                          width: 38.h,
-                          height: 38.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.colorFF9FE5,
-                            border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                            shape: BoxShape.circle,
+                  // Opções do menu
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 34.h),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 40.h),
+                          
+                          // Favoritos
+                          _buildMenuItem(
+                            'Favoritos',
+                            onTap: _handleFavorites,
                           ),
-                          child: Icon(
-                            Icons.favorite,
-                            color: appTheme.colorFF4F20,
-                            size: 20.h,
+                          _buildDivider(),
+                          
+                          // Quem Somos
+                          _buildMenuItem(
+                            'Quem Somos',
+                            onTap: _handleAboutUs,
                           ),
-                        ),
+                          _buildDivider(),
+                          
+                          // FAQ
+                          _buildMenuItem(
+                            'FAQ',
+                            onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                        ],
                       ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'Cuidados',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11.fSize,
-                          fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  
+                  // Botão de logout
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 76.h),
+                    child: GestureDetector(
+                      onTap: _handleLogout,
+                      child: Container(
+                        width: 157.h,
+                        height: 26.h,
+                        decoration: BoxDecoration(
                           color: appTheme.colorFF4F20,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 4,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Sair',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 15.fSize,
+                              fontWeight: FontWeight.w500,
+                              color: appTheme.colorFFF1F1,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(String title, {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 20.fSize,
+            fontWeight: FontWeight.bold,
+            color: appTheme.colorFF4F20,
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      width: 236.h,
+      height: 1,
+      color: appTheme.blackCustom,
     );
   }
 }
