@@ -5,6 +5,7 @@ import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../models/pet_model.dart';
+import '../../repositories/pet_repository.dart';
 
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({super.key});
@@ -139,7 +140,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
     );
   }
 
-  void _handleRegisterPet() {
+  Future<void> _handleRegisterPet() async {
     // Validação básica
     if (_petNameController.text.isEmpty ||
         _locationController.text.isEmpty ||
@@ -168,19 +169,66 @@ class _AddPetScreenState extends State<AddPetScreen> {
       phone: _phoneController.text.trim(),
     );
 
-    // Aqui seria implementada a lógica de cadastro do pet (salvar no banco, etc.)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Pet cadastrado com sucesso!'),
-        backgroundColor: appTheme.greenCustom,
+    // Mostrar indicador de carregamento
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(
+          color: appTheme.colorFF4F20,
+        ),
       ),
     );
-    
-    // Navegar para a tela do perfil do pet passando os dados
-    Navigator.of(context).pushReplacementNamed(
-      AppRoutes.petProfileScreen, 
-      arguments: pet,
-    );
+
+    try {
+      final petRepository = PetRepository();
+      
+      // Verificar se o pet já existe
+      if (await petRepository.petExists(pet)) {
+        Navigator.of(context).pop(); // Fechar loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Já existe um pet com esse nome, localização e telefone'),
+            backgroundColor: appTheme.redCustom,
+          ),
+        );
+        return;
+      }
+
+      // Salvar o pet
+      final success = await petRepository.savePet(pet);
+      Navigator.of(context).pop(); // Fechar loading
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Pet cadastrado com sucesso!'),
+            backgroundColor: appTheme.greenCustom,
+          ),
+        );
+        
+        // Navegar para a tela do perfil do pet passando os dados
+        Navigator.of(context).pushReplacementNamed(
+          AppRoutes.petProfileScreen, 
+          arguments: pet,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao cadastrar pet. Tente novamente.'),
+            backgroundColor: appTheme.redCustom,
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Fechar loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro inesperado: $e'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
   }
 
   @override
