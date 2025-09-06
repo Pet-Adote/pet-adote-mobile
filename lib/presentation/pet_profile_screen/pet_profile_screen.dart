@@ -49,8 +49,10 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
       phoneNumber = '55$phoneNumber';
     }
     
-    // Codificar a mensagem para URL
-    final encodedMessage = Uri.encodeComponent(petInfo);
+    // Usar codificação mais simples - apenas para espaços e quebras de linha
+    String encodedMessage = petInfo
+        .replaceAll(' ', '%20')
+        .replaceAll('\n', '%0A');
     
     // Criar a URL do WhatsApp
     final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
