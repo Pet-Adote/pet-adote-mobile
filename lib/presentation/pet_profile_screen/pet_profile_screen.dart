@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
@@ -34,26 +35,67 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     });
   }
 
-  void _shareOnWhatsApp() {
+  Future<void> _shareOnWhatsApp() async {
     if (pet == null) return;
     
-    // Usar o método do modelo Pet para gerar a mensagem
+    // Gerar a mensagem usando o método do modelo Pet
     final petInfo = pet!.generateWhatsAppMessage();
-
-    // Simular compartilhamento
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Informações copiadas! Compartilhe no WhatsApp'),
-        backgroundColor: appTheme.greenCustom,
-        action: SnackBarAction(
-          label: 'Copiar',
-          textColor: appTheme.whiteCustom,
-          onPressed: () {
-            Clipboard.setData(ClipboardData(text: petInfo));
-          },
-        ),
-      ),
-    );
+    
+    // Limpar o número de telefone (remover caracteres especiais)
+    String phoneNumber = pet!.phone.replaceAll(RegExp(r'[^\d]'), '');
+    
+    // Verificar se o número já tem código do país (Brasil +55)
+    if (!phoneNumber.startsWith('55') && phoneNumber.length >= 10) {
+      phoneNumber = '55$phoneNumber';
+    }
+    
+    // Usar codificação mais simples - apenas para espaços e quebras de linha
+    String encodedMessage = petInfo
+        .replaceAll(' ', '%20')
+        .replaceAll('\n', '%0A');
+    
+    // Criar a URL do WhatsApp
+    final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
+    
+    try {
+      // Tentar abrir o WhatsApp
+      final uri = Uri.parse(whatsappUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        // Fallback: copiar para clipboard se não conseguir abrir o WhatsApp
+        await Clipboard.setData(ClipboardData(text: petInfo));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('WhatsApp não encontrado. Informações copiadas!'),
+              backgroundColor: appTheme.colorFF4F20,
+              action: SnackBarAction(
+                label: 'OK',
+                textColor: appTheme.whiteCustom,
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Em caso de erro, mostrar opção de copiar
+      await Clipboard.setData(ClipboardData(text: petInfo));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao abrir WhatsApp. Informações copiadas!'),
+            backgroundColor: appTheme.colorFF4F20,
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: appTheme.whiteCustom,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void _goToCategory() {
@@ -684,13 +726,13 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.share,
+                                  Icons.chat,
                                   color: Colors.white,
                                   size: 24.h,
                                 ),
                                 SizedBox(width: 8.h),
                                 Text(
-                                  'Compartilhar',
+                                  'WhatsApp',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: 16.fSize,
