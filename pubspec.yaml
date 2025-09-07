@@ -18,7 +18,8 @@ dependencies:
   firebase_auth: ^6.0.1
   cloud_firestore: ^6.0.0
   url_launcher: ^6.3.1
-  aws_s3_client: ^0.2.0
+  aws_s3_api: ^2.0.0
+  aws_signature_v4: ^2.0.0
   flutter_dotenv: ^6.0.0
   image_picker: ^1.2.0
 dev_dependencies: 
