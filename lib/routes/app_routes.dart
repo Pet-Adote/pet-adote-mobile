@@ -12,6 +12,7 @@ import '../presentation/about_us_screen/about_us_screen.dart';
 import '../presentation/faq_screen/faq_screen.dart';
 import '../presentation/care_screen/care_screen.dart';
 import '../presentation/add_pet_screen/add_pet_screen.dart';
+import '../presentation/edit_pet_screen/edit_pet_screen.dart';
 import '../presentation/pet_profile_screen/pet_profile_screen.dart';
 import '../presentation/help_screen/help_screen.dart';
 import '../presentation/denounce_screen/denounce_screen.dart';
@@ -30,6 +31,7 @@ class AppRoutes {
   static const String faqScreen = '/faq_screen';
   static const String careScreen = '/care_screen';
   static const String addPetScreen = '/add_pet_screen';
+  static const String editPetScreen = '/edit_pet_screen';
   static const String petProfileScreen = '/pet_profile_screen';
   static const String helpScreen = '/help_screen';
   static const String denounceScreen = '/denounce_screen';
@@ -50,6 +52,7 @@ class AppRoutes {
         faqScreen: (context) => FaqScreen(),
         careScreen: (context) => CareScreen(),
         addPetScreen: (context) => AddPetScreen(),
+        editPetScreen: (context) => EditPetScreen(),
         petProfileScreen: (context) => PetProfileScreen(),
         helpScreen: (context) => HelpScreen(),
         denounceScreen: (context) => DenounceScreen(),
