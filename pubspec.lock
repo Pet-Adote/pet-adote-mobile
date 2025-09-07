@@ -286,14 +286,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_dotenv:
-    dependency: "direct main"
-    description:
-      name: flutter_dotenv
-      sha256: d4130c4a43e0b13fefc593bc3961f2cb46e30cb79e253d4a526b1b5d24ae1ce4
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -914,6 +906,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
+  supabase:
+    dependency: transitive
+    description:
+      name: supabase
+      sha256: da2afea0f06b06fd0ebb23b916af05df2ef6d56dccae5c0112a2171e668bf9b2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.0"
+  supabase_flutter:
+    dependency: "direct main"
+    description:
+      name: supabase_flutter
+      sha256: f7eefb065f00f947a8f2d0fbb4be3e687ed7165e80c798bc8c4f0d4295855c51
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.0"
 sdks:
   dart: ">=3.8.0 <4.0.0"
   flutter: ">=3.29.0"

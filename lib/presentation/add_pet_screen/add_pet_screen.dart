@@ -10,7 +10,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
-import '../../services/aws_s3_service.dart';
+import '../../services/supabase_storage_service.dart';
 
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({super.key});
@@ -204,7 +204,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
       String? imageUrl;
       if (_selectedImage != null) {
-        imageUrl = await AwsS3Service().uploadFile(_selectedImage!);
+        imageUrl = await SupabaseStorageService().uploadFile(_selectedImage!);
       }
 
       final pet = Pet(
