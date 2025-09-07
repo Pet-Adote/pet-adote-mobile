@@ -302,17 +302,24 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(65.93.h),
-                                child: Container(
-                                  width: 127.h,
-                                  height: 130.h,
-                                  child: Icon(
-                                    Icons.pets,
-                                    size: 80.h,
-                                    color: appTheme.colorFF4F20,
-                                  ),
-                                ),
-                              ),
+                              child: (pet?.imageUrl != null && pet!.imageUrl!.isNotEmpty)
+                                  ? Image.network(
+                                      pet!.imageUrl!,
+                                      width: 127.h,
+                                      height: 130.h,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      width: 127.h,
+                                      height: 130.h,
+                                      child: Icon(
+                                        Icons.pets,
+                                        size: 80.h,
+                                        color: appTheme.colorFF4F20,
+                                      ),
+                                    ),
                             ),
+                          ),
                           ),
                           // Botão favoritar
                           Positioned(

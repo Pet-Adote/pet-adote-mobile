@@ -9,7 +9,7 @@ class Pet {
   final String description;
   final String responsibleName;
   final String phone;
-  final String? imagePath;
+  final String? imageUrl;
 
   Pet({
     this.id,
@@ -22,7 +22,7 @@ class Pet {
     required this.description,
     required this.responsibleName,
     required this.phone,
-    this.imagePath,
+    this.imageUrl,
   });
 
   // Método para obter o nome da espécie formatado
@@ -86,7 +86,7 @@ Adote com amor!''';
       'description': description,
       'responsibleName': responsibleName,
       'phone': phone,
-      'imagePath': imagePath,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -103,7 +103,7 @@ Adote com amor!''';
       description: json['description'] ?? '',
       responsibleName: json['responsibleName'] ?? '',
       phone: json['phone'] ?? '',
-      imagePath: json['imagePath'],
+      imageUrl: json['imageUrl'],
     );
   }
 }

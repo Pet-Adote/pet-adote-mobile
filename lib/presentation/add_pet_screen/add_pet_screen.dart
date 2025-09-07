@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
+
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
+import '../../services/aws_s3_service.dart';
 
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({super.key});
@@ -26,6 +31,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
   String _selectedGender = 'F'; // F ou M
   bool _isVaccinated = false;
   bool _isMenuOpen = false;
+  File? _selectedImage;
 
   void _toggleMenu() {
     setState(() {
@@ -131,13 +137,14 @@ class _AddPetScreenState extends State<AddPetScreen> {
     super.dispose();
   }
 
-  void _handleAddPhoto() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Adicionar foto - Em desenvolvimento'),
-        backgroundColor: appTheme.colorFF4F20,
-      ),
-    );
+  Future<void> _handleAddPhoto() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _selectedImage = File(picked.path);
+      });
+    }
   }
 
   Future<void> _handleRegisterPet() async {
@@ -157,7 +164,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
     }
 
     // Criar objeto Pet com os dados do formulário
-    final pet = Pet(
+    final tempPet = Pet(
       name: _petNameController.text.trim(),
       location: _locationController.text.trim(),
       age: _ageController.text.trim(),
@@ -184,7 +191,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
       final firebasePetRepository = FirebasePetRepository();
       
       // Verificar se o pet já existe
-      if (await firebasePetRepository.petExists(pet)) {
+      if (await firebasePetRepository.petExists(tempPet)) {
         Navigator.of(context).pop(); // Fechar loading
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -194,6 +201,24 @@ class _AddPetScreenState extends State<AddPetScreen> {
         );
         return;
       }
+
+      String? imageUrl;
+      if (_selectedImage != null) {
+        imageUrl = await AwsS3Service().uploadFile(_selectedImage!);
+      }
+
+      final pet = Pet(
+        name: tempPet.name,
+        location: tempPet.location,
+        age: tempPet.age,
+        species: tempPet.species,
+        gender: tempPet.gender,
+        isVaccinated: tempPet.isVaccinated,
+        description: tempPet.description,
+        responsibleName: tempPet.responsibleName,
+        phone: tempPet.phone,
+        imageUrl: imageUrl,
+      );
 
       // Salvar o pet
       final success = await firebasePetRepository.savePet(pet);
