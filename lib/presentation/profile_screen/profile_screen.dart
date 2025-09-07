@@ -18,10 +18,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Pet> _userPets = [];
   bool _isLoadingPets = false;
   final FirebasePetRepository _petRepository = FirebasePetRepository();
+  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
+    _currentUser = FirebaseAuth.instance.currentUser;
+    _loadUserPets();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recarregar pets sempre que a tela for exibida (após cadastrar novo pet)
     _loadUserPets();
   }
 
@@ -47,6 +56,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     }
+  }
+
+  String _getUserDisplayName() {
+    if (_currentUser?.displayName != null && _currentUser!.displayName!.isNotEmpty) {
+      return _currentUser!.displayName!;
+    } else if (_currentUser?.email != null) {
+      // Se não tem displayName, usa a parte do email antes do @
+      return _currentUser!.email!.split('@')[0];
+    } else {
+      return 'Usuário';
+    }
+  }
+
+  String _getUserEmail() {
+    return _currentUser?.email ?? 'No email available';
   }
 
   void _toggleMenu() {
@@ -414,13 +438,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         
                         // Nome do usuário
                         Text(
-                          'Luiz Fellipe',
+                          _getUserDisplayName(),
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,
                             color: appTheme.colorFF4F20,
                           ),
+                          textAlign: TextAlign.center,
+                        ),
+                        
+                        SizedBox(height: 6.h),
+                        
+                        // Email do usuário
+                        Text(
+                          _getUserEmail(),
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w500,
+                            color: appTheme.colorFF4F20.withOpacity(0.7),
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                         
                         SizedBox(height: 32.h),
