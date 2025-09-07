@@ -334,9 +334,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 ],
                               ),
                             )
-                          : ListView.builder(
-                              itemCount: _pets.length,
-                              itemBuilder: (context, index) {
+                          : RefreshIndicator(
+                              onRefresh: _loadPets,
+                              color: appTheme.colorFF4F20,
+                              child: ListView.builder(
+                                itemCount: _pets.length,
+                                itemBuilder: (context, index) {
                                 final pet = _pets[index];
                                 return Card(
                                   margin: EdgeInsets.only(bottom: 16.h),
@@ -441,7 +444,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     ),
                                   ),
                                 );
-                              },
+                                },
+                              ),
                             ),
                     ),
                   ],
