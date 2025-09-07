@@ -247,50 +247,109 @@ class _AddPetScreenState extends State<AddPetScreen> {
                   color: appTheme.colorFF9FE5,
                   child: Row(
                     children: [
-                      // Menu hambúrguer
-                      Container(
-                        margin: EdgeInsets.only(left: 22.h),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: _toggleMenu,
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: 40.h,
-                              height: 34.h,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                width: 40.h,
-                                height: 4.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(4),
+                      // Navegação - Botão Voltar e Menu
+                      Row(
+                        children: [
+                          // Botão Voltar
+                          Container(
+                            margin: EdgeInsets.only(left: 22.h),
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8.h),
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                borderRadius: BorderRadius.circular(8.h),
+                                child: Container(
+                                  width: 40.h,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.whiteCustom,
+                                    borderRadius: BorderRadius.circular(8.h),
+                                    border: Border.all(
+                                      color: appTheme.colorFF4F20,
+                                      width: 1.5,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 4.h,
+                                        offset: Offset(0, 2.h),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: appTheme.colorFF4F20,
+                                    size: 22.h,
+                                  ),
                                 ),
                               ),
-                              Container(
-                                width: 40.h,
-                                height: 4.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              Container(
-                                width: 40.h,
-                                height: 4.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.colorFF4F20,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                          
+                          SizedBox(width: 12.h),
+                          
+                          // Menu hambúrguer
+                          Container(
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8.h),
+                              child: InkWell(
+                                onTap: _toggleMenu,
+                                borderRadius: BorderRadius.circular(8.h),
+                                child: Container(
+                                  width: 40.h,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.whiteCustom,
+                                    borderRadius: BorderRadius.circular(8.h),
+                                    border: Border.all(
+                                      color: appTheme.colorFF4F20,
+                                      width: 1.5,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 4.h,
+                                        offset: Offset(0, 2.h),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        width: 20.h,
+                                        height: 3.h,
+                                        decoration: BoxDecoration(
+                                          color: appTheme.colorFF4F20,
+                                          borderRadius: BorderRadius.circular(2.h),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 20.h,
+                                        height: 3.h,
+                                        decoration: BoxDecoration(
+                                          color: appTheme.colorFF4F20,
+                                          borderRadius: BorderRadius.circular(2.h),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 20.h,
+                                        height: 3.h,
+                                        decoration: BoxDecoration(
+                                          color: appTheme.colorFF4F20,
+                                          borderRadius: BorderRadius.circular(2.h),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
                   
                   // Logo centralizado
                   Expanded(
