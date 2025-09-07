@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
+import '../../models/pet_model.dart';
+import '../../repositories/firebase_pet_repository.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,6 +15,39 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isMenuOpen = false;
+  List<Pet> _userPets = [];
+  bool _isLoadingPets = false;
+  final FirebasePetRepository _petRepository = FirebasePetRepository();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserPets();
+  }
+
+  void _loadUserPets() async {
+    setState(() {
+      _isLoadingPets = true;
+    });
+
+    try {
+      final pets = await _petRepository.getUserPets();
+      setState(() {
+        _userPets = pets;
+        _isLoadingPets = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingPets = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao carregar seus pets'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
+  }
 
   void _toggleMenu() {
     setState(() {
@@ -408,6 +443,180 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildProfileOption(
                           'Meus Favoritos',
                           onTap: () => _handleMeusFavoritos(context),
+                        ),
+                        
+                        SizedBox(height: 20.h),
+                        
+                        // Seção Meus Pets
+                        Container(
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Título da seção
+                              Row(
+                                children: [
+                                  Text(
+                                    'Meus Pets',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 18.fSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    '${_userPets.length} ${_userPets.length == 1 ? 'pet' : 'pets'}',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w500,
+                                      color: appTheme.colorFF4F20.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              
+                              SizedBox(height: 12.h),
+                              
+                              // Lista de pets ou estado vazio
+                              if (_isLoadingPets)
+                                Center(
+                                  child: CircularProgressIndicator(
+                                    color: appTheme.colorFF4F20,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              else if (_userPets.isEmpty)
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(20.h),
+                                  decoration: BoxDecoration(
+                                    color: appTheme.whiteCustom,
+                                    borderRadius: BorderRadius.circular(12.h),
+                                    border: Border.all(
+                                      color: appTheme.colorFF4F20.withOpacity(0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.pets,
+                                        size: 40.h,
+                                        color: appTheme.colorFF4F20.withOpacity(0.5),
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      Text(
+                                        'Nenhum pet cadastrado',
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14.fSize,
+                                          fontWeight: FontWeight.w500,
+                                          color: appTheme.colorFF4F20.withOpacity(0.7),
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pushNamed(AppRoutes.addPetScreen);
+                                        },
+                                        child: Text(
+                                          'Cadastrar primeiro pet',
+                                          style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 14.fSize,
+                                            fontWeight: FontWeight.w600,
+                                            color: appTheme.colorFF4F20,
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                Container(
+                                  height: 120.h,
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _userPets.length,
+                                    separatorBuilder: (context, index) => SizedBox(width: 12.h),
+                                    itemBuilder: (context, index) {
+                                      final pet = _userPets[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pushNamed(
+                                            AppRoutes.petProfileScreen,
+                                            arguments: pet,
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 100.h,
+                                          decoration: BoxDecoration(
+                                            color: appTheme.whiteCustom,
+                                            borderRadius: BorderRadius.circular(12.h),
+                                            border: Border.all(
+                                              color: appTheme.colorFF4F20.withOpacity(0.3),
+                                              width: 1,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.1),
+                                                blurRadius: 4.h,
+                                                offset: Offset(0, 2.h),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                width: 50.h,
+                                                height: 50.h,
+                                                decoration: BoxDecoration(
+                                                  color: appTheme.colorFF9FE5.withOpacity(0.3),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.pets,
+                                                  color: appTheme.colorFF4F20,
+                                                  size: 24.h,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8.h),
+                                              Text(
+                                                pet.name,
+                                                style: TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 12.fSize,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: appTheme.colorFF4F20,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              SizedBox(height: 2.h),
+                                              Text(
+                                                pet.speciesDisplayName,
+                                                style: TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 10.fSize,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: appTheme.colorFF4F20.withOpacity(0.7),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                         
                         SizedBox(height: 32.h),
