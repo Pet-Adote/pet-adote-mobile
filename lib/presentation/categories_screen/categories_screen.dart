@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
@@ -28,6 +29,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   void initState() {
     super.initState();
+    _loadPets();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recarregar pets sempre que a tela for exibida (após mudanças)
     _loadPets();
   }
 
@@ -400,15 +408,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 itemCount: _pets.length,
                                 itemBuilder: (context, index) {
                                 final pet = _pets[index];
+                                final currentUser = FirebaseAuth.instance.currentUser;
+                                final isMyPet = pet.isOwnedByCurrentUser(currentUser?.uid);
+                                
                                 return Card(
                                   margin: EdgeInsets.only(bottom: 16.h),
-                                  color: appTheme.whiteCustom,
+                                  color: isMyPet ? appTheme.colorFF9FE5.withOpacity(0.1) : appTheme.whiteCustom,
                                   elevation: 4,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12.h),
                                     side: BorderSide(
-                                      color: appTheme.colorFF4F20,
-                                      width: 2,
+                                      color: isMyPet ? appTheme.colorFF4F20 : appTheme.colorFF4F20.withOpacity(0.5),
+                                      width: isMyPet ? 3 : 2,
                                     ),
                                   ),
                                   child: InkWell(
@@ -448,14 +459,48 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  pet.name,
-                                                  style: TextStyle(
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 18.fSize,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: appTheme.colorFF4F20,
-                                                  ),
+                                                // Nome e badge do pet
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        pet.name,
+                                                        style: TextStyle(
+                                                          fontFamily: 'Inter',
+                                                          fontSize: 18.fSize,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: appTheme.colorFF4F20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    if (isMyPet)
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(
+                                                          horizontal: 8.h,
+                                                          vertical: 4.h,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          color: appTheme.colorFF4F20,
+                                                          borderRadius: BorderRadius.circular(12.h),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.black.withOpacity(0.1),
+                                                              blurRadius: 2.h,
+                                                              offset: Offset(0, 1.h),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: Text(
+                                                          'MEU PET',
+                                                          style: TextStyle(
+                                                            fontFamily: 'Inter',
+                                                            fontSize: 10.fSize,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: appTheme.whiteCustom,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                  ],
                                                 ),
                                                 SizedBox(height: 4.h),
                                                 Text(
