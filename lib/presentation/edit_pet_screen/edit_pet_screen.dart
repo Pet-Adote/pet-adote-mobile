@@ -412,11 +412,11 @@ class _EditPetScreenState extends State<EditPetScreen> {
                 // Conteúdo da tela
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 35.h),
+                    padding: EdgeInsets.symmetric(horizontal: 40.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 22.h),
+                        SizedBox(height: 15.h),
                         
                         // Título "Editar Pet"
                         Row(
@@ -440,328 +440,767 @@ class _EditPetScreenState extends State<EditPetScreen> {
                           ],
                         ),
                         
-                        SizedBox(height: 26.h),
+                        SizedBox(height: 40.h),
                         
-                        // Nome do pet
+                        // Seção de foto do pet (centralizada)
+                        Center(
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 104.h,
+                                height: 97.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.whiteCustom,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: appTheme.colorFF4F20,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.pets,
+                                  size: 50.h,
+                                  color: appTheme.colorFF4F20,
+                                ),
+                              ),
+                              SizedBox(height: 8.h),
+                              Text(
+                                'EDITAR FOTO',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 15.fSize,
+                                  fontWeight: FontWeight.w600,
+                                  color: appTheme.colorFF4F20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        SizedBox(height: 40.h),
+                        
+                        // Nome do animal
                         Text(
-                          'Nome do pet*',
+                          'Nome do Animal:',
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w700,
                             color: appTheme.colorFF4F20,
                           ),
                         ),
                         SizedBox(height: 8.h),
-                        CustomTextField(
-                          controller: _petNameController,
-                          placeholder: 'Ex: Rex, Mimi, Bolinha...',
+                        Container(
+                          height: 32.h,
+                          child: TextFormField(
+                            controller: _petNameController,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14.fSize,
+                              color: appTheme.blackCustom,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Digite o nome do pet',
+                              hintStyle: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 14.fSize,
+                                color: Color(0xFFADAEBC),
+                              ),
+                              filled: true,
+                              fillColor: appTheme.colorFFF1F1,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12.h),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.h),
+                                borderSide: BorderSide(
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.h),
+                                borderSide: BorderSide(
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.h),
+                                borderSide: BorderSide(
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 24.h),
                         
                         // Localização
                         Text(
-                          'Localização*',
+                          'Localização:',
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        CustomTextField(
-                          controller: _locationController,
-                          placeholder: 'Ex: Garanhuns - PE',
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        // Espécie
-                        Text(
-                          'Espécie*',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w700,
                             color: appTheme.colorFF4F20,
                           ),
                         ),
                         SizedBox(height: 8.h),
                         Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: appTheme.whiteCustom,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: appTheme.colorFF4F20),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedSpecies,
-                              padding: EdgeInsets.symmetric(horizontal: 16.h, vertical: 8.h),
-                              dropdownColor: appTheme.whiteCustom,
-                              items: [
-                                DropdownMenuItem(
-                                  value: 'dogs',
-                                  child: Text(
-                                    'Cachorro',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 16.fSize,
-                                      color: appTheme.colorFF4F20,
-                                    ),
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'cats',
-                                  child: Text(
-                                    'Gato',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 16.fSize,
-                                      color: appTheme.colorFF4F20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedSpecies = value!;
-                                });
-                              },
+                          height: 32.h,
+                          child: TextFormField(
+                            controller: _locationController,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14.fSize,
+                              color: appTheme.blackCustom,
                             ),
-                          ),
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        // Idade
-                        Text(
-                          'Idade*',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        CustomTextField(
-                          controller: _ageController,
-                          placeholder: 'Ex: 2 anos, 6 meses, Filhote...',
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        // Sexo
-                        Text(
-                          'Sexo*',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: appTheme.whiteCustom,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: appTheme.colorFF4F20),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedGender,
-                              padding: EdgeInsets.symmetric(horizontal: 16.h, vertical: 8.h),
-                              dropdownColor: appTheme.whiteCustom,
-                              items: [
-                                DropdownMenuItem(
-                                  value: 'F',
-                                  child: Text(
-                                    'Fêmea',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 16.fSize,
-                                      color: appTheme.colorFF4F20,
-                                    ),
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'M',
-                                  child: Text(
-                                    'Macho',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 16.fSize,
-                                      color: appTheme.colorFF4F20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedGender = value!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        // Vacinado
-                        Row(
-                          children: [
-                            Text(
-                              'Vacinado?*',
-                              style: TextStyle(
+                            decoration: InputDecoration(
+                              hintText: 'Digite a localização',
+                              hintStyle: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 15.fSize,
-                                fontWeight: FontWeight.w800,
-                                color: appTheme.colorFF4F20,
+                                fontSize: 14.fSize,
+                                color: Color(0xFFADAEBC),
+                              ),
+                              filled: true,
+                              fillColor: appTheme.colorFFF1F1,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12.h),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.h),
+                                borderSide: BorderSide(
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.h),
+                                borderSide: BorderSide(
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.h),
+                                borderSide: BorderSide(
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
+                                ),
                               ),
                             ),
-                            SizedBox(width: 16.h),
-                            Switch(
-                              value: _isVaccinated,
-                              onChanged: (value) {
-                                setState(() {
-                                  _isVaccinated = value;
-                                });
-                              },
-                              activeColor: appTheme.colorFF4F20,
+                          ),
+                        ),
+                        
+                        SizedBox(height: 24.h),
+                        
+                        // Linha com Idade e Espécie
+                        Row(
+                          children: [
+                            // Idade
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Idade:',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Container(
+                                    height: 32.h,
+                                    child: TextFormField(
+                                      controller: _ageController,
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 14.fSize,
+                                        color: appTheme.blackCustom,
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: 'Ex: 2 anos',
+                                        hintStyle: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14.fSize,
+                                          color: Color(0xFFADAEBC),
+                                        ),
+                                        filled: true,
+                                        fillColor: appTheme.colorFFF1F1,
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 12.h),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              _isVaccinated ? 'Sim' : 'Não',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 16.fSize,
-                                color: appTheme.colorFF4F20,
+                            
+                            SizedBox(width: 16.h),
+                            
+                            // Espécie
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Espécie:',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Container(
+                                    height: 32.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFFF1F1,
+                                      borderRadius: BorderRadius.circular(8.h),
+                                      border: Border.all(
+                                        color: appTheme.colorFF4F20,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: _selectedSpecies,
+                                        hint: Text(
+                                          'Ex: Cão',
+                                          style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 14.fSize,
+                                            color: Color(0xFFADAEBC),
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 12.h),
+                                        dropdownColor: appTheme.whiteCustom,
+                                        items: [
+                                          DropdownMenuItem(
+                                            value: 'dogs',
+                                            child: Text(
+                                              'Cachorro',
+                                              style: TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 14.fSize,
+                                                color: appTheme.colorFF4F20,
+                                              ),
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 'cats',
+                                            child: Text(
+                                              'Gato',
+                                              style: TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 14.fSize,
+                                                color: appTheme.colorFF4F20,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedSpecies = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 24.h),
+                        
+                        // Linha com Vacinado e Sexo
+                        Row(
+                          children: [
+                            // Vacinado
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Vacinado?',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  Row(
+                                    children: [
+                                      // Opção SIM
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _isVaccinated = true;
+                                              });
+                                            },
+                                            child: Container(
+                                              width: 20.h,
+                                              height: 20.h,
+                                              decoration: BoxDecoration(
+                                                color: appTheme.whiteCustom,
+                                                border: Border.all(
+                                                  color: appTheme.blackCustom,
+                                                  width: 0.5,
+                                                ),
+                                                borderRadius: BorderRadius.circular(1.h),
+                                              ),
+                                              child: _isVaccinated
+                                                  ? Icon(
+                                                      Icons.check,
+                                                      size: 16.h,
+                                                      color: appTheme.colorFF4F20,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.h),
+                                          Text(
+                                            'SIM',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14.fSize,
+                                              fontWeight: FontWeight.w600,
+                                              color: appTheme.colorFF4F20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      
+                                      SizedBox(width: 16.h),
+                                      
+                                      // Opção NÃO
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _isVaccinated = false;
+                                              });
+                                            },
+                                            child: Container(
+                                              width: 20.h,
+                                              height: 20.h,
+                                              decoration: BoxDecoration(
+                                                color: appTheme.whiteCustom,
+                                                border: Border.all(
+                                                  color: appTheme.blackCustom,
+                                                  width: 0.5,
+                                                ),
+                                                borderRadius: BorderRadius.circular(1.h),
+                                              ),
+                                              child: !_isVaccinated
+                                                  ? Icon(
+                                                      Icons.check,
+                                                      size: 16.h,
+                                                      color: appTheme.colorFF4F20,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.h),
+                                          Text(
+                                            'NÃO',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14.fSize,
+                                              fontWeight: FontWeight.w600,
+                                              color: appTheme.colorFF4F20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(width: 16.h),
+                            
+                            // Sexo
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Sexo:',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  Row(
+                                    children: [
+                                      // Opção F
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _selectedGender = 'F';
+                                              });
+                                            },
+                                            child: Container(
+                                              width: 20.h,
+                                              height: 20.h,
+                                              decoration: BoxDecoration(
+                                                color: appTheme.whiteCustom,
+                                                border: Border.all(
+                                                  color: appTheme.blackCustom,
+                                                  width: 0.5,
+                                                ),
+                                                borderRadius: BorderRadius.circular(1.h),
+                                              ),
+                                              child: _selectedGender == 'F'
+                                                  ? Icon(
+                                                      Icons.check,
+                                                      size: 16.h,
+                                                      color: appTheme.colorFF4F20,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.h),
+                                          Text(
+                                            'F',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14.fSize,
+                                              fontWeight: FontWeight.w600,
+                                              color: appTheme.colorFF4F20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      
+                                      SizedBox(width: 16.h),
+                                      
+                                      // Opção M
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _selectedGender = 'M';
+                                              });
+                                            },
+                                            child: Container(
+                                              width: 20.h,
+                                              height: 20.h,
+                                              decoration: BoxDecoration(
+                                                color: appTheme.whiteCustom,
+                                                border: Border.all(
+                                                  color: appTheme.blackCustom,
+                                                  width: 0.5,
+                                                ),
+                                                borderRadius: BorderRadius.circular(1.h),
+                                              ),
+                                              child: _selectedGender == 'M'
+                                                  ? Icon(
+                                                      Icons.check,
+                                                      size: 16.h,
+                                                      color: appTheme.colorFF4F20,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.h),
+                                          Text(
+                                            'M',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14.fSize,
+                                              fontWeight: FontWeight.w600,
+                                              color: appTheme.colorFF4F20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                        SizedBox(height: 24.h),
                         
                         // Descrição
                         Text(
-                          'Descrição',
+                          'Descrição:',
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w700,
                             color: appTheme.colorFF4F20,
                           ),
                         ),
                         SizedBox(height: 8.h),
                         Container(
-                          height: 100.h,
+                          height: 96.h,
                           child: TextFormField(
                             controller: _descriptionController,
-                            maxLines: 4,
+                            maxLines: null,
+                            expands: true,
                             keyboardType: TextInputType.multiline,
                             textInputAction: TextInputAction.newline,
                             style: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 16.fSize,
+                              fontSize: 14.fSize,
                               color: appTheme.blackCustom,
                             ),
                             decoration: InputDecoration(
-                              hintText: 'Conte um pouco sobre o temperamento, personalidade...',
+                              hintText: 'Descreva características do pet...',
                               hintStyle: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 16.fSize,
-                                color: appTheme.grey500,
+                                fontSize: 14.fSize,
+                                color: Color(0xFFADAEBC),
                               ),
                               filled: true,
-                              fillColor: appTheme.whiteCustom,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16.h,
-                                vertical: 12.h,
-                              ),
+                              fillColor: appTheme.colorFFF1F1,
+                              contentPadding: EdgeInsets.all(12.h),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.h),
+                                borderRadius: BorderRadius.circular(8.h),
                                 borderSide: BorderSide(
-                                  color: Color(0xFFE5E7EB),
-                                  width: 1.h,
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
                                 ),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.h),
+                                borderRadius: BorderRadius.circular(8.h),
                                 borderSide: BorderSide(
-                                  color: Color(0xFFE5E7EB),
-                                  width: 1.h,
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.h),
+                                borderRadius: BorderRadius.circular(8.h),
                                 borderSide: BorderSide(
-                                  color: Color(0xFF9FE5AD),
-                                  width: 2.h,
+                                  color: appTheme.colorFF4F20,
+                                  width: 1,
                                 ),
                               ),
                             ),
                           ),
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 24.h),
                         
-                        // Nome do responsável
-                        Text(
-                          'Nome do responsável*',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        CustomTextField(
-                          controller: _responsibleNameController,
-                          placeholder: 'Seu nome completo',
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        // Telefone
-                        Text(
-                          'Telefone (WhatsApp)*',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15.fSize,
-                            fontWeight: FontWeight.w800,
-                            color: appTheme.colorFF4F20,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        CustomTextField(
-                          controller: _phoneController,
-                          placeholder: '(87) 99999-9999',
-                          keyboardType: TextInputType.phone,
+                        // Linha com Nome Responsável e Telefone
+                        Row(
+                          children: [
+                            // Nome Responsável
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Nome Responsável:',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Container(
+                                    height: 32.h,
+                                    child: TextFormField(
+                                      controller: _responsibleNameController,
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 14.fSize,
+                                        color: appTheme.blackCustom,
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: 'Nome completo',
+                                        hintStyle: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14.fSize,
+                                          color: Color(0xFFADAEBC),
+                                        ),
+                                        filled: true,
+                                        fillColor: appTheme.colorFFF1F1,
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 12.h),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(width: 16.h),
+                            
+                            // Telefone
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Telefone (Zap):',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w700,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Container(
+                                    height: 32.h,
+                                    child: TextFormField(
+                                      controller: _phoneController,
+                                      keyboardType: TextInputType.phone,
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 14.fSize,
+                                        color: appTheme.blackCustom,
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: '(00) 00000-0000',
+                                        hintStyle: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14.fSize,
+                                          color: Color(0xFFADAEBC),
+                                        ),
+                                        filled: true,
+                                        fillColor: appTheme.colorFFF1F1,
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 12.h),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.h),
+                                          borderSide: BorderSide(
+                                            color: appTheme.colorFF4F20,
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                         
                         SizedBox(height: 40.h),
                         
                         // Botão Atualizar
                         Center(
-                          child: CustomButton(
-                            text: 'ATUALIZAR PET',
-                            onPressed: _updatePet,
-                            backgroundColor: appTheme.colorFF4F20,
-                            textColor: appTheme.whiteCustom,
-                            height: 50.h,
-                            width: 280.h,
-                            fontSize: 18.fSize,
-                            fontWeight: FontWeight.w600,
+                          child: GestureDetector(
+                            onTap: _updatePet,
+                            child: Container(
+                              width: 240.h,
+                              height: 48.h,
+                              decoration: BoxDecoration(
+                                color: appTheme.colorFF9FE5,
+                                border: Border.all(
+                                  color: Color(0xFF262626),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8.h),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 6,
+                                    offset: Offset(0, 4),
+                                  ),
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 15,
+                                    offset: Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Atualizar Pet',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 18.fSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFF262626),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 40.h),
                       ],
                     ),
                   ),
