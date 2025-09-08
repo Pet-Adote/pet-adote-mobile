@@ -5,6 +5,7 @@ import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
+import '../../widgets/custom_image_view.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final String categoryTitle;
@@ -419,11 +420,25 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 width: 2,
                                               ),
                                             ),
-                                            child: Icon(
-                                              pet.species == 'dogs' ? Icons.pets : Icons.pets,
-                                              color: appTheme.colorFF4F20,
-                                              size: 30.h,
-                                            ),
+                                            child: (pet.imagePath != null &&
+                                                    pet.imagePath!.isNotEmpty)
+                                                ? ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(30.h),
+                                                    child: CustomImageView(
+                                                      imagePath: pet.imagePath!,
+                                                      width: 60.h,
+                                                      height: 60.h,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : Icon(
+                                                    pet.species == 'dogs'
+                                                        ? Icons.pets
+                                                        : Icons.pets,
+                                                    color: appTheme.colorFF4F20,
+                                                    size: 30.h,
+                                                  ),
                                           ),
                                           SizedBox(width: 16.h),
                                           

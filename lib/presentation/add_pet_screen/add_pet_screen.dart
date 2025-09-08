@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
@@ -26,6 +29,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
   String _selectedGender = 'F'; // F ou M
   bool _isVaccinated = false;
   bool _isMenuOpen = false;
+  File? _petImage;
 
   void _toggleMenu() {
     setState(() {
@@ -136,13 +140,14 @@ class _AddPetScreenState extends State<AddPetScreen> {
     super.dispose();
   }
 
-  void _handleAddPhoto() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Adicionar foto - Em desenvolvimento'),
-        backgroundColor: appTheme.colorFF4F20,
-      ),
-    );
+  Future<void> _handleAddPhoto() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _petImage = File(picked.path);
+      });
+    }
   }
 
   Future<void> _handleRegisterPet() async {
@@ -161,19 +166,6 @@ class _AddPetScreenState extends State<AddPetScreen> {
       return;
     }
 
-    // Criar objeto Pet com os dados do formulário
-    final pet = Pet(
-      name: _petNameController.text.trim(),
-      location: _locationController.text.trim(),
-      age: _ageController.text.trim(),
-      species: _selectedSpecies,
-      gender: _selectedGender,
-      isVaccinated: _isVaccinated,
-      description: _descriptionController.text.trim(),
-      responsibleName: _responsibleNameController.text.trim(),
-      phone: _phoneController.text.trim(),
-    );
-
     // Mostrar indicador de carregamento
     showDialog(
       context: context,
@@ -187,7 +179,26 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
     try {
       final firebasePetRepository = FirebasePetRepository();
-      
+
+      String? imageUrl;
+      if (_petImage != null) {
+        imageUrl = await firebasePetRepository.uploadPetImage(_petImage!);
+      }
+
+      // Criar objeto Pet com os dados do formulário
+      final pet = Pet(
+        name: _petNameController.text.trim(),
+        location: _locationController.text.trim(),
+        age: _ageController.text.trim(),
+        species: _selectedSpecies,
+        gender: _selectedGender,
+        isVaccinated: _isVaccinated,
+        description: _descriptionController.text.trim(),
+        responsibleName: _responsibleNameController.text.trim(),
+        phone: _phoneController.text.trim(),
+        imagePath: imageUrl,
+      );
+
       // Verificar se o pet já existe
       if (await firebasePetRepository.petExists(pet)) {
         Navigator.of(context).pop(); // Fechar loading
@@ -214,7 +225,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
         
         // Navegar para a tela do perfil do pet passando os dados
         Navigator.of(context).pushReplacementNamed(
-          AppRoutes.petProfileScreen, 
+          AppRoutes.petProfileScreen,
           arguments: pet,
         );
       } else {
@@ -408,13 +419,23 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                 border: Border.all(color: appTheme.colorFF4F20, width: 2),
                                 shape: BoxShape.circle,
                               ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.add_a_photo,
-                                  size: 65.h,
-                                  color: appTheme.colorFF4F20,
-                                ),
-                              ),
+                              child: _petImage != null
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(60.h),
+                                      child: Image.file(
+                                        _petImage!,
+                                        width: 123.h,
+                                        height: 121.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Icon(
+                                        Icons.add_a_photo,
+                                        size: 65.h,
+                                        color: appTheme.colorFF4F20,
+                                      ),
+                                    ),
                             ),
                           ),
                           SizedBox(height: 13.h),

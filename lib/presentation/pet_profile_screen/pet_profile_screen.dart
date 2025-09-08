@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_image_view.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
 import '../../repositories/firebase_favorites_repository.dart';
@@ -455,15 +456,23 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(65.93.h),
-                                child: Container(
-                                  width: 127.h,
-                                  height: 130.h,
-                                  child: Icon(
-                                    Icons.pets,
-                                    size: 80.h,
-                                    color: appTheme.colorFF4F20,
-                                  ),
-                                ),
+                                child: (pet?.imagePath != null &&
+                                        pet!.imagePath!.isNotEmpty)
+                                    ? CustomImageView(
+                                        imagePath: pet!.imagePath!,
+                                        width: 127.h,
+                                        height: 130.h,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Container(
+                                        width: 127.h,
+                                        height: 130.h,
+                                        child: Icon(
+                                          Icons.pets,
+                                          size: 80.h,
+                                          color: appTheme.colorFF4F20,
+                                        ),
+                                      ),
                               ),
                             ),
                           ),
