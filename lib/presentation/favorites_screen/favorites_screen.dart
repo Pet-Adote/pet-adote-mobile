@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
+import '../../models/pet_model.dart';
+import '../../repositories/firebase_favorites_repository.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -12,6 +14,39 @@ class FavoritesScreen extends StatefulWidget {
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
   bool _isMenuOpen = false;
+  final FirebaseFavoritesRepository _favoritesRepository = FirebaseFavoritesRepository();
+  List<Pet> _favoritePets = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoritePets();
+  }
+
+  Future<void> _loadFavoritePets() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final pets = await _favoritesRepository.getFavoritePets();
+      setState(() {
+        _favoritePets = pets;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao carregar favoritos.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   void _toggleMenu() {
     setState(() {
@@ -106,6 +141,17 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   void _handleFAQ() {
     _closeMenu();
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
+  }
+
+  void _navigateToPetProfile(Pet pet) async {
+    final result = await Navigator.of(context).pushNamed(
+      AppRoutes.petProfileScreen,
+      arguments: pet,
+    );
+    // Recarregar a lista quando voltar da tela do pet
+    if (result != null || mounted) {
+      _loadFavoritePets();
+    }
   }
 
   @override
@@ -246,41 +292,59 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 
                 // Conteúdo dos favoritos
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.h),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.favorite_border,
-                            size: 80.h,
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
                             color: appTheme.colorFF4F20,
                           ),
-                          SizedBox(height: 20.h),
-                          Text(
-                            'Nenhum favorito ainda',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18.fSize,
-                              fontWeight: FontWeight.w600,
-                              color: appTheme.colorFF4F20,
+                        )
+                      : _favoritePets.isEmpty
+                          ? Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20.h),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.favorite_border,
+                                      size: 80.h,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Text(
+                                      'Nenhum favorito ainda',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 18.fSize,
+                                        fontWeight: FontWeight.w600,
+                                        color: appTheme.colorFF4F20,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10.h),
+                                    Text(
+                                      'Quando você favoritar um pet, ele aparecerá aqui!',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 14.fSize,
+                                        color: appTheme.grey600,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : RefreshIndicator(
+                              onRefresh: _loadFavoritePets,
+                              child: ListView.builder(
+                                padding: EdgeInsets.all(20.h),
+                                itemCount: _favoritePets.length,
+                                itemBuilder: (context, index) {
+                                  final pet = _favoritePets[index];
+                                  return _buildPetCard(pet);
+                                },
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 10.h),
-                          Text(
-                            'Quando você favoritar um pet, ele aparecerá aqui!',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 14.fSize,
-                              color: appTheme.grey600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
                 
                 // Bottom navigation bar
@@ -543,6 +607,112 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       width: 236.h,
       height: 1,
       color: appTheme.blackCustom,
+    );
+  }
+
+  Widget _buildPetCard(Pet pet) {
+    return Card(
+      margin: EdgeInsets.only(bottom: 16.h),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.h),
+      ),
+      color: appTheme.whiteCustom,
+      child: InkWell(
+        onTap: () => _navigateToPetProfile(pet),
+        borderRadius: BorderRadius.circular(12.h),
+        child: Padding(
+          padding: EdgeInsets.all(16.h),
+          child: Row(
+            children: [
+              // Avatar do pet
+              Container(
+                width: 60.h,
+                height: 60.h,
+                decoration: BoxDecoration(
+                  color: appTheme.colorFF9FE5,
+                  border: Border.all(color: appTheme.colorFF4F20, width: 2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.pets,
+                  size: 30.h,
+                  color: appTheme.colorFF4F20,
+                ),
+              ),
+              
+              SizedBox(width: 16.h),
+              
+              // Informações do pet
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pet.name,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 18.fSize,
+                        fontWeight: FontWeight.bold,
+                        color: appTheme.colorFF4F20,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      '${pet.speciesDisplayName} • ${pet.gender} • ${pet.age}',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14.fSize,
+                        color: appTheme.grey600,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    if (pet.location.isNotEmpty)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 16.h,
+                            color: appTheme.colorFF4F20,
+                          ),
+                          SizedBox(width: 4.h),
+                          Expanded(
+                            child: Text(
+                              pet.location,
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 12.fSize,
+                                color: appTheme.grey600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              
+              // Ícone de favorito e seta
+              Column(
+                children: [
+                  Icon(
+                    Icons.favorite,
+                    color: appTheme.redCustom,
+                    size: 24.h,
+                  ),
+                  SizedBox(height: 8.h),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: appTheme.colorFF4F20,
+                    size: 16.h,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /pets/{document} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+                   && request.auth.uid == request.resource.data.createdBy;
+
+      allow update, delete: if request.auth != null
+                           && request.auth.uid == resource.data.createdBy;
+    }
+
+    // Regras para coleção de usuários e favoritos
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Regras para subcoleção de favoritos
+      match /favorites/{favoriteId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    match /test/{document} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
