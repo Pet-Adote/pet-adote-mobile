@@ -8,6 +8,7 @@ import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
+import '../../repositories/firebase_favorites_repository.dart';
 
 class PetProfileScreen extends StatefulWidget {
   const PetProfileScreen({super.key});
@@ -20,6 +21,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
   bool _isFavorited = false;
   Pet? pet;
   final FirebasePetRepository _petRepository = FirebasePetRepository();
+  final FirebaseFavoritesRepository _favoritesRepository = FirebaseFavoritesRepository();
 
   @override
   void didChangeDependencies() {
@@ -29,7 +31,18 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     final arguments = ModalRoute.of(context)?.settings.arguments;
     if (arguments is Pet) {
       pet = arguments;
+      _checkFavoriteStatus();
     }
+  }
+
+  // Verificar se o pet está nos favoritos
+  Future<void> _checkFavoriteStatus() async {
+    if (pet?.id == null) return;
+    
+    final isFavorite = await _favoritesRepository.isFavorite(pet!.id!);
+    setState(() {
+      _isFavorited = isFavorite;
+    });
   }
 
   // Verificar se o usuário atual é o dono do pet
@@ -156,10 +169,54 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     );
   }
 
-  void _toggleFavorite() {
+  Future<void> _toggleFavorite() async {
+    if (pet?.id == null) return;
+
+    // Mostrar loading enquanto processa
     setState(() {
       _isFavorited = !_isFavorited;
     });
+
+    try {
+      final success = await _favoritesRepository.toggleFavorite(pet!.id!);
+      
+      if (success) {
+        // Mostrar feedback ao usuário
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_isFavorited 
+                ? 'Pet adicionado aos favoritos!' 
+                : 'Pet removido dos favoritos!'),
+            backgroundColor: appTheme.colorFF9FE5,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        // Reverter o estado se falhou
+        setState(() {
+          _isFavorited = !_isFavorited;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao atualizar favoritos. Tente novamente.'),
+            backgroundColor: appTheme.redCustom,
+          ),
+        );
+      }
+    } catch (e) {
+      // Reverter o estado se deu erro
+      setState(() {
+        _isFavorited = !_isFavorited;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao atualizar favoritos. Tente novamente.'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
   }
 
   Future<void> _shareOnWhatsApp() async {
