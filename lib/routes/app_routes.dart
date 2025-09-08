@@ -16,6 +16,7 @@ import '../presentation/edit_pet_screen/edit_pet_screen.dart';
 import '../presentation/pet_profile_screen/pet_profile_screen.dart';
 import '../presentation/help_screen/help_screen.dart';
 import '../presentation/denounce_screen/denounce_screen.dart';
+import '../presentation/app_denounce_screen/app_denounce_screen.dart';
 
 class AppRoutes {
   static const String registrationScreen = '/registration_screen';
@@ -35,6 +36,7 @@ class AppRoutes {
   static const String petProfileScreen = '/pet_profile_screen';
   static const String helpScreen = '/help_screen';
   static const String denounceScreen = '/denounce_screen';
+  static const String appDenounceScreen = '/app_denounce_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String initialRoute = '/';
@@ -56,6 +58,7 @@ class AppRoutes {
         petProfileScreen: (context) => PetProfileScreen(),
         helpScreen: (context) => HelpScreen(),
         denounceScreen: (context) => DenounceScreen(),
+        appDenounceScreen: (context) => AppDenounceScreen(),
         appNavigationScreen: (context) => AppNavigationScreen(),
         initialRoute: (context) => LoginScreen()
       };
