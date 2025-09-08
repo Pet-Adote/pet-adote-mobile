@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
@@ -260,32 +259,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             margin: EdgeInsets.only(left: 22.h),
                             child: Material(
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(8.h),
                               child: InkWell(
                                 onTap: () => Navigator.of(context).pop(),
                                 borderRadius: BorderRadius.circular(8.h),
                                 child: Container(
                                   width: 40.h,
                                   height: 40.h,
-                                  decoration: BoxDecoration(
-                                    color: appTheme.whiteCustom,
-                                    borderRadius: BorderRadius.circular(8.h),
-                                    border: Border.all(
-                                      color: appTheme.colorFF4F20,
-                                      width: 1.5,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 4.h,
-                                        offset: Offset(0, 2.h),
-                                      ),
-                                    ],
-                                  ),
                                   child: Icon(
                                     Icons.arrow_back,
                                     color: appTheme.colorFF4F20,
-                                    size: 22.h,
+                                    size: 28.h,
                                   ),
                                 ),
                               ),
@@ -298,53 +281,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Container(
                             child: Material(
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(8.h),
                               child: InkWell(
                                 onTap: _toggleMenu,
                                 borderRadius: BorderRadius.circular(8.h),
                                 child: Container(
                                   width: 40.h,
-                                  height: 40.h,
-                                  decoration: BoxDecoration(
-                                    color: appTheme.whiteCustom,
-                                    borderRadius: BorderRadius.circular(8.h),
-                                    border: Border.all(
-                                      color: appTheme.colorFF4F20,
-                                      width: 1.5,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 4.h,
-                                        offset: Offset(0, 2.h),
-                                      ),
-                                    ],
-                                  ),
+                                  height: 34.h,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
-                                        width: 20.h,
-                                        height: 3.h,
+                                        width: 40.h,
+                                        height: 4.h,
                                         decoration: BoxDecoration(
                                           color: appTheme.colorFF4F20,
-                                          borderRadius: BorderRadius.circular(2.h),
+                                          borderRadius: BorderRadius.circular(4.h),
                                         ),
                                       ),
                                       Container(
-                                        width: 20.h,
-                                        height: 3.h,
+                                        width: 40.h,
+                                        height: 4.h,
                                         decoration: BoxDecoration(
                                           color: appTheme.colorFF4F20,
-                                          borderRadius: BorderRadius.circular(2.h),
+                                          borderRadius: BorderRadius.circular(4.h),
                                         ),
                                       ),
                                       Container(
-                                        width: 20.h,
-                                        height: 3.h,
+                                        width: 40.h,
+                                        height: 4.h,
                                         decoration: BoxDecoration(
                                           color: appTheme.colorFF4F20,
-                                          borderRadius: BorderRadius.circular(2.h),
+                                          borderRadius: BorderRadius.circular(4.h),
                                         ),
                                       ),
                                     ],
@@ -435,31 +402,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         
                         SizedBox(height: 12.h),
-                        
-                        // Nome do usuário
-                        Text(
-                          _getUserDisplayName(),
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 24.fSize,
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.colorFF4F20,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        
-                        SizedBox(height: 6.h),
-                        
-                        // Email do usuário
-                        Text(
-                          _getUserEmail(),
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14.fSize,
-                            fontWeight: FontWeight.w500,
-                            color: appTheme.colorFF4F20.withOpacity(0.7),
-                          ),
-                          textAlign: TextAlign.center,
+                       
+                        StreamBuilder<User?>(
+                          stream: FirebaseAuth.instance.authStateChanges(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData && snapshot.data != null) {
+                              final user = snapshot.data!;
+                              final displayName = user.displayName ?? 
+                                                user.email?.split('@')[0] ?? 
+                                                'Usuário';
+                              return Column(
+                                children: [
+                                  Text(
+                                    displayName,
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 24.fSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: appTheme.colorFF4F20,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    user.email ?? '',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.fSize,
+                                      color: appTheme.colorFF4F20.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return Text(
+                              'Usuário',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 24.fSize,
+                                fontWeight: FontWeight.bold,
+                                color: appTheme.colorFF4F20,
+                              ),
+                            );
+                          };
                         ),
                         
                         SizedBox(height: 32.h),

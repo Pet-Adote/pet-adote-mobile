@@ -289,32 +289,16 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                     margin: EdgeInsets.only(left: 22.h),
                     child: Material(
                       color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(8.h),
                       child: InkWell(
                         onTap: () => Navigator.of(context).pop(),
                         borderRadius: BorderRadius.circular(8.h),
                         child: Container(
                           width: 40.h,
                           height: 40.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.whiteCustom,
-                            borderRadius: BorderRadius.circular(8.h),
-                            border: Border.all(
-                              color: appTheme.colorFF4F20,
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4.h,
-                                offset: Offset(0, 2.h),
-                              ),
-                            ],
-                          ),
                           child: Icon(
                             Icons.arrow_back,
                             color: appTheme.colorFF4F20,
-                            size: 22.h,
+                            size: 28.h,
                           ),
                         ),
                       ),
