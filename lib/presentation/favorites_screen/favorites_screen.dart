@@ -143,6 +143,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
+  void _handleDenounce() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
+  }
+
   void _navigateToPetProfile(Pet pet) async {
     final result = await Navigator.of(context).pushNamed(
       AppRoutes.petProfileScreen,
@@ -534,6 +539,20 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           _buildMenuItem(
                             'FAQ',
                             onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                          
+                          // Denúncia
+                          _buildMenuItem(
+                            'Denúncia',
+                            onTap: _handleDenounce,
+                          ),
+                          _buildDivider(),
+                          
+                          // Denúncia
+                          _buildMenuItem(
+                            'Denúncia',
+                            onTap: _handleDenounce,
                           ),
                           _buildDivider(),
                         ],

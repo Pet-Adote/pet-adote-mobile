@@ -106,3 +106,7 @@ assets/.gitkeep
 .cache/
 .tmp/
 node_modules/
+
+# Email System - NEVER COMMIT THESE
+scripts/petadote-service-account.json
+scripts/node_modules/
