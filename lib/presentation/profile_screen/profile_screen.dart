@@ -443,7 +443,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: appTheme.colorFF4F20,
                               ),
                             );
-                          };
+                          }
                         ),
                         
                         SizedBox(height: 32.h),
