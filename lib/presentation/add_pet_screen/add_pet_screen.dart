@@ -183,6 +183,16 @@ class _AddPetScreenState extends State<AddPetScreen> {
       String? imageUrl;
       if (_petImage != null) {
         imageUrl = await firebasePetRepository.uploadPetImage(_petImage!);
+        if (imageUrl == null) {
+          Navigator.of(context).pop(); // Fechar loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erro ao enviar a imagem. Tente novamente.'),
+              backgroundColor: appTheme.redCustom,
+            ),
+          );
+          return;
+        }
       }
 
       // Criar objeto Pet com os dados do formulário
