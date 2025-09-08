@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_export.dart';
-import '../../routes/app_routes.dart';
 
 class DenounceScreen extends StatefulWidget {
   const DenounceScreen({super.key});
@@ -125,26 +124,6 @@ class _DenounceScreenState extends State<DenounceScreen> {
     }
   }
 
-  // Função para enviar email
-  void _sendEmail(String email, String subject) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-      queryParameters: {
-        'subject': subject,
-      },
-    );
-    try {
-      await launchUrl(launchUri);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Não foi possível abrir o email'),
-          backgroundColor: appTheme.redCustom,
-        ),
-      );
-    }
-  }
 
   // Função para abrir WhatsApp
   void _openWhatsApp(String phoneNumber, String message) async {
@@ -159,6 +138,113 @@ class _DenounceScreenState extends State<DenounceScreen> {
         ),
       );
     }
+  }
+
+  // Mostrar diálogo com canais públicos
+  void _showPublicChannelsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Canais Públicos',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 20.fSize,
+                  fontWeight: FontWeight.bold,
+                  color: appTheme.colorFF4F20,
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: Icon(
+                  Icons.close,
+                  color: appTheme.colorFF4F20,
+                  size: 24.h,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDialogOption(
+                title: 'Polícia Militar - 190',
+                description: 'Emergências e ocorrências',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _makePhoneCall('190');
+                },
+              ),
+              SizedBox(height: 10.h),
+              _buildDialogOption(
+                title: 'Disque Denúncia - 181',
+                description: 'Denúncias anônimas',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _makePhoneCall('181');
+                },
+              ),
+              SizedBox(height: 10.h),
+              _buildDialogOption(
+                title: 'WhatsApp Denúncia',
+                description: 'Canal direto',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _openWhatsApp('5511999999999', 'Gostaria de fazer uma denúncia sobre maus-tratos de animais.');
+                },
+              ),
+            ],
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Voltar',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16.fSize,
+                      color: appTheme.grey600,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: appTheme.colorFF4F20,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.h),
+                  ),
+                  child: Text(
+                    'Fechar',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16.fSize,
+                      fontWeight: FontWeight.w600,
+                      color: appTheme.whiteCustom,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -187,14 +273,29 @@ class _DenounceScreenState extends State<DenounceScreen> {
                               color: Colors.transparent,
                               child: InkWell(
                                 onTap: () => Navigator.of(context).pop(),
-                                borderRadius: BorderRadius.circular(8.h),
+                                borderRadius: BorderRadius.circular(20.h),
                                 child: Container(
                                   width: 40.h,
                                   height: 40.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.colorFF9FE5,
+                                    borderRadius: BorderRadius.circular(20.h),
+                                    border: Border.all(
+                                      color: appTheme.colorFF4F20,
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.1),
+                                        blurRadius: 4,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
                                   child: Icon(
                                     Icons.arrow_back,
                                     color: appTheme.colorFF4F20,
-                                    size: 28.h,
+                                    size: 24.h,
                                   ),
                                 ),
                               ),
@@ -362,47 +463,26 @@ class _DenounceScreenState extends State<DenounceScreen> {
                         
                         SizedBox(height: 40.h),
                         
-                        // Cards de denúncia
-                        _buildDenounceCard(
+                        // Botões de denúncia
+                        _buildDenounceButton(
+                          title: 'Denuncie a partir de meios públicos',
+                          description: 'Polícia, Disque Denúncia e outros canais oficiais',
                           icon: Icons.local_police,
-                          title: 'Polícia Militar',
-                          subtitle: 'Emergências e ocorrências',
-                          contact: '190',
-                          description: 'Para situações de emergência envolvendo maus-tratos ou abandono de animais',
-                          onTap: () => _makePhoneCall('190'),
+                          onTap: () {
+                            // Mostrar diálogo com opções de meios públicos
+                            _showPublicChannelsDialog();
+                          },
                         ),
                         
                         SizedBox(height: 20.h),
                         
-                        _buildDenounceCard(
-                          icon: Icons.phone,
-                          title: 'Disque Denúncia',
-                          subtitle: 'Denúncias anônimas',
-                          contact: '181',
-                          description: 'Canal gratuito para denúncias anônimas de crimes contra animais',
-                          onTap: () => _makePhoneCall('181'),
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        _buildDenounceCard(
+                        _buildDenounceButton(
+                          title: 'Denuncie a partir do PetAdote',
+                          description: 'Formule sua denúncia através do nosso aplicativo',
                           icon: Icons.pets,
-                          title: 'PetAdote',
-                          subtitle: 'Suporte e orientação',
-                          contact: 'denuncia@petadote.com',
-                          description: 'Entre em contato conosco para orientações sobre denúncias',
-                          onTap: () => _sendEmail('denuncia@petadote.com', 'Denúncia de Maus-tratos'),
-                        ),
-                        
-                        SizedBox(height: 20.h),
-                        
-                        _buildDenounceCard(
-                          icon: Icons.message,
-                          title: 'WhatsApp Denúncia',
-                          subtitle: 'Canal direto',
-                          contact: '+55 11 99999-9999',
-                          description: 'Envie sua denúncia com fotos e localização via WhatsApp',
-                          onTap: () => _openWhatsApp('5511999999999', 'Gostaria de fazer uma denúncia sobre maus-tratos de animais.'),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(AppRoutes.appDenounceScreen);
+                          },
                         ),
                         
                         SizedBox(height: 30.h),
@@ -411,7 +491,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                         Container(
                           padding: EdgeInsets.all(20.h),
                           decoration: BoxDecoration(
-                            color: appTheme.colorFF9FE5.withOpacity(0.3),
+                            color: appTheme.colorFF9FE5.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(color: appTheme.colorFF4F20, width: 1),
                           ),
@@ -584,7 +664,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
             GestureDetector(
               onTap: _closeMenu,
               child: Container(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 width: double.infinity,
                 height: double.infinity,
               ),
@@ -607,7 +687,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.black.withValues(alpha: 0.25),
                     blurRadius: 10,
                     offset: Offset(2, 0),
                   ),
@@ -700,7 +780,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
+                              color: Colors.black.withValues(alpha: 0.25),
                               blurRadius: 4,
                               offset: Offset(0, 4),
                             ),
@@ -729,24 +809,21 @@ class _DenounceScreenState extends State<DenounceScreen> {
     );
   }
 
-  Widget _buildDenounceCard({
-    required IconData icon,
+  Widget _buildDenounceButton({
     required String title,
-    required String subtitle,
-    required String contact,
     required String description,
+    required IconData icon,
     required VoidCallback onTap,
   }) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: appTheme.whiteCustom,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: appTheme.colorFF4F20, width: 2),
+        color: appTheme.colorFF4F20,
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5,
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 4,
             offset: Offset(0, 2),
           ),
         ],
@@ -755,92 +832,107 @@ class _DenounceScreenState extends State<DenounceScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(8),
           child: Padding(
-            padding: EdgeInsets.all(20.h),
+            padding: EdgeInsets.all(12.h),
+            child: Row(
+              children: [
+                Container(
+                  width: 45.h,
+                  height: 45.h,
+                  decoration: BoxDecoration(
+                    color: appTheme.whiteCustom,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: appTheme.colorFF4F20,
+                    size: 22.h,
+                  ),
+                ),
+                SizedBox(width: 12.h),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14.fSize,
+                          fontWeight: FontWeight.bold,
+                          color: appTheme.whiteCustom,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        description,
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11.fSize,
+                          color: appTheme.whiteCustom.withValues(alpha: 0.8),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 8.h),
+                Icon(
+                  Icons.arrow_forward,
+                  color: appTheme.whiteCustom,
+                  size: 20.h,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogOption({
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: appTheme.whiteCustom,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: appTheme.colorFF4F20, width: 1),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: EdgeInsets.all(12.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 50.h,
-                      height: 50.h,
-                      decoration: BoxDecoration(
-                        color: appTheme.colorFF9FE5,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: appTheme.colorFF4F20, width: 2),
-                      ),
-                      child: Icon(
-                        icon,
-                        color: appTheme.colorFF4F20,
-                        size: 24.h,
-                      ),
-                    ),
-                    SizedBox(width: 15.h),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18.fSize,
-                              fontWeight: FontWeight.bold,
-                              color: appTheme.colorFF4F20,
-                            ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12.fSize,
-                              color: appTheme.grey600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: appTheme.colorFF4F20,
-                      size: 16.h,
-                    ),
-                  ],
-                ),
-                
-                SizedBox(height: 15.h),
-                
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12.h),
-                  decoration: BoxDecoration(
-                    color: appTheme.colorFF9FE5.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    contact,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16.fSize,
-                      fontWeight: FontWeight.bold,
-                      color: appTheme.colorFF4F20,
-                    ),
-                    textAlign: TextAlign.center,
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14.fSize,
+                    fontWeight: FontWeight.bold,
+                    color: appTheme.colorFF4F20,
                   ),
                 ),
-                
-                SizedBox(height: 10.h),
-                
+                SizedBox(height: 4.h),
                 Text(
                   description,
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12.fSize,
-                    color: appTheme.blackCustom,
-                    height: 1.4,
+                    color: appTheme.grey600,
                   ),
                 ),
               ],
