@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../models/pet_model.dart';
+import '../../repositories/firebase_pet_repository.dart';
 
 class PetProfileScreen extends StatefulWidget {
   const PetProfileScreen({super.key});
@@ -17,6 +19,7 @@ class PetProfileScreen extends StatefulWidget {
 class _PetProfileScreenState extends State<PetProfileScreen> {
   bool _isFavorited = false;
   Pet? pet;
+  final FirebasePetRepository _petRepository = FirebasePetRepository();
 
   @override
   void didChangeDependencies() {
@@ -27,6 +30,130 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     if (arguments is Pet) {
       pet = arguments;
     }
+  }
+
+  // Verificar se o usuário atual é o dono do pet
+  bool get _isOwner {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    return pet?.isOwnedByCurrentUser(currentUser?.uid) ?? false;
+  }
+
+  // Função para deletar o pet
+  void _deletePet() async {
+    if (pet?.id == null) return;
+
+    // Mostrar diálogo de confirmação
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.h),
+          ),
+          title: Text(
+            'Excluir ${pet!.name}?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 20.fSize,
+              fontWeight: FontWeight.bold,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          content: Text(
+            'Esta ação não pode ser desfeita. Tem certeza que deseja excluir este pet?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16.fSize,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  color: appTheme.grey600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.redCustom,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.h),
+                ),
+              ),
+              child: Text(
+                'Excluir',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w500,
+                  color: appTheme.whiteCustom,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      // Mostrar loading
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(
+            color: appTheme.colorFF4F20,
+          ),
+        ),
+      );
+
+      try {
+        final success = await _petRepository.deletePet(pet!.id!);
+        Navigator.of(context).pop(); // Fechar loading
+
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Pet excluído com sucesso!'),
+              backgroundColor: appTheme.greenCustom,
+            ),
+          );
+          // Voltar para a categoria
+          _goToCategory();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erro ao excluir pet. Tente novamente.'),
+              backgroundColor: appTheme.redCustom,
+            ),
+          );
+        }
+      } catch (e) {
+        Navigator.of(context).pop(); // Fechar loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao excluir pet. Tente novamente.'),
+            backgroundColor: appTheme.redCustom,
+          ),
+        );
+      }
+    }
+  }
+
+  // Função para editar o pet
+  void _editPet() {
+    Navigator.of(context).pushNamed(
+      AppRoutes.editPetScreen,
+      arguments: pet,
+    );
   }
 
   void _toggleFavorite() {
@@ -653,6 +780,118 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                       ),
                       
                       SizedBox(height: 20.h),
+                      
+                      // Botões de gerenciamento (apenas para o dono)
+                      if (_isOwner) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Botão Editar
+                            Container(
+                              width: 120.h,
+                              height: 45.h,
+                              child: Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(8.h),
+                                child: InkWell(
+                                  onTap: _editPet,
+                                  borderRadius: BorderRadius.circular(8.h),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF9FE5,
+                                      borderRadius: BorderRadius.circular(8.h),
+                                      border: Border.all(
+                                        color: appTheme.colorFF4F20,
+                                        width: 1.5,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 4.h,
+                                          offset: Offset(0, 2.h),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.edit,
+                                          color: appTheme.colorFF4F20,
+                                          size: 20.h,
+                                        ),
+                                        SizedBox(width: 8.h),
+                                        Text(
+                                          'Editar',
+                                          style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 16.fSize,
+                                            fontWeight: FontWeight.w600,
+                                            color: appTheme.colorFF4F20,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            
+                            // Botão Excluir
+                            Container(
+                              width: 120.h,
+                              height: 45.h,
+                              child: Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(8.h),
+                                child: InkWell(
+                                  onTap: _deletePet,
+                                  borderRadius: BorderRadius.circular(8.h),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: appTheme.whiteCustom,
+                                      borderRadius: BorderRadius.circular(8.h),
+                                      border: Border.all(
+                                        color: appTheme.redCustom,
+                                        width: 1.5,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 4.h,
+                                          offset: Offset(0, 2.h),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.delete,
+                                          color: appTheme.redCustom,
+                                          size: 20.h,
+                                        ),
+                                        SizedBox(width: 8.h),
+                                        Text(
+                                          'Excluir',
+                                          style: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 16.fSize,
+                                            fontWeight: FontWeight.w600,
+                                            color: appTheme.redCustom,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                        SizedBox(height: 20.h),
+                      ],
                       
                       // Botão "Ir para categoria"
                       Center(

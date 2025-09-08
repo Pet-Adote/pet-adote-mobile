@@ -10,6 +10,8 @@ class Pet {
   final String responsibleName;
   final String phone;
   final String? imagePath;
+  final String? createdBy; // ID do usuário que criou o pet
+  final String? createdByEmail; // Email do usuário que criou o pet
 
   Pet({
     this.id,
@@ -23,6 +25,8 @@ class Pet {
     required this.responsibleName,
     required this.phone,
     this.imagePath,
+    this.createdBy,
+    this.createdByEmail,
   });
 
   // Método para obter o nome da espécie formatado
@@ -87,6 +91,8 @@ Adote com amor!''';
       'responsibleName': responsibleName,
       'phone': phone,
       'imagePath': imagePath,
+      'createdBy': createdBy,
+      'createdByEmail': createdByEmail,
     };
   }
 
@@ -104,6 +110,13 @@ Adote com amor!''';
       responsibleName: json['responsibleName'] ?? '',
       phone: json['phone'] ?? '',
       imagePath: json['imagePath'],
+      createdBy: json['createdBy'],
+      createdByEmail: json['createdByEmail'],
     );
+  }
+  
+  // Método para verificar se o usuário atual é o dono do pet
+  bool isOwnedByCurrentUser(String? currentUserId) {
+    return currentUserId != null && createdBy == currentUserId;
   }
 }
