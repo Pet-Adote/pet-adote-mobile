@@ -69,7 +69,7 @@ class FirebasePetRepository {
     }
   }
 
-  // Obter pets do usuário atual (apenas os que ele criou)
+  // Obter pets do usuário atual (incluindo pets antigos e novos)
   Future<List<Pet>> getUserPets() async {
     try {
       final user = _auth.currentUser;
@@ -78,17 +78,114 @@ class FirebasePetRepository {
         return [];
       }
 
-      final QuerySnapshot querySnapshot = await _firestore
-          .collection(_petsCollection)
-          .where('createdBy', isEqualTo: user.uid)
-          .orderBy('createdAt', descending: true)
-          .get();
+      Set<String> petIds = {}; // Para evitar duplicatas
+      List<Pet> allUserPets = [];
 
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        data['id'] = doc.id; // Adicionar o ID do documento
-        return Pet.fromJson(data);
-      }).toList();
+      // 1. Buscar pets com createdBy (pets novos) - sem ordenação para evitar índice composto
+      try {
+        final QuerySnapshot querySnapshotById = await _firestore
+            .collection(_petsCollection)
+            .where('createdBy', isEqualTo: user.uid)
+            .get();
+
+        for (var doc in querySnapshotById.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          data['id'] = doc.id;
+          petIds.add(doc.id);
+          allUserPets.add(Pet.fromJson(data));
+        }
+        print('Encontrados ${querySnapshotById.docs.length} pets com createdBy');
+      } catch (e) {
+        print('Erro ao buscar pets por createdBy: $e');
+      }
+
+      // 2. Buscar pets com createdByEmail (pets que podem ser antigos) - sem ordenação
+      if (user.email != null) {
+        try {
+          final QuerySnapshot querySnapshotByEmail = await _firestore
+              .collection(_petsCollection)
+              .where('createdByEmail', isEqualTo: user.email)
+              .get();
+
+          for (var doc in querySnapshotByEmail.docs) {
+            // Evitar duplicatas
+            if (!petIds.contains(doc.id)) {
+              final data = doc.data() as Map<String, dynamic>;
+              data['id'] = doc.id;
+              petIds.add(doc.id);
+              allUserPets.add(Pet.fromJson(data));
+            }
+          }
+          print('Encontrados ${querySnapshotByEmail.docs.length} pets adicionais com createdByEmail');
+        } catch (e) {
+          print('Erro ao buscar pets por createdByEmail: $e');
+        }
+      }
+
+      // 3. Fallback: buscar todos os pets e filtrar aqueles que podem pertencer ao usuário
+      // (para pets muito antigos sem campos de identificação)
+      if (allUserPets.isEmpty && user.email != null) {
+        try {
+          print('Tentando buscar pets legados...');
+          // Buscar todos os pets recentes (limitado para evitar overhead)
+          final QuerySnapshot querySnapshotAll = await _firestore
+              .collection(_petsCollection)
+              .orderBy('createdAt', descending: true)
+              .limit(100)
+              .get();
+
+          int legacyPetsFound = 0;
+          for (var doc in querySnapshotAll.docs) {
+            final data = doc.data() as Map<String, dynamic>;
+            
+            // Se já está na lista, pular
+            if (petIds.contains(doc.id)) continue;
+            
+            // Se não tem createdBy nem createdByEmail, pode ser um pet legado
+            if (data['createdBy'] == null && data['createdByEmail'] == null) {
+              data['id'] = doc.id;
+              
+              // Atualizar o documento para incluir createdBy
+              try {
+                await _firestore.collection(_petsCollection).doc(doc.id).update({
+                  'createdBy': user.uid,
+                  'createdByEmail': user.email,
+                });
+                
+                petIds.add(doc.id);
+                allUserPets.add(Pet.fromJson(data));
+                legacyPetsFound++;
+                print('Pet legado ${data['name']} atribuído ao usuário');
+              } catch (updateError) {
+                print('Erro ao atualizar pet legado ${doc.id}: $updateError');
+                // Adicionar mesmo sem conseguir atualizar
+                petIds.add(doc.id);
+                allUserPets.add(Pet.fromJson(data));
+                legacyPetsFound++;
+              }
+            }
+          }
+          print('Encontrados $legacyPetsFound pets legados');
+        } catch (e) {
+          print('Erro ao buscar pets legados: $e');
+        }
+      }
+
+      // Ordenar por data de criação (mais recente primeiro)
+      allUserPets.sort((a, b) {
+        // Se ambos têm timestamp, comparar
+        if (a.createdAt != null && b.createdAt != null) {
+          return b.createdAt!.compareTo(a.createdAt!);
+        }
+        // Se apenas um tem timestamp, priorizar o que tem
+        if (a.createdAt != null) return -1;
+        if (b.createdAt != null) return 1;
+        // Se nenhum tem timestamp, manter ordem atual
+        return 0;
+      });
+
+      print('Total encontrado: ${allUserPets.length} pets para o usuário ${user.email}');
+      return allUserPets;
     } catch (e) {
       print('Erro ao carregar pets do usuário do Firestore: $e');
       return [];
