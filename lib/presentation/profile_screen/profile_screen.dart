@@ -150,6 +150,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
+  void _handleDenounce() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
+  }
+
   void _handleVisualizarSenha(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -851,6 +856,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildMenuItem(
                             'FAQ',
                             onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                          
+                          // Denúncia
+                          _buildMenuItem(
+                            'Denúncia',
+                            onTap: _handleDenounce,
                           ),
                           _buildDivider(),
                         ],

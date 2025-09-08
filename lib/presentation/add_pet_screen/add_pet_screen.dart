@@ -120,6 +120,11 @@ class _AddPetScreenState extends State<AddPetScreen> {
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
+  void _handleDenounce() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
+  }
+
   @override
   void dispose() {
     _petNameController.dispose();
@@ -1106,6 +1111,13 @@ class _AddPetScreenState extends State<AddPetScreen> {
                           _buildMenuItem(
                             'FAQ',
                             onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                          
+                          // Denúncia
+                          _buildMenuItem(
+                            'Denúncia',
+                            onTap: _handleDenounce,
                           ),
                           _buildDivider(),
                         ],

@@ -111,6 +111,11 @@ class _AppDenounceScreenState extends State<AppDenounceScreen> {
     Navigator.of(context).pushNamed(AppRoutes.aboutUsScreen);
   }
 
+  void _handleDenounce() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
+  }
+
   void _handleFAQ() {
     _closeMenu();
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
@@ -155,7 +160,7 @@ class _AppDenounceScreenState extends State<AppDenounceScreen> {
     );
   }
 
-  void _submitDenounce() {
+  void _submitDenounce() async {
     if (_selectedType.isEmpty || _locationController.text.isEmpty || _descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -176,15 +181,79 @@ class _AppDenounceScreenState extends State<AppDenounceScreen> {
       return;
     }
 
-    // Aqui você implementaria o envio da denúncia
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Denúncia enviada com sucesso!'),
-        backgroundColor: appTheme.greenCustom,
+    // Mostrar loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(
+          color: appTheme.colorFF4F20,
+        ),
       ),
     );
-    
-    Navigator.of(context).pop();
+
+    try {
+      // Enviar denúncia por email
+      final success = await EmailService.sendDenounceEmail(
+        type: _selectedType,
+        location: _locationController.text.trim(),
+        date: _dateController.text.trim().isEmpty ? 'Não informado' : _dateController.text.trim(),
+        description: _descriptionController.text.trim(),
+        isAnonymous: _isAnonymous,
+        denouncerName: _isAnonymous ? null : _nameController.text.trim(),
+        denouncerPhone: _isAnonymous ? null : _phoneController.text.trim(),
+        hasImages: _hasImages,
+      );
+
+      Navigator.of(context).pop(); // Fechar loading
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Denúncia enviada com sucesso para pet.adote2025@gmail.com! '
+              'A equipe PetAdote encaminhará sua denúncia aos órgãos responsáveis.'
+            ),
+            backgroundColor: appTheme.greenCustom,
+            duration: Duration(seconds: 5),
+          ),
+        );
+        
+        // Limpar formulário
+        _selectedType = '';
+        _locationController.clear();
+        _dateController.clear();
+        _descriptionController.clear();
+        _nameController.clear();
+        _phoneController.clear();
+        _isAnonymous = false;
+        _hasImages = false;
+        setState(() {});
+        
+        // Voltar após alguns segundos
+        Future.delayed(Duration(seconds: 2), () {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao enviar denúncia. Tente novamente ou entre em contato conosco.'),
+            backgroundColor: appTheme.redCustom,
+            duration: Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Fechar loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro inesperado: $e'),
+          backgroundColor: appTheme.redCustom,
+        ),
+      );
+    }
   }
 
   @override
