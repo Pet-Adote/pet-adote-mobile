@@ -10,7 +10,9 @@ class FirebasePetRepository {
   static const String _petsCollection = 'pets';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instanceFor(
+    bucket: 'gs://petadote-7fa2d.firebasestorage.app',
+  );
 
   // Upload de imagem para o Firebase Storage
   Future<String?> uploadPetImage(File imageFile) async {

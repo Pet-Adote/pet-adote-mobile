@@ -57,6 +57,6 @@ class DefaultFirebaseOptions {
     appId: '1:288271728976:android:51abca83904c742bc32c55',
     messagingSenderId: '288271728976',
     projectId: 'petadote-7fa2d',
-    storageBucket: 'petadote-7fa2d.appspot.com',
+    storageBucket: 'petadote-7fa2d.firebasestorage.app',
   );
 }
