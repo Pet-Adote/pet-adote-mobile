@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/app_export.dart';
-import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
 
@@ -17,12 +16,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Pet> _userPets = [];
   bool _isLoadingPets = false;
   final FirebasePetRepository _petRepository = FirebasePetRepository();
-  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
-    _currentUser = FirebaseAuth.instance.currentUser;
     _loadUserPets();
   }
 
@@ -57,20 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  String _getUserDisplayName() {
-    if (_currentUser?.displayName != null && _currentUser!.displayName!.isNotEmpty) {
-      return _currentUser!.displayName!;
-    } else if (_currentUser?.email != null) {
-      // Se não tem displayName, usa a parte do email antes do @
-      return _currentUser!.email!.split('@')[0];
-    } else {
-      return 'Usuário';
-    }
-  }
-
-  String _getUserEmail() {
-    return _currentUser?.email ?? 'No email available';
-  }
 
   void _toggleMenu() {
     setState(() {
@@ -386,7 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             border: Border.all(color: appTheme.blackCustom, width: 2),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.25),
+                                color: Colors.black.withValues(alpha: 0.25),
                                 blurRadius: 4,
                                 offset: Offset(0, 4),
                               ),
@@ -428,7 +411,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     style: TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: 14.fSize,
-                                      color: appTheme.colorFF4F20.withOpacity(0.7),
+                                      color: appTheme.colorFF4F20.withValues(alpha: 0.7),
                                     ),
                                   ),
                                 ],
@@ -495,7 +478,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fontFamily: 'Inter',
                                       fontSize: 14.fSize,
                                       fontWeight: FontWeight.w500,
-                                      color: appTheme.colorFF4F20.withOpacity(0.7),
+                                      color: appTheme.colorFF4F20.withValues(alpha: 0.7),
                                     ),
                                   ),
                                 ],
@@ -519,7 +502,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     color: appTheme.whiteCustom,
                                     borderRadius: BorderRadius.circular(12.h),
                                     border: Border.all(
-                                      color: appTheme.colorFF4F20.withOpacity(0.3),
+                                      color: appTheme.colorFF4F20.withValues(alpha: 0.3),
                                       width: 1,
                                     ),
                                   ),
@@ -528,7 +511,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Icon(
                                         Icons.pets,
                                         size: 40.h,
-                                        color: appTheme.colorFF4F20.withOpacity(0.5),
+                                        color: appTheme.colorFF4F20.withValues(alpha: 0.5),
                                       ),
                                       SizedBox(height: 8.h),
                                       Text(
@@ -537,7 +520,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fontFamily: 'Inter',
                                           fontSize: 14.fSize,
                                           fontWeight: FontWeight.w500,
-                                          color: appTheme.colorFF4F20.withOpacity(0.7),
+                                          color: appTheme.colorFF4F20.withValues(alpha: 0.7),
                                         ),
                                       ),
                                       SizedBox(height: 8.h),
@@ -581,12 +564,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             color: appTheme.whiteCustom,
                                             borderRadius: BorderRadius.circular(12.h),
                                             border: Border.all(
-                                              color: appTheme.colorFF4F20.withOpacity(0.3),
+                                              color: appTheme.colorFF4F20.withValues(alpha: 0.3),
                                               width: 1,
                                             ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(0.1),
+                                                color: Colors.black.withValues(alpha: 0.1),
                                                 blurRadius: 4.h,
                                                 offset: Offset(0, 2.h),
                                               ),
@@ -599,7 +582,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 width: 50.h,
                                                 height: 50.h,
                                                 decoration: BoxDecoration(
-                                                  color: appTheme.colorFF9FE5.withOpacity(0.3),
+                                                  color: appTheme.colorFF9FE5.withValues(alpha: 0.3),
                                                   shape: BoxShape.circle,
                                                 ),
                                                 child: Icon(
@@ -628,7 +611,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   fontFamily: 'Inter',
                                                   fontSize: 10.fSize,
                                                   fontWeight: FontWeight.w400,
-                                                  color: appTheme.colorFF4F20.withOpacity(0.7),
+                                                  color: appTheme.colorFF4F20.withValues(alpha: 0.7),
                                                 ),
                                               ),
                                             ],
@@ -655,7 +638,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.25),
+                                  color: Colors.black.withValues(alpha: 0.25),
                                   blurRadius: 4,
                                   offset: Offset(0, 4),
                                 ),
@@ -772,7 +755,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             GestureDetector(
               onTap: _closeMenu,
               child: Container(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 width: double.infinity,
                 height: double.infinity,
               ),
@@ -795,7 +778,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.black.withValues(alpha: 0.25),
                     blurRadius: 10,
                     offset: Offset(2, 0),
                   ),
@@ -888,7 +871,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
+                              color: Colors.black.withValues(alpha: 0.25),
                               blurRadius: 4,
                               offset: Offset(0, 4),
                             ),

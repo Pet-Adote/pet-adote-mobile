@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Pet {
   final String? id; // ID do documento no Firestore
   final String name;
@@ -12,6 +14,7 @@ class Pet {
   final String? imagePath;
   final String? createdBy; // ID do usuário que criou o pet
   final String? createdByEmail; // Email do usuário que criou o pet
+  final DateTime? createdAt; // Data de criação do pet
 
   Pet({
     this.id,
@@ -27,6 +30,7 @@ class Pet {
     this.imagePath,
     this.createdBy,
     this.createdByEmail,
+    this.createdAt,
   });
 
   // Método para obter o nome da espécie formatado
@@ -98,6 +102,15 @@ Adote com amor!''';
 
   // Criar Pet a partir de JSON
   factory Pet.fromJson(Map<String, dynamic> json) {
+    DateTime? createdAt;
+    if (json['createdAt'] != null) {
+      if (json['createdAt'] is Timestamp) {
+        createdAt = (json['createdAt'] as Timestamp).toDate();
+      } else if (json['createdAt'] is DateTime) {
+        createdAt = json['createdAt'];
+      }
+    }
+
     return Pet(
       id: json['id'],
       name: json['name'] ?? '',
@@ -112,6 +125,7 @@ Adote com amor!''';
       imagePath: json['imagePath'],
       createdBy: json['createdBy'],
       createdByEmail: json['createdByEmail'],
+      createdAt: createdAt,
     );
   }
   
