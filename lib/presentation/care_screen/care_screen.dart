@@ -244,6 +244,11 @@ class _CareScreenState extends State<CareScreen> {
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
+  void _handleDenounce() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.appDenounceScreen);
+  }
+
   void _handleCare() {
     _closeMenu();
   }
@@ -693,6 +698,13 @@ class _CareScreenState extends State<CareScreen> {
                           _buildMenuItem(
                             'FAQ',
                             onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                          
+                          // Denúncia
+                          _buildMenuItem(
+                            'Denúncia',
+                            onTap: _handleDenounce,
                           ),
                           _buildDivider(),
                         ],
