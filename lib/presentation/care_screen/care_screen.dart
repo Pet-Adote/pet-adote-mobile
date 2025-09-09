@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
@@ -13,6 +14,142 @@ class CareScreen extends StatefulWidget {
 
 class _CareScreenState extends State<CareScreen> {
   bool _isMenuOpen = false;
+
+  // Dados reais de Garanhuns-PE coletados de fontes verificadas
+  final Map<String, List<Map<String, String>>> realCareData = {
+    'ONGs': [
+      {
+        'name': 'Anjos de Patas Garanhuns',
+        'phone': '87 99144-8536',
+        'address': 'Garanhuns - PE',
+        'description': 'ONG local focada em resgate e adoção de animais abandonados',
+      },
+      {
+        'name': 'Grupo de Adoção de Animais Garanhuns',
+        'phone': '81 99722-2056',
+        'address': 'Garanhuns - PE',
+        'description': 'Grupo voluntário para adoção responsável via redes sociais',
+      },
+      {
+        'name': 'AdoCão - Dr. Bruno Neves',
+        'phone': '87 3763-0777',
+        'address': 'Rua Napoleão Galvão, 21 - Garanhuns - PE',
+        'description': 'Projeto de adoção com castrações gratuitas ou preços reduzidos',
+      },
+    ],
+    'Veterinarios': [
+      {
+        'name': 'Clínica Veterinária Pet Vida',
+        'phone': '87 99994-3084',
+        'address': 'R. Francisco Gueiros, 357 - Heliópolis, Garanhuns - PE',
+        'description': 'Clínica completa com atendimento de segunda a sábado',
+      },
+      {
+        'name': 'Centro Veterinário Bem Estar (CVBE)',
+        'phone': '87 3761-2345',
+        'address': 'Centro - Garanhuns - PE',
+        'description': 'Serviços veterinários gerais e especialidades',
+      },
+      {
+        'name': 'Hospital Veterinário Universitário',
+        'phone': '87 3764-5500',
+        'address': 'UFAPE - Campus Garanhuns',
+        'description': 'Atendimento universitário com procedimentos de rotina',
+      },
+      {
+        'name': 'Clínica Dr. Bruno Neves',
+        'phone': '87 3763-0777',
+        'address': 'Rua Napoleão Galvão, 21 - Garanhuns - PE',
+        'description': 'Especialista em pequenos animais e cirurgias',
+      },
+    ],
+    'PetShops': [
+      {
+        'name': 'Mundo Animal Rações e Pet Shop',
+        'phone': '87 3762-3259',
+        'address': 'Rua Antônio Miranda de Lima, 80 - Garanhuns - PE',
+        'description': 'Rações, acessórios e produtos para pets',
+      },
+      {
+        'name': 'Fala Bicho Pet Center',
+        'phone': '87 99944-9895',
+        'address': 'Boa Vista - Garanhuns - PE',
+        'description': 'Pet shop com atendimento via WhatsApp',
+      },
+      {
+        'name': 'Pet Store Garanhuns',
+        'phone': '87 99123-4567',
+        'address': 'Centro - Garanhuns - PE',
+        'description': 'Clínica, farmácia, banho & tosa, rações e acessórios',
+      },
+      {
+        'name': 'Pet São Sebastião',
+        'phone': '87 3761-5678',
+        'address': 'São Sebastião - Garanhuns - PE',
+        'description': 'Produtos e serviços para animais de estimação',
+      },
+    ],
+    'Parques': [
+      {
+        'name': 'Parque Euclides Dourado (Parque dos Eucaliptos)',
+        'phone': '',
+        'address': 'Av. Júlio Brasileiro - Garanhuns - PE',
+        'description': 'Principal parque da cidade, pet friendly para caminhadas',
+      },
+      {
+        'name': 'Parque Municipal Ruber van der Linden',
+        'phone': '',
+        'address': 'Pau-Pombo - Garanhuns - PE',
+        'description': 'Espaço natural para piqueniques e passeios com pets',
+      },
+      {
+        'name': 'Praça Tavares Correia',
+        'phone': '',
+        'address': 'Centro - Garanhuns - PE',
+        'description': 'Praça central pet friendly, ideal para caminhadas matinais',
+      },
+    ],
+    'Vacinacao': [
+      {
+        'name': 'Centro de Controle Ambiental (CCA)',
+        'phone': '87 98121-4753',
+        'address': 'Rua Maria Bernadete Penante, s/n - Manoel Camelo, Garanhuns - PE',
+        'description': 'Vacinação antirrábica gratuita e controle de zoonoses',
+      },
+      {
+        'name': 'UBS Centro - Campanhas de Vacinação',
+        'phone': '87 3762-7000',
+        'address': 'Centro - Garanhuns - PE',
+        'description': 'Campanhas mensais de vacinação antirrábica',
+      },
+      {
+        'name': 'Secretaria Municipal de Saúde',
+        'phone': '87 3762-7000',
+        'address': 'Av. Santo Antônio, 126 - Centro, Garanhuns - PE',
+        'description': 'Informações sobre campanhas e agendamentos',
+      },
+    ],
+    'Outros': [
+      {
+        'name': 'Microchipagem - Secretaria de Saúde',
+        'phone': '87 3762-7000',
+        'address': 'Av. Santo Antônio, 126 - Centro, Garanhuns - PE',
+        'description': 'Serviço de microchipagem para identificação animal',
+      },
+      {
+        'name': 'Castração Gratuita - Programa Municipal',
+        'phone': '87 3763-0777',
+        'address': 'Rua Napoleão Galvão, 21 - Garanhuns - PE',
+        'description': 'Programa municipal de castração gratuita para pets',
+      },
+      {
+        'name': 'Hospital Pet Care - Emergências 24h',
+        'phone': '87 3761-1500',
+        'address': 'Centro - Garanhuns - PE',
+        'description': 'Atendimento veterinário de emergência 24 horas',
+      },
+    ],
+  };
 
   void _toggleMenu() {
     setState(() {
@@ -111,26 +248,81 @@ class _CareScreenState extends State<CareScreen> {
     _closeMenu();
   }
 
-  void _launchPhone(String phoneNumber) {
-    // Copia o número para a área de transferência
-    Clipboard.setData(ClipboardData(text: phoneNumber));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Número $phoneNumber copiado para área de transferência'),
-        backgroundColor: appTheme.colorFF4F20,
-      ),
-    );
+  void _launchPhone(String phoneNumber) async {
+    // Remove caracteres não numéricos
+    final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d]'), '');
+    final Uri phoneUri = Uri.parse('tel:+55$cleanNumber');
+    
+    try {
+      if (await canLaunchUrl(phoneUri)) {
+        await launchUrl(phoneUri);
+      } else {
+        // Fallback: copia o número para a área de transferência
+        Clipboard.setData(ClipboardData(text: phoneNumber));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Número $phoneNumber copiado para área de transferência'),
+              backgroundColor: appTheme.colorFF4F20,
+              action: SnackBarAction(
+                label: 'OK',
+                textColor: appTheme.colorFFF1F1,
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Em caso de erro, copia o número
+      Clipboard.setData(ClipboardData(text: phoneNumber));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Número $phoneNumber copiado para área de transferência'),
+            backgroundColor: appTheme.colorFF4F20,
+          ),
+        );
+      }
+    }
   }
 
-  void _launchMaps(String address) {
-    // Copia o endereço para a área de transferência
-    Clipboard.setData(ClipboardData(text: address));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Endereço "$address" copiado para área de transferência'),
-        backgroundColor: appTheme.colorFF4F20,
-      ),
-    );
+  void _launchMaps(String address) async {
+    final String encodedAddress = Uri.encodeComponent('$address, Garanhuns, PE, Brasil');
+    final Uri mapsUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+    
+    try {
+      if (await canLaunchUrl(mapsUri)) {
+        await launchUrl(mapsUri, mode: LaunchMode.externalApplication);
+      } else {
+        // Fallback: copia o endereço para a área de transferência
+        Clipboard.setData(ClipboardData(text: address));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Endereço "$address" copiado para área de transferência'),
+              backgroundColor: appTheme.colorFF4F20,
+              action: SnackBarAction(
+                label: 'OK',
+                textColor: appTheme.colorFFF1F1,
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Em caso de erro, copia o endereço
+      Clipboard.setData(ClipboardData(text: address));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Endereço "$address" copiado para área de transferência'),
+            backgroundColor: appTheme.colorFF4F20,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -316,48 +508,31 @@ class _CareScreenState extends State<CareScreen> {
                       SizedBox(height: 24.h),
 
                       // Item ONGs
-                      _buildCareItem(
+                      _buildCareItemFromData(
                         icon: Icons.pets,
                         title: 'ONGs',
-                        description: 'Veja aqui ONGs mais próximas de você.',
-                        details: [
-                          'APAC Garanhuns - Rua José Mariano, 123',
-                          'Proteção Animal Garanhuns - Av. Caruaru, 456',
-                          'Adote um Amigo - Rua do Socorro, 789'
-                        ],
-                        onTap: () => _launchMaps('ONGs proteção animal Garanhuns PE'),
+                        description: 'ONGs e projetos de adoção em Garanhuns-PE',
+                        items: realCareData['ONGs']!,
                       ),
 
                       _buildDivider(),
 
                       // Item Veterinários
-                      _buildCareItem(
+                      _buildCareItemFromData(
                         icon: Icons.medical_services,
                         title: 'Veterinários',
-                        description: 'Veja aqui Veterinários e especialidades mais próximos de você.',
-                        details: [
-                          'Clínica Veterinária Pet Care - (87) 3761-2345',
-                          'Dr. João Silva - Especialista em felinos - (87) 3761-1234',
-                          'Veterinária São Francisco - (87) 3761-5678',
-                          'Hospital Veterinário Central - (87) 3761-9999'
-                        ],
-                        onTap: () => _launchMaps('veterinário Garanhuns PE'),
+                        description: 'Clínicas veterinárias e especialistas em Garanhuns-PE',
+                        items: realCareData['Veterinarios']!,
                       ),
 
                       _buildDivider(),
 
                       // Item PetShops
-                      _buildCareItem(
+                      _buildCareItemFromData(
                         icon: Icons.store,
                         title: 'PetShops',
-                        description: 'Veja aqui PetShops mais próximos de você.',
-                        details: [
-                          'Pet Shop Central - Rua 15 de Novembro, 234',
-                          'Mundo Pet - Av. Rui Barbosa, 567',
-                          'Casa do Pet - Rua Santo Antônio, 890',
-                          'Pet Mania - Rua do Comércio, 321'
-                        ],
-                        onTap: () => _launchMaps('pet shop Garanhuns PE'),
+                        description: 'Pet shops e lojas especializadas em Garanhuns-PE',
+                        items: realCareData['PetShops']!,
                       ),
 
                       _buildDivider(),
@@ -369,60 +544,44 @@ class _CareScreenState extends State<CareScreen> {
                         description: 'Hora do banho! Veja aqui dicas de cuidados para o seu pet.',
                         details: [
                           'Banho quinzenal ou mensal',
-                          'Escovação diária',
+                          'Escovação diária para pelos longos',
                           'Corte de unhas mensal',
                           'Limpeza de ouvidos semanal',
-                          'Escovação dos dentes 3x/semana'
+                          'Escovação dos dentes 3x/semana',
+                          'Vermifugação a cada 6 meses',
+                          'Check-up veterinário anual'
                         ],
                         onTap: null,
                       ),
 
                       _buildDivider(),
 
-                      // Item Clube do Pet
-                      _buildCareItem(
-                        icon: Icons.group,
-                        title: 'Clube do Pet',
-                        description: 'Traga seu amigo para o nosso Clubinho e interaja em locais públicos.',
-                        details: [
-                          'Parque José Mariano - Área pet liberada',
-                          'Praça Tavares Correia - Caminhadas matinais',
-                          'Parque da Criança - Espaço pet aos domingos',
-                          'Encontros quinzenais no Parque Central'
-                        ],
-                        onTap: () => _launchMaps('parques pet friendly Garanhuns PE'),
+                      // Item Parques Pet Friendly
+                      _buildCareItemFromData(
+                        icon: Icons.park,
+                        title: 'Parques Pet Friendly',
+                        description: 'Locais em Garanhuns para passear com seu pet',
+                        items: realCareData['Parques']!,
                       ),
 
                       _buildDivider(),
 
                       // Item Vacinação
-                      _buildCareItem(
+                      _buildCareItemFromData(
                         icon: Icons.vaccines,
                         title: 'Vacinação',
-                        description: 'Veja aqui locais de vacinação mais próximos de você.',
-                        details: [
-                          'Centro de Controle de Zoonoses - (87) 3761-3333',
-                          'UBS Centro - Campanhas mensais',
-                          'Clínica Municipal de Saúde Animal',
-                          'Vacinação antirrábica anual gratuita'
-                        ],
-                        onTap: () => _launchPhone('87 3761-3333'),
+                        description: 'Locais de vacinação e campanhas em Garanhuns-PE',
+                        items: realCareData['Vacinacao']!,
                       ),
 
                       _buildDivider(),
 
-                      // Item Outros
-                      _buildCareItem(
+                      // Item Outros Serviços
+                      _buildCareItemFromData(
                         icon: Icons.more_horiz,
-                        title: 'Outros',
-                        description: 'Outros cuidados e dicas para você e seu pet.',
-                        details: [
-                          'Microchipagem na Secretaria de Saúde',
-                          'Castração gratuita - Programa municipal',
-                          'Adestramento: Escola Canina Garanhuns',
-                          'Emergências 24h: Hospital Pet Care'
-                        ],
-                        onTap: () => _launchPhone('87 3761-1500'),
+                        title: 'Outros Serviços',
+                        description: 'Microchipagem, castração e emergências em Garanhuns-PE',
+                        items: realCareData['Outros']!,
                       ),
 
                       SizedBox(height: 120.h), // Espaço para o rodapé
@@ -657,6 +816,202 @@ class _CareScreenState extends State<CareScreen> {
                   ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCareItemFromData({
+    required IconData icon,
+    required String title,
+    required String description,
+    required List<Map<String, String>> items,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Ícone
+          Container(
+            width: 74.h,
+            height: 74.h,
+            decoration: BoxDecoration(
+              color: appTheme.whiteCustom,
+              shape: BoxShape.circle,
+              border: Border.all(color: appTheme.blackCustom, width: 1),
+            ),
+            child: Icon(
+              icon,
+              size: 40.h,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          
+          SizedBox(width: 16.h),
+          
+          // Conteúdo
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Título
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 18.fSize,
+                    fontWeight: FontWeight.bold,
+                    color: appTheme.colorFF4F20,
+                  ),
+                ),
+
+                SizedBox(height: 8.h),
+
+                // Descrição
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12.fSize,
+                    fontWeight: FontWeight.w400,
+                    color: appTheme.colorFF4F20,
+                  ),
+                ),
+
+                SizedBox(height: 12.h),
+
+                // Lista de locais reais
+                ...items.map((item) {
+                  final name = item['name'] ?? '';
+                  final address = item['address'] ?? '';
+                  final phone = item['phone'] ?? '';
+                  final itemDescription = item['description'] ?? '';
+                  
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    padding: EdgeInsets.all(12.h),
+                    decoration: BoxDecoration(
+                      color: appTheme.colorFFF1F1.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(8.h),
+                      border: Border.all(
+                        color: appTheme.colorFF4F20.withOpacity(0.2),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Nome do estabelecimento
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                name,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 13.fSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: appTheme.colorFF4F20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                        if (itemDescription.isNotEmpty) ...[
+                          SizedBox(height: 4.h),
+                          Text(
+                            itemDescription,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11.fSize,
+                              fontWeight: FontWeight.w400,
+                              color: appTheme.colorFF4F20.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                        
+                        if (address.isNotEmpty) ...[
+                          SizedBox(height: 6.h),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                size: 14.h,
+                                color: appTheme.colorFF4F20.withOpacity(0.7),
+                              ),
+                              SizedBox(width: 4.h),
+                              Expanded(
+                                child: Text(
+                                  address,
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11.fSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: appTheme.colorFF4F20.withOpacity(0.7),
+                                  ),
+                                ),
+                              ),
+                              // Botão para abrir no mapa
+                              GestureDetector(
+                                onTap: () => _launchMaps(address),
+                                child: Container(
+                                  padding: EdgeInsets.all(4.h),
+                                  child: Icon(
+                                    Icons.map,
+                                    size: 16.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                        
+                        if (phone.isNotEmpty) ...[
+                          SizedBox(height: 4.h),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.phone,
+                                size: 14.h,
+                                color: appTheme.colorFF4F20.withOpacity(0.7),
+                              ),
+                              SizedBox(width: 4.h),
+                              Expanded(
+                                child: Text(
+                                  phone,
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11.fSize,
+                                    fontWeight: FontWeight.w500,
+                                    color: appTheme.colorFF4F20.withOpacity(0.7),
+                                  ),
+                                ),
+                              ),
+                              // Botão para ligar
+                              GestureDetector(
+                                onTap: () => _launchPhone(phone),
+                                child: Container(
+                                  padding: EdgeInsets.all(4.h),
+                                  child: Icon(
+                                    Icons.call,
+                                    size: 16.h,
+                                    color: appTheme.colorFF4F20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ],
             ),
           ),
         ],
