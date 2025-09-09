@@ -65,13 +65,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ],
         ),
       );
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: Text(FirebaseAuthHelper.getErrorMessage(e.code)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
     } catch (e) {
       setState(() => _isLoading = false);
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Erro'),
-          content: Text('Erro ao enviar e-mail: ${e.toString()}'),
+          content: Text('Erro inesperado. Tente novamente.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),

@@ -285,23 +285,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _showPasswordDialog(context, password);
                       
                     } on FirebaseAuthException catch (e) {
-                      String errorMessage = 'Erro ao verificar senha';
-                      if (e.code == 'wrong-password') {
-                        errorMessage = 'Senha incorreta';
-                      } else if (e.code == 'too-many-requests') {
-                        errorMessage = 'Muitas tentativas. Tente novamente mais tarde';
-                      }
-                      
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(errorMessage),
+                          content: Text(FirebaseAuthHelper.getErrorMessage(e.code)),
                           backgroundColor: appTheme.redCustom,
                         ),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Erro inesperado'),
+                          content: Text('Erro inesperado. Tente novamente.'),
                           backgroundColor: appTheme.redCustom,
                         ),
                       );
@@ -487,7 +480,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Erro'),
-          content: Text(e.message ?? 'Erro ao enviar e-mail.'),
+          content: Text(FirebaseAuthHelper.getErrorMessage(e.code)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
