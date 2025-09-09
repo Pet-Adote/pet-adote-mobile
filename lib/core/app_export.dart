@@ -4,3 +4,4 @@ export '../theme/text_style_helper.dart';
 export 'utils/image_constant.dart';
 export 'utils/size_utils.dart';
 export 'services/email_service.dart';
+export 'services/share_service.dart';

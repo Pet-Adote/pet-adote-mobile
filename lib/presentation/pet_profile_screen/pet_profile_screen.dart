@@ -7,6 +7,7 @@ import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_image_view.dart';
+import '../../widgets/share_button.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
 import '../../repositories/firebase_favorites_repository.dart';
@@ -491,6 +492,15 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                                   size: 24.h,
                                 ),
                               ),
+                            ),
+                          ),
+                          // Botão compartilhar
+                          Positioned(
+                            left: 39.h,
+                            top: 12.h,
+                            child: ShareButton(
+                              pet: pet!,
+                              size: 32.h,
                             ),
                           ),
                         ],

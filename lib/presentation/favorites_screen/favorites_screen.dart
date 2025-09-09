@@ -4,6 +4,7 @@ import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_favorites_repository.dart';
+import '../../widgets/share_button.dart';
 import '../../widgets/custom_image_view.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -723,9 +724,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ),
               ),
               
-              // Ícone de favorito e seta
+              // Ícone de favorito, compartilhar e seta
               Column(
                 children: [
+                  // Botão de compartilhamento
+                  ShareButton(
+                    pet: pet,
+                    size: 32.h,
+                  ),
+                  SizedBox(height: 8.h),
                   Icon(
                     Icons.favorite,
                     color: appTheme.redCustom,

@@ -6,6 +6,7 @@ import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
 import '../../widgets/custom_image_view.dart';
+import '../../widgets/share_button.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final String categoryTitle;
@@ -525,11 +526,21 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             ),
                                           ),
                                           
-                                          // Seta
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: appTheme.colorFF4F20,
-                                            size: 16.h,
+                                          // Botão compartilhar e seta
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              ShareButton(
+                                                pet: pet,
+                                                size: 32.h,
+                                              ),
+                                              SizedBox(height: 8.h),
+                                              Icon(
+                                                Icons.arrow_forward_ios,
+                                                color: appTheme.colorFF4F20,
+                                                size: 16.h,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
