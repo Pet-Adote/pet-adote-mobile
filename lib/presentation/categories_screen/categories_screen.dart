@@ -609,7 +609,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed(AppRoutes.addPetScreen);
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.addPetScreen,
+                            arguments: widget.categoryType,
+                          );
                         },
                         child: Container(
                           width: 51.h,

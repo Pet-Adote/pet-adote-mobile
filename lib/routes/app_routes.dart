@@ -32,6 +32,8 @@ class AppRoutes {
   static const String faqScreen = '/faq_screen';
   static const String careScreen = '/care_screen';
   static const String addPetScreen = '/add_pet_screen';
+  static const String addDogScreen = '/add_dog_screen';
+  static const String addCatScreen = '/add_cat_screen';
   static const String editPetScreen = '/edit_pet_screen';
   static const String petProfileScreen = '/pet_profile_screen';
   static const String helpScreen = '/help_screen';
@@ -53,7 +55,12 @@ class AppRoutes {
         aboutUsScreen: (context) => AboutUsScreen(),
         faqScreen: (context) => FaqScreen(),
         careScreen: (context) => CareScreen(),
-        addPetScreen: (context) => AddPetScreen(),
+        addPetScreen: (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as String?;
+          return AddPetScreen(petType: args);
+        },
+        addDogScreen: (context) => AddPetScreen(petType: 'dogs'),
+        addCatScreen: (context) => AddPetScreen(petType: 'cats'),
         editPetScreen: (context) => EditPetScreen(),
         petProfileScreen: (context) => PetProfileScreen(),
         helpScreen: (context) => HelpScreen(),
