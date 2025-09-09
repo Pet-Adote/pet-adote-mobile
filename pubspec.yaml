@@ -27,7 +27,11 @@ dependencies:
   emailjs: ^4.0.0
 dev_dependencies: 
   flutter_test: 
-    sdk: flutter   
+    sdk: flutter  
+  integration_test:
+    sdk: flutter
+  mockito: ^5.4.4
+  build_runner: ^2.4.9   
   mockito: ^5.4.4
   build_runner: ^2.4.9
 flutter: 
