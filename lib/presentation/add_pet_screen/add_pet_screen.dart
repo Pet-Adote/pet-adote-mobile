@@ -11,7 +11,9 @@ import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
 
 class AddPetScreen extends StatefulWidget {
-  const AddPetScreen({super.key});
+  final String? petType; // 'dogs' or 'cats'
+  
+  const AddPetScreen({super.key, this.petType});
 
   @override
   State<AddPetScreen> createState() => _AddPetScreenState();
@@ -30,6 +32,15 @@ class _AddPetScreenState extends State<AddPetScreen> {
   bool _isVaccinated = false;
   bool _isMenuOpen = false;
   File? _petImage;
+
+  @override
+  void initState() {
+    super.initState();
+    // Define o tipo de pet baseado no parâmetro recebido
+    if (widget.petType != null) {
+      _selectedSpecies = widget.petType!;
+    }
+  }
 
   void _toggleMenu() {
     setState(() {
@@ -566,32 +577,47 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                 Container(
                                   height: 26.h,
                                   decoration: BoxDecoration(
-                                    color: appTheme.colorFFF1F1,
+                                    color: widget.petType != null 
+                                        ? appTheme.grey600.withValues(alpha: 0.3)
+                                        : appTheme.colorFFF1F1,
                                     border: Border.all(color: appTheme.colorFF4F20),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: _selectedSpecies,
-                                      isExpanded: true,
-                                      items: [
-                                        DropdownMenuItem(value: 'dogs', child: Text('Cão')),
-                                        DropdownMenuItem(value: 'cats', child: Text('Gato')),
-                                      ],
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _selectedSpecies = value!;
-                                        });
-                                      },
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 14.fSize,
-                                        color: appTheme.colorFF4F20,
-                                      ),
-                                      dropdownColor: appTheme.colorFFF1F1,
-                                      icon: Icon(Icons.arrow_drop_down, color: appTheme.colorFF4F20),
-                                    ),
-                                  ),
+                                  child: widget.petType != null
+                                      ? Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.symmetric(horizontal: 12.h),
+                                          child: Text(
+                                            _selectedSpecies == 'dogs' ? 'Cão' : 'Gato',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14.fSize,
+                                              color: appTheme.colorFF4F20,
+                                            ),
+                                          ),
+                                        )
+                                      : DropdownButtonHideUnderline(
+                                          child: DropdownButton<String>(
+                                            value: _selectedSpecies,
+                                            isExpanded: true,
+                                            items: [
+                                              DropdownMenuItem(value: 'dogs', child: Text('Cão')),
+                                              DropdownMenuItem(value: 'cats', child: Text('Gato')),
+                                            ],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedSpecies = value!;
+                                              });
+                                            },
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14.fSize,
+                                              color: appTheme.colorFF4F20,
+                                            ),
+                                            dropdownColor: appTheme.colorFFF1F1,
+                                            icon: Icon(Icons.arrow_drop_down, color: appTheme.colorFF4F20),
+                                          ),
+                                        ),
                                 ),
                               ],
                             ),
