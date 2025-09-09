@@ -156,11 +156,293 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _handleVisualizarSenha(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Funcionalidade em desenvolvimento'),
-        backgroundColor: appTheme.colorFF4F20,
-      ),
+    final TextEditingController passwordController = TextEditingController();
+    bool isPasswordVisible = false;
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: appTheme.colorFFF1F1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text(
+                'Visualizar Senha',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 20.fSize,
+                  fontWeight: FontWeight.bold,
+                  color: appTheme.colorFF4F20,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Digite sua senha atual para visualizá-la',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14.fSize,
+                      color: appTheme.colorFF4F20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 16.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: appTheme.whiteCustom,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: appTheme.colorFF4F20.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: TextField(
+                      controller: passwordController,
+                      obscureText: !isPasswordVisible,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16.fSize,
+                        color: appTheme.colorFF4F20,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Senha atual',
+                        hintStyle: TextStyle(
+                          color: appTheme.colorFF4F20.withValues(alpha: 0.5),
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.h,
+                          vertical: 12.h,
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isPasswordVisible = !isPasswordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                            color: appTheme.colorFF4F20.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16.fSize,
+                      color: appTheme.grey600,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: isLoading ? null : () async {
+                    final password = passwordController.text.trim();
+                    if (password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Digite sua senha'),
+                          backgroundColor: appTheme.redCustom,
+                        ),
+                      );
+                      return;
+                    }
+
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    try {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user?.email == null) {
+                        throw FirebaseAuthException(
+                          code: 'user-not-found',
+                          message: 'Usuário não encontrado',
+                        );
+                      }
+
+                      final credential = EmailAuthProvider.credential(
+                        email: user!.email!,
+                        password: password,
+                      );
+                      
+                      await user.reauthenticateWithCredential(credential);
+                      
+                      Navigator.of(dialogContext).pop();
+                      
+                      _showPasswordDialog(context, password);
+                      
+                    } on FirebaseAuthException catch (e) {
+                      String errorMessage = 'Erro ao verificar senha';
+                      if (e.code == 'wrong-password') {
+                        errorMessage = 'Senha incorreta';
+                      } else if (e.code == 'too-many-requests') {
+                        errorMessage = 'Muitas tentativas. Tente novamente mais tarde';
+                      }
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(errorMessage),
+                          backgroundColor: appTheme.redCustom,
+                        ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Erro inesperado'),
+                          backgroundColor: appTheme.redCustom,
+                        ),
+                      );
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: appTheme.colorFF4F20,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: isLoading
+                      ? SizedBox(
+                          width: 20.h,
+                          height: 20.h,
+                          child: CircularProgressIndicator(
+                            color: appTheme.colorFFF1F1,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'Verificar',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16.fSize,
+                            fontWeight: FontWeight.w500,
+                            color: appTheme.colorFFF1F1,
+                          ),
+                        ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showPasswordDialog(BuildContext context, String password) {
+    bool isPasswordVisible = false;
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: appTheme.colorFFF1F1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text(
+                'Sua Senha',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 20.fSize,
+                  fontWeight: FontWeight.bold,
+                  color: appTheme.colorFF4F20,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16.h),
+                    decoration: BoxDecoration(
+                      color: appTheme.whiteCustom,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: appTheme.colorFF4F20.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            isPasswordVisible ? password : '•' * password.length,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16.fSize,
+                              color: appTheme.colorFF4F20,
+                              letterSpacing: isPasswordVisible ? 1 : 2,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isPasswordVisible = !isPasswordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                            color: appTheme.colorFF4F20.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Text(
+                    'Mantenha sua senha segura e não a compartilhe com ninguém.',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12.fSize,
+                      color: appTheme.colorFF4F20.withValues(alpha: 0.7),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: appTheme.colorFF4F20,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
+                    'Fechar',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16.fSize,
+                      fontWeight: FontWeight.w500,
+                      color: appTheme.colorFFF1F1,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
