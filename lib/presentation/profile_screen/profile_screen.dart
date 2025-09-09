@@ -599,31 +599,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       
-                      // Botão de ajuda (?)
+                      // Botão de denúncia
                       Container(
-                        margin: EdgeInsets.only(right: 30.h),
+                        margin: EdgeInsets.only(right: 18.h),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushNamed(AppRoutes.helpScreen);
+                            Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
                           },
-                          child: Container(
-                            width: 55.h,
-                            height: 55.h,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: appTheme.colorFF4F20, width: 3),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '?',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 40.fSize,
-                                  fontWeight: FontWeight.w600,
-                                  color: appTheme.colorFF4F20,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 45.h,
+                                height: 45.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.redCustom.withValues(alpha: 0.1),
+                                  border: Border.all(color: appTheme.redCustom, width: 2),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: appTheme.redCustom.withValues(alpha: 0.2),
+                                      blurRadius: 4.h,
+                                      offset: Offset(0, 2.h),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.report_problem,
+                                    size: 22.h,
+                                    color: appTheme.redCustom,
+                                  ),
                                 ),
                               ),
-                            ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                'Denuncie\naqui',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 9.fSize,
+                                  fontWeight: FontWeight.w600,
+                                  color: appTheme.redCustom,
+                                  height: 1.1,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
                         ),
                       ),
