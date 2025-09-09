@@ -867,7 +867,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         shadowColor: appTheme.blackCustom.withOpacity(0.25),
                       ),
                       
-                      SizedBox(height: 40.h),
+                      SizedBox(height: MediaQuery.of(context).padding.bottom + 20.h),
                     ],
                   ),
                 ),

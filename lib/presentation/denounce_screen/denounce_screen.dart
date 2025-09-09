@@ -344,7 +344,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           color: Colors.black,
                         ),
                         
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 20.h),
                         
                         // Subtítulo
                         Center(
@@ -360,7 +360,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           ),
                         ),
                         
-                        SizedBox(height: 40.h),
+                        SizedBox(height: 25.h),
                         
                         // Cards de denúncia
                         _buildDenounceCard(
@@ -372,7 +372,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           onTap: () => _makePhoneCall('190'),
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 16.h),
                         
                         _buildDenounceCard(
                           icon: Icons.phone,
@@ -383,7 +383,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           onTap: () => _makePhoneCall('181'),
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 16.h),
                         
                         _buildDenounceCard(
                           icon: Icons.pets,
@@ -394,7 +394,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           onTap: () => _sendEmail('denuncia@petadote.com', 'Denúncia de Maus-tratos'),
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 16.h),
                         
                         _buildDenounceCard(
                           icon: Icons.message,
@@ -405,7 +405,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           onTap: () => _openWhatsApp('5511999999999', 'Gostaria de fazer uma denúncia sobre maus-tratos de animais.'),
                         ),
                         
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 25.h),
                         
                         // Seção de informações importantes
                         Container(
@@ -481,7 +481,7 @@ class _DenounceScreenState extends State<DenounceScreen> {
                           ),
                         ),
                         
-                        SizedBox(height: 40.h),
+                        SizedBox(height: MediaQuery.of(context).padding.bottom + 20.h),
                       ],
                     ),
                   ),

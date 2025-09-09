@@ -954,7 +954,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                         ),
                       ),
                       
-                      SizedBox(height: 40.h),
+                      SizedBox(height: MediaQuery.of(context).padding.bottom + 20.h),
                     ],
                   ),
                 ),

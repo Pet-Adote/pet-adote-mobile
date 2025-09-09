@@ -107,6 +107,11 @@ class _CareScreenState extends State<CareScreen> {
     Navigator.of(context).pushNamed(AppRoutes.faqScreen);
   }
 
+  void _handleDenounce() {
+    _closeMenu();
+    Navigator.of(context).pushNamed(AppRoutes.denounceScreen);
+  }
+
   void _handleCare() {
     _closeMenu();
   }
@@ -425,7 +430,7 @@ class _CareScreenState extends State<CareScreen> {
                         onTap: () => _launchPhone('87 3761-1500'),
                       ),
 
-                      SizedBox(height: 120.h), // Espaço para o rodapé
+                      SizedBox(height: MediaQuery.of(context).padding.bottom + 100.h), // Espaço para o rodapé
                     ],
                   ),
                 ),
@@ -534,6 +539,13 @@ class _CareScreenState extends State<CareScreen> {
                           _buildMenuItem(
                             'FAQ',
                             onTap: _handleFAQ,
+                          ),
+                          _buildDivider(),
+                          
+                          // Denúncia
+                          _buildMenuItem(
+                            'Denúncia',
+                            onTap: _handleDenounce,
                           ),
                           _buildDivider(),
                         ],
