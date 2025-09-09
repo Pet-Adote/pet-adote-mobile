@@ -73,7 +73,7 @@ class LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Erro'),
-          content: Text(e.message ?? 'Erro ao realizar login.'),
+          content: Text(FirebaseAuthHelper.getErrorMessage(e.code)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),

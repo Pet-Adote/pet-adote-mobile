@@ -257,7 +257,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Erro'),
-          content: Text(e.message ?? 'Erro ao realizar cadastro.'),
+          content: Text(FirebaseAuthHelper.getErrorMessage(e.code)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
