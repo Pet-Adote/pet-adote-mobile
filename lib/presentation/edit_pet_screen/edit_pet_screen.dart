@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
@@ -29,6 +32,10 @@ class _EditPetScreenState extends State<EditPetScreen> {
   bool _isMenuOpen = false;
   Pet? _originalPet;
 
+  File? _selectedImageFile;
+  String? _imagePreviewUrl;
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -52,6 +59,17 @@ class _EditPetScreenState extends State<EditPetScreen> {
       _selectedSpecies = _originalPet!.species;
       _selectedGender = _originalPet!.gender;
       _isVaccinated = _originalPet!.isVaccinated;
+      _imagePreviewUrl = _originalPet!.imagePath;
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImageFile = File(pickedFile.path);
+        _imagePreviewUrl = null;
+      });
     }
   }
 
@@ -166,6 +184,16 @@ class _EditPetScreenState extends State<EditPetScreen> {
       return;
     }
 
+
+    String? imageUrl = _originalPet!.imagePath;
+    if (_selectedImageFile != null) {
+      final firebasePetRepository = FirebasePetRepository();
+      final uploadedUrl = await firebasePetRepository.uploadPetImage(_selectedImageFile!);
+      if (uploadedUrl != null) {
+        imageUrl = uploadedUrl;
+      }
+    }
+
     // Criar objeto Pet atualizado
     final updatedPet = Pet(
       id: _originalPet!.id,
@@ -178,6 +206,7 @@ class _EditPetScreenState extends State<EditPetScreen> {
       description: _descriptionController.text.trim(),
       responsibleName: _responsibleNameController.text.trim(),
       phone: _phoneController.text.trim(),
+      imagePath: imageUrl,
       createdBy: _originalPet!.createdBy,
       createdByEmail: _originalPet!.createdByEmail,
     );
@@ -414,21 +443,42 @@ class _EditPetScreenState extends State<EditPetScreen> {
                         Center(
                           child: Column(
                             children: [
-                              Container(
-                                width: 104.h,
-                                height: 97.h,
-                                decoration: BoxDecoration(
-                                  color: appTheme.whiteCustom,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: appTheme.colorFF4F20,
-                                    width: 2,
+                              GestureDetector(
+                                onTap: _pickImage,
+                                child: Container(
+                                  width: 104.h,
+                                  height: 97.h,
+                                  decoration: BoxDecoration(
+                                    color: appTheme.whiteCustom,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: appTheme.colorFF4F20,
+                                      width: 2,
+                                    ),
                                   ),
-                                ),
-                                child: Icon(
-                                  Icons.pets,
-                                  size: 50.h,
-                                  color: appTheme.colorFF4F20,
+                                  child: _selectedImageFile != null
+                                      ? ClipOval(
+                                          child: Image.file(
+                                            _selectedImageFile!,
+                                            width: 104.h,
+                                            height: 97.h,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : (_imagePreviewUrl != null && _imagePreviewUrl!.isNotEmpty)
+                                          ? ClipOval(
+                                              child: Image.network(
+                                                _imagePreviewUrl!,
+                                                width: 104.h,
+                                                height: 97.h,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.pets,
+                                              size: 50.h,
+                                              color: appTheme.colorFF4F20,
+                                            ),
                                 ),
                               ),
                               SizedBox(height: 8.h),

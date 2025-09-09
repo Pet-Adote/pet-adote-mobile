@@ -1,11 +1,32 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import '../models/pet_model.dart';
 
 class FirebasePetRepository {
   static const String _petsCollection = 'pets';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instanceFor(
+    bucket: 'gs://petadote-7fa2d.firebasestorage.app',
+  );
+
+  // Upload de imagem para o Firebase Storage
+  Future<String?> uploadPetImage(File imageFile) async {
+    try {
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${imageFile.path.split('/').last}';
+      final ref = _storage.ref().child('pet_images').child(fileName);
+      await ref.putFile(imageFile);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      print('Erro ao fazer upload da imagem: $e');
+      return null;
+    }
+  }
 
   // Salvar um pet no Firestore
   Future<bool> savePet(Pet pet) async {

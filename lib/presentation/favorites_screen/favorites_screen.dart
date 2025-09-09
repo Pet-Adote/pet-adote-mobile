@@ -4,6 +4,7 @@ import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_favorites_repository.dart';
+import '../../widgets/custom_image_view.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -653,11 +654,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   border: Border.all(color: appTheme.colorFF4F20, width: 2),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.pets,
-                  size: 30.h,
-                  color: appTheme.colorFF4F20,
-                ),
+                child: (pet.imagePath != null && pet.imagePath!.isNotEmpty)
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(30.h),
+                        child: CustomImageView(
+                          imagePath: pet.imagePath!,
+                          width: 60.h,
+                          height: 60.h,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Icon(
+                        Icons.pets,
+                        size: 30.h,
+                        color: appTheme.colorFF4F20,
+                      ),
               ),
               
               SizedBox(width: 16.h),
