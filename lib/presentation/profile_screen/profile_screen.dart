@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../core/app_export.dart';
 import '../../models/pet_model.dart';
 import '../../repositories/firebase_pet_repository.dart';
+import '../../repositories/firebase_user_repository.dart';
+import '../../widgets/custom_image_view.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,11 +20,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Pet> _userPets = [];
   bool _isLoadingPets = false;
   final FirebasePetRepository _petRepository = FirebasePetRepository();
+  final FirebaseUserRepository _userRepository = FirebaseUserRepository();
+  final ImagePicker _imagePicker = ImagePicker();
+  
+  File? _selectedProfileImage;
+  String? _currentProfileImageUrl;
+  bool _isUploadingImage = false;
 
   @override
   void initState() {
     super.initState();
     _loadUserPets();
+    _loadUserProfileImage();
   }
 
   @override
@@ -42,16 +53,303 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _isLoadingPets = false;
       });
     } catch (e) {
+      print('Erro ao carregar pets: $e');
       setState(() {
         _isLoadingPets = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao carregar seus pets'),
-          backgroundColor: appTheme.redCustom,
-        ),
-      );
     }
+  }
+
+  void _loadUserProfileImage() async {
+    try {
+      final imageUrl = await _userRepository.getUserProfileImageUrl();
+      setState(() {
+        _currentProfileImageUrl = imageUrl;
+      });
+    } catch (e) {
+      print('Erro ao carregar imagem do perfil: $e');
+    }
+  }
+
+  Future<void> _pickProfileImage() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 70,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedProfileImage = File(image.path);
+        });
+        await _uploadProfileImage();
+      }
+    } catch (e) {
+      print('Erro ao selecionar imagem: $e');
+      _showErrorSnackBar('Erro ao selecionar imagem');
+    }
+  }
+
+  Future<void> _uploadProfileImage() async {
+    if (_selectedProfileImage == null) return;
+
+    setState(() {
+      _isUploadingImage = true;
+    });
+
+    try {
+      final imageUrl = await _userRepository.uploadUserProfileImage(_selectedProfileImage!);
+      
+      setState(() {
+        _currentProfileImageUrl = imageUrl;
+        _selectedProfileImage = null;
+        _isUploadingImage = false;
+      });
+
+      _showSuccessSnackBar('Foto de perfil atualizada com sucesso!');
+    } catch (e) {
+      print('Erro ao fazer upload da imagem: $e');
+      setState(() {
+        _isUploadingImage = false;
+        _selectedProfileImage = null;
+      });
+      _showErrorSnackBar('Erro ao atualizar foto de perfil');
+    }
+  }
+
+  Future<void> _removeProfileImage() async {
+    try {
+      setState(() {
+        _isUploadingImage = true;
+      });
+
+      await _userRepository.deleteUserProfileImage();
+      
+      setState(() {
+        _currentProfileImageUrl = null;
+        _selectedProfileImage = null;
+        _isUploadingImage = false;
+      });
+
+      _showSuccessSnackBar('Foto de perfil removida com sucesso!');
+    } catch (e) {
+      print('Erro ao remover imagem: $e');
+      setState(() {
+        _isUploadingImage = false;
+      });
+      _showErrorSnackBar('Erro ao remover foto de perfil');
+    }
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _showProfileImageOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: appTheme.colorFFF1F1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.h)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Foto de Perfil',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 20.fSize,
+                  fontWeight: FontWeight.bold,
+                  color: appTheme.colorFF4F20,
+                ),
+              ),
+              SizedBox(height: 20.h),
+              
+              // Botão Selecionar Foto
+              ListTile(
+                leading: Icon(
+                  Icons.photo_library,
+                  color: appTheme.colorFF4F20,
+                  size: 24.h,
+                ),
+                title: Text(
+                  'Selecionar da Galeria',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16.fSize,
+                    fontWeight: FontWeight.w500,
+                    color: appTheme.colorFF4F20,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickProfileImage();
+                },
+              ),
+              
+              // Botão Tirar Foto
+              ListTile(
+                leading: Icon(
+                  Icons.camera_alt,
+                  color: appTheme.colorFF4F20,
+                  size: 24.h,
+                ),
+                title: Text(
+                  'Tirar Foto',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16.fSize,
+                    fontWeight: FontWeight.w500,
+                    color: appTheme.colorFF4F20,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _takePhoto();
+                },
+              ),
+              
+              // Botão Remover Foto (só aparece se há foto)
+              if (_currentProfileImageUrl != null && _currentProfileImageUrl!.isNotEmpty)
+                ListTile(
+                  leading: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 24.h,
+                  ),
+                  title: Text(
+                    'Remover Foto',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16.fSize,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.red,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _confirmRemoveProfileImage();
+                  },
+                ),
+              
+              SizedBox(height: 10.h),
+              
+              // Botão Cancelar
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16.fSize,
+                    fontWeight: FontWeight.w500,
+                    color: appTheme.colorFF4F20.withOpacity(0.7),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _takePhoto() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 70,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedProfileImage = File(image.path);
+        });
+        await _uploadProfileImage();
+      }
+    } catch (e) {
+      print('Erro ao tirar foto: $e');
+      _showErrorSnackBar('Erro ao tirar foto');
+    }
+  }
+
+  void _confirmRemoveProfileImage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appTheme.colorFFF1F1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Remover Foto',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 20.fSize,
+              fontWeight: FontWeight.bold,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          content: Text(
+            'Tem certeza que deseja remover sua foto de perfil?',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16.fSize,
+              color: appTheme.colorFF4F20,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  color: appTheme.colorFF4F20.withOpacity(0.7),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _removeProfileImage();
+              },
+              child: Text(
+                'Remover',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 
@@ -639,28 +937,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         SizedBox(height: 20.h),
                         
-                        // Foto de perfil
-                        Container(
-                          width: 200.h,
-                          height: 200.h,
-                          decoration: BoxDecoration(
-                            color: appTheme.whiteCustom,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: appTheme.blackCustom, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.25),
-                                blurRadius: 4,
-                                offset: Offset(0, 4),
+                        // Foto de perfil com funcionalidade de edição
+                        GestureDetector(
+                          onTap: _isUploadingImage ? null : () {
+                            _showProfileImageOptions();
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: 200.h,
+                                height: 200.h,
+                                decoration: BoxDecoration(
+                                  color: appTheme.whiteCustom,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: appTheme.blackCustom, width: 2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.25),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: _isUploadingImage
+                                      ? Center(
+                                          child: CircularProgressIndicator(
+                                            color: appTheme.colorFF4F20,
+                                          ),
+                                        )
+                                      : _selectedProfileImage != null
+                                          ? Image.file(
+                                              _selectedProfileImage!,
+                                              width: 200.h,
+                                              height: 200.h,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : _currentProfileImageUrl != null && _currentProfileImageUrl!.isNotEmpty
+                                              ? CustomImageView(
+                                                  imagePath: _currentProfileImageUrl!,
+                                                  width: 200.h,
+                                                  height: 200.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Center(
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    size: 100.h,
+                                                    color: appTheme.colorFF4F20,
+                                                  ),
+                                                ),
+                                ),
                               ),
+                              
+                              // Ícone de edição
+                              if (!_isUploadingImage)
+                                Positioned(
+                                  bottom: 10.h,
+                                  right: 10.h,
+                                  child: Container(
+                                    width: 40.h,
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                      color: appTheme.colorFF4F20,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: appTheme.whiteCustom, width: 2),
+                                    ),
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      color: appTheme.whiteCustom,
+                                      size: 20.h,
+                                    ),
+                                  ),
+                                ),
                             ],
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.person,
-                              size: 100.h,
-                              color: appTheme.colorFF4F20,
-                            ),
                           ),
                         ),
                         

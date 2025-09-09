@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
+import '../../utils/category_image_utils.dart';
+import '../../widgets/custom_image_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -297,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 140.h,
                                 child: Column(
                                   children: [
-                                    // Círculo com imagem
+                                    // Círculo com imagem fixa de gato
                                     Container(
                                       width: 108.h,
                                       height: 109.h,
@@ -306,11 +308,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         shape: BoxShape.circle,
                                         border: Border.all(color: appTheme.blackCustom, width: 1),
                                       ),
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.pets,
-                                          size: 50.h,
-                                          color: appTheme.colorFF4F20,
+                                      child: ClipOval(
+                                        child: CustomImageView(
+                                          imagePath: CategoryImageUtils.getCategoryImage('cats'),
+                                          width: 108.h,
+                                          height: 109.h,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
@@ -340,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 140.h,
                                 child: Column(
                                   children: [
-                                    // Círculo com imagem
+                                    // Círculo com imagem fixa de cachorro
                                     Container(
                                       width: 112.h,
                                       height: 107.h,
@@ -349,11 +352,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         shape: BoxShape.circle,
                                         border: Border.all(color: appTheme.blackCustom, width: 1),
                                       ),
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.pets,
-                                          size: 50.h,
-                                          color: appTheme.colorFF4F20,
+                                      child: ClipOval(
+                                        child: CustomImageView(
+                                          imagePath: CategoryImageUtils.getCategoryImage('dogs'),
+                                          width: 112.h,
+                                          height: 107.h,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
