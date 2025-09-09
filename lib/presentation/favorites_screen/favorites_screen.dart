@@ -550,13 +550,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             onTap: _handleDenounce,
                           ),
                           _buildDivider(),
-                          
-                          // Denúncia
-                          _buildMenuItem(
-                            'Denúncia',
-                            onTap: _handleDenounce,
-                          ),
-                          _buildDivider(),
                         ],
                       ),
                     ),
