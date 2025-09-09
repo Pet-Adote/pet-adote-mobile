@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/app_export.dart';
@@ -196,6 +197,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
       }
 
       // Criar objeto Pet com os dados do formulário
+      final currentUser = FirebaseAuth.instance.currentUser;
       final pet = Pet(
         name: _petNameController.text.trim(),
         location: _locationController.text.trim(),
@@ -207,6 +209,9 @@ class _AddPetScreenState extends State<AddPetScreen> {
         responsibleName: _responsibleNameController.text.trim(),
         phone: _phoneController.text.trim(),
         imagePath: imageUrl,
+        createdBy: currentUser?.uid,
+        createdByEmail: currentUser?.email,
+        createdAt: DateTime.now(),
       );
 
       // Verificar se o pet já existe
