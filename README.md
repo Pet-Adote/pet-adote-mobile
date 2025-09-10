@@ -51,6 +51,8 @@ Consulte o `pubspec.yaml` e a pasta `scripts/` para a lista completa de dependê
 - 🔗 [Acessar Protótipo no Figma](https://www.figma.com/design/c52xd53drkQAqOK8SjchHO/PetAdote?node-id=0-1&p=f)
 - 🗒️ [Acessar Backlog e Plano de Desenvolvimento](https://docs.google.com/document/d/1uuX4fHcee58DXW6_sza1U6ltoJ_X_spGoUQ33atCouE/edit?usp=drive_link)
 - 📝 [Acessar Trello](https://trello.com/b/pmKufRar/kanban-quadro-modelo)
+- 💻 [Acessar Slide da Apresentação Final](https://drive.google.com/file/d/1YibIQhMkB0ajC5T5-TIXwqlTCXakbSrp/view?usp=sharing)
+
 
 ## ▶️ Como executar
 
